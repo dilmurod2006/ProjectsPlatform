@@ -27,12 +27,32 @@ projectsplatform.uz 2024
             last_login: datetime.now
             code: nullable=True
             how_online: Boolean
+            token: str
         ReportsBalance:
             user_id: Foregin Key from Users
             size: kirim(+) or Chiqim(-)
             date:datetime.now
             bio: str nullable=True
     Functions:
+        refresh_user_api:
+            post:
+                user_id: str
+                old_token: str
+            refresh user.token
+            except:
+                new_token
+        about_account_api:
+            post:
+                token: str
+            responce:
+                full_name: str
+                sex: Boolean
+                email: email
+                phone: strs
+                username: str
+                password: str
+                tg_id: Foregin Key from ForRegister in tg_id
+                balace:default=0 add paymaent by admin
         for_register_bot_api:
             post:
                 phone: str
@@ -103,8 +123,27 @@ projectsplatform.uz 2024
             password: str
         MajburiyObuna:
             user_id: Foregin Key from Users in Accounts
-    Funktions:
-        pass
+    Functions:
+        buy_api:
+            post:
+                months_count: int
+                token: user tokeni
+            responce:
+                how:
+                    True or False
+                message:
+                    "Balansingizga yetarli mablag' mavjud emas!"
+                    "To'lov muvaffaqiyatli amalga oshirildi."
+                    "Nimadur xato ketdi"
+        price_months:
+            post:
+                months_count: int
+            responce:
+                all so'm months
+
+        
+
+
     
 
 
