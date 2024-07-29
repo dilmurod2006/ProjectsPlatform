@@ -126,8 +126,8 @@ projectsplatform.uz 2024
     Functions:
         buy_api:
             post:
-                months_count: int
                 token: user tokeni
+                months_count: int
             responce:
                 how:
                     True or False
