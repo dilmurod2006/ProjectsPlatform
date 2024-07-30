@@ -93,8 +93,15 @@ projectsplatform.uz 2024
             response:
                 True or False
                 DAVOMI BOR...
-                
-                
+        add_to_balance:
+            size: int # musbat
+            admin_token: str
+            user_id: int
+
+        take_from_balance:
+            size: int # musbat
+            admin_token: str
+            user_id: int
 
 
 
