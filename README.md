@@ -28,6 +28,7 @@ projectsplatform.uz 2024
             created_at: datetime.now
             updated_at: datetime.now
             last_login: datetime.now
+            active_login: Boolean
             code: nullable=True
             how_online: Boolean
         ReportsBalance:

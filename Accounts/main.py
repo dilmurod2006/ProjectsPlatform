@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from database import engine, SessionLocal
 from models import Base, ForRegister, Users
 from schemas import TokenRequest, CreateUser, LoginUser
-from Accounts.other_functions import generate_token, is_token_valid
+from other_functions import generate_token, is_token_valid
 from datetime import datetime, timedelta
 
 app = FastAPI()
