@@ -177,26 +177,18 @@
         Admins:
             id: Primey Key
             username: str
-<<<<<<< HEAD
             password: str 
-=======
             password: str
->>>>>>> 40ed16533a8784a76c50719cb85eb0f681d3d3a0
             tg_id: int
             active: Boolean
             created_at: datetime.now
             updated_at: datetime.now
-<<<<<<< HEAD
-=======
             token: str
->>>>>>> 40ed16533a8784a76c50719cb85eb0f681d3d3a0
         Products:
             id: int primary_key=True
             name: str
             about: str
             settings: str json
-<<<<<<< HEAD
-=======
     Functions:
         is_admin:
             post:
@@ -260,6 +252,5 @@
         
             
 
->>>>>>> 40ed16533a8784a76c50719cb85eb0f681d3d3a0
 
 
