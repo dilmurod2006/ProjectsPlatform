@@ -1,6 +1,6 @@
 from sqlalchemy import Column, create_engine
 from sqlalchemy import Integer, String, DateTime
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 
 # database path
@@ -41,3 +41,6 @@ class MajburiyObuna(Base):
 
 Base.metadata.create_all(engine)
 
+Session = sessionmaker(bind=engine)
+
+session = Session()

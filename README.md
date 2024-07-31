@@ -1,5 +1,5 @@
 # ProjectsPlatform
-projectsplatform.uz 2024
+    projectsplatform.uz 2024
 
 
 
@@ -33,6 +33,12 @@ projectsplatform.uz 2024
             size: kirim(+) or Chiqim(-)
             date:datetime.now
             bio: str nullable=True
+        Products:
+            user_id: int, primary_key=True
+            name: str
+            bio: str
+            price: int
+
     Functions:
         refresh_user_api:
             post:
@@ -123,7 +129,7 @@ projectsplatform.uz 2024
             password: str
         MajburiyObuna:
             user_id: Foregin Key from Users in Accounts
-    Functions:
+    FunctionsPC:
         buy_api:
             post:
                 token: user tokeni
@@ -164,18 +170,22 @@ projectsplatform.uz 2024
         end_active_date: end_active_dateq
         device_id: str
 
+
 # Aloqa -----> keyinchalik
-
-
 # Admin Panel
-    Admins:
-        id: Primey Key
-        username: str
-        password: str 
-        tg_id: int
-        active: Boolean
-        created_at: datetime.now
-        updated_at: datetime.now
-
+    Models:
+        Admins:
+            id: Primey Key
+            username: str
+            password: str 
+            tg_id: int
+            active: Boolean
+            created_at: datetime.now
+            updated_at: datetime.now
+        Products:
+            id: int primary_key=True
+            name: str
+            about: str
+            settings: str json
 
 
