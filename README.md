@@ -177,15 +177,79 @@
         Admins:
             id: Primey Key
             username: str
-            password: str 
+            password: str
             tg_id: int
             active: Boolean
             created_at: datetime.now
             updated_at: datetime.now
+            token: str
         Products:
             id: int primary_key=True
             name: str
             about: str
             settings: str json
+    Functions:
+        is_admin:
+            post:
+                token: str
+            responce:
+                True or False # tokenga mos admin bor yuqligini tekshiradi
+        add_admin:
+            post:
+                token: str
+                username: str
+                password: str
+                tg_id: int
+            responce:
+                how: Boolean
+                token: str
+        remove_admin:
+            post:
+                token: str
+                id: str
+            responce:
+                True or False
+        set_product:
+            post:
+                token: str
+                id: int
+                name: str
+                about: str
+                settings: str json
+            responce:
+                how: True or False
+                message: "" or "Xatolik haqida matn"
+        add_product:
+            post:
+                token: str
+                name: str
+                about: str
+                settings: str json
+            responce:
+                how: True or False
+                id: int
+        remove_product:
+            post:
+                token: str
+                id: int
+            responce:
+                how: True or False
+                message: "Muvaffaqiyatli o'chirildi" or "Bunday product mavjud emas!"
+        about_product:
+            post:
+                id: int
+            responce:
+                how: True
+                name: str
+                about: str
+                settings: str json
+                # or
+                how: False
+                message: Ayni paytda bunday product mavjud emas!
+        
+
+        
+            
+
 
 
