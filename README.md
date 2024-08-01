@@ -189,10 +189,8 @@
         Admins:
             id: Primey Key
             username: str
-            password: str 
             password: str
             tg_id: int
-            active: Boolean
             created_at: datetime.now
             updated_at: datetime.now
             token: str
