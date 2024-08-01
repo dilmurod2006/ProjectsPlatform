@@ -118,6 +118,7 @@
             start_active_date: datetime.now
             end_active_date: end_active_dateq
             device_id: str
+            end_use_date: datetime
         MobileKundalikCom:
             user_id: Foregin Key from Users in Accounts
             start_active_date: datetime.now
@@ -146,15 +147,26 @@
                 months_count: int
             responce:
                 all so'm months
-
+        check_pc:
+            post:
+                device_id: str
+                token: str
+            responce:
+                how: True or False
+                end_date: "2025-yil, 2-Sentabr gacha"
+                size: "10 oyu 12 kun" or "0"
+                users:
+                    json -> "[login parollar]"
+                    bunda -> {"login": str, "password": str}
+                message: "" or "Xatolik haqida habar"
+        login_user:
+            post:
+                token: str
+                device_id: str
+            responce:
+                how: True or False
+                message: "" or "Xatolik haqida habar"
         
-
-
-    
-
-
-
-
 
 
 # TestMax
