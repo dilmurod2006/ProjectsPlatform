@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 import requests
-from Accounts.schemas import TokenRequest
+# from Accounts.schemas import TokenRequest
 from typing import Dict
 import re
 
@@ -14,7 +14,7 @@ user_data: Dict[int, Dict[str, str]] = {}
 
 def create_temp_account(tg_id: int, phone: str) -> str:
     """API orqali token yaratish."""
-    response = requests.post("http://localhost:8000/generate-token", json={
+    response = requests.post("http://localhost:8000/accounts/generate-token", json={
         "tg_id": tg_id,
         "phone": phone
     })
@@ -29,7 +29,7 @@ def is_valid_phone_number(phone: str) -> bool:
        Masalan: O'zbekiston code:+998 dan boshlanadi
        agar boshqa davlatning raqami berilsa qabul qilmaydi.
     """
-    return bool(re.match(r'^\+998[0-9]{9}$', phone))
+    return bool(re.match(r'^\+998[1-9][0-9]{8}$', phone))
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -50,10 +50,9 @@ def handle_contact(message):
         phone = message.contact.phone_number
         if is_valid_phone_number(phone):
             user_data[chat_id]['phone'] = phone
-
             try:
                 token = create_temp_account(tg_id=chat_id, phone=phone)
-                bot.send_message(chat_id, f"Vaqtinchalik account yaratildi.\nToken: {token}\nBot link: http://localhost:8000/create-user/{token}", reply_markup=types.ReplyKeyboardRemove())
+                bot.send_message(chat_id, f"Vaqtinchalik account yaratildi.\nToken: token\nBot link: http://localhost:8000/create-user/{token}", reply_markup=types.ReplyKeyboardRemove())
             except Exception as e:
                 bot.send_message(chat_id, str(e))
         else:

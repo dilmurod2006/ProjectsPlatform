@@ -67,7 +67,7 @@
             response:
                 token: ganarated token
         cheack_token_api:
-            psost:
+            post:
                 token: str
             response:
                 True or False
@@ -189,7 +189,6 @@
         Admins:
             id: Primey Key
             username: str
-            password: str 
             password: str
             tg_id: int
             created_at: datetime.now
