@@ -20,7 +20,7 @@ metadata = MetaData()
 forregister = Table(
     'forregister',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True, autoincrement=True),
     Column('tg_id', BigInteger, unique=True, nullable=True),
     Column('phone', String(length=13), unique=True, index=True),
     Column('token', String, unique=True, index=True),
@@ -31,7 +31,7 @@ forregister = Table(
 users = Table(
     'users',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('full_name', String(25), index=True),
     Column('sex', Boolean),
     Column('email', String, unique=True, index=True),   
@@ -52,7 +52,7 @@ users = Table(
 reportsbalance = Table(
     'reportsbalance',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('balance', Integer, default=0),
     Column('size', Integer),
@@ -64,7 +64,7 @@ reportsbalance = Table(
 products = Table(
     'products',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('name', String, index=True),
     Column('bio', Text, nullable=True),
@@ -79,7 +79,7 @@ products = Table(
 school_data = Table(
     'school_data',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('viloyat', String),
     Column('tuman', String),
@@ -90,7 +90,7 @@ school_data = Table(
 pckundalikcom = Table(
     'pckundalikcom',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('token', String),
     Column('start_active_date', TIMESTAMP),
@@ -103,7 +103,7 @@ pckundalikcom = Table(
 mobilekundalikcom = Table(
     'mobilekundalikcom',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('start_active_date', TIMESTAMP),
     Column('end_active_date', TIMESTAMP),
@@ -114,7 +114,7 @@ mobilekundalikcom = Table(
 loginsdata = Table(
     'loginsdata',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('login', String),
     Column('password', String),
