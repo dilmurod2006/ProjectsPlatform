@@ -7,6 +7,7 @@ def check_postgres_connection():
         conn = psycopg2.connect(
             host=DB_HOST,
             database=DB_NAME,
+            port=DB_PORT,
             user=DB_USER,
             password=DB_PASSWORD
         )
