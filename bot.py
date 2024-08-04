@@ -14,7 +14,7 @@ user_data: Dict[int, Dict[str, str]] = {}
 
 def create_temp_account(tg_id: int, phone: str) -> str:
     """API orqali token yaratish."""
-    response = requests.post("http://localhost:8000/accounts/generate-token", json={
+    response = requests.post("http://localhost:8000/accounts/for_register_bot_api", json={
         "tg_id": tg_id,
         "phone": phone
     })
@@ -52,7 +52,7 @@ def handle_contact(message):
             user_data[chat_id]['phone'] = phone
             try:
                 token = create_temp_account(tg_id=chat_id, phone=phone)
-                bot.send_message(chat_id, f"Vaqtinchalik account yaratildi.\nToken: token\nBot link: http://localhost:8000/create-user/{token}", reply_markup=types.ReplyKeyboardRemove())
+                bot.send_message(chat_id, f"Vaqtinchalik account yaratildi.\nToken:{token} token\nBot link: http://localhost:8000/create-user/{token}", reply_markup=types.ReplyKeyboardRemove())
             except Exception as e:
                 bot.send_message(chat_id, str(e))
         else:

@@ -63,6 +63,7 @@ def get_forregister_by_id(id: int) -> dict:
         "id": row[0],
         "tg_id": row[1],
         "phone": row[2],
+        "token": row[3],
     }
     
     return foregister_data
@@ -70,7 +71,7 @@ def get_forregister_by_id(id: int) -> dict:
 # READ data functions from databases end function
 
 # Test fetching data
-foregister_data = get_forregister_by_id(2)
+foregister_data = get_forregister_by_id(4)
 print(foregister_data)
 
 # DELETE data functions from databases start function
@@ -106,8 +107,8 @@ def delete_forregister_by_id(id: int) -> str:
     return f"{foregister_data['tg_id']} va {foregister_data['phone']} o'chirildi!"
 
 # Test deleting data
-result = delete_forregister_by_id(2)
-print(result)
+# result = delete_forregister_by_id(3)
+# print(result)
 
 
 # egister(5420071824, '+998912106339', 'cpEDw327Skwk4cWNrUUdcg1DVi9I0GVv')

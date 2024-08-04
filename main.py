@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert, select, update
 
-from accounts.auth import accounts_rotures
+from accounts.auth import accounts_routers
 from database import get_async_session
 
 
@@ -17,4 +17,4 @@ async def root():
 
 
 app.include_router(router)
-app.include_router(accounts_rotures, prefix="/accounts")
+app.include_router(accounts_routers, prefix="/accounts")
