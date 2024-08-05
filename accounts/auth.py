@@ -18,19 +18,54 @@ accounts_routers = APIRouter()
 
 # Generate token for forregister
 @accounts_routers.post("/for_register_bot_api")
-async def generate_token_forregister(data: TokenRequest, session: AsyncSession = Depends(get_async_session)):
-    # tg_id va phone tekshirish
-    tg_id_query = select(forregister).where(forregister.c.tg_id == data.tg_id)
-    phone_query = select(forregister).where(forregister.c.phone == data.phone)
+async def generate_token_forregister(
+    data: TokenRequest, 
+    session: AsyncSession = Depends(get_async_session)
+):
+    """
+    Foydalanuvchi uchun token yaratish va saqlash.
+
+    Bu funksiya Telegram ID va telefon raqamini tekshiradi, agar ular mavjud bo'lmasa,
+    yangi token yaratadi va `forregister` jadvaliga saqlaydi.
+
+    Args:
+        data (TokenRequest): Token yaratish uchun Telegram ID va telefon raqami.
+
+    Raises:
+        HTTPException: Agar Telegram ID yoki telefon raqami mavjud bo'lsa yoki 
+        agar Telegram ID allaqachon `users` jadvalida mavjud bo'lsa.
+
+    Returns:
+        dict: Yangi yaratilgan tokenni o'z ichiga olgan lug'at.
+    """
+    # Telegram ID va telefon raqamlarini tekshirish
+    forregister_tg_id_query = select(forregister).where(forregister.c.tg_id == data.tg_id)
+    forregister_phone_query = select(forregister).where(forregister.c.phone == data.phone)
+    users_tg_id_query = select(users).where(users.c.tg_id == data.tg_id)
+
+    tg_id_result = await session.execute(forregister_tg_id_query)
+    phone_result = await session.execute(forregister_phone_query)
+    users_tg_id_result = await session.execute(users_tg_id_query)
+
+    # Foydalanuvchi Telegram ID'si mavjudligini tekshirish
+    if users_tg_id_result.fetchone():
+        raise HTTPException(
+            status_code=400, 
+            detail="Bu Telegram ID orqali ro'yxatdan o'tilgan. Boshqa Telegram akkaunt orqali ro'yxatdan o'ting."
+        )
     
-    tg_id_result = await session.execute(tg_id_query)
-    phone_result = await session.execute(phone_query)
-    
+    # Telegram ID yoki telefon raqami mavjudligini tekshirish
     if tg_id_result.fetchone():
-        raise HTTPException(status_code=400, detail="Telegram ID already exists in the database")
+        raise HTTPException(
+            status_code=400, 
+            detail="Telegram ID allaqachon mavjud."
+        )
     
     if phone_result.fetchone():
-        raise HTTPException(status_code=400, detail="Phone number already exists in the database")
+        raise HTTPException(
+            status_code=400, 
+            detail="Telefon raqam allaqachon mavjud."
+        )
     
     # Token yaratish va saqlash
     token = generate_token_for_forregister()
@@ -45,6 +80,7 @@ async def generate_token_forregister(data: TokenRequest, session: AsyncSession =
 
     await session.execute(query)
     await session.commit()
+
     return {"token": token}
 
 # Create user with token
@@ -98,3 +134,44 @@ async def create_user(token: str, data: CreateUser, session: AsyncSession = Depe
     await session.commit()
 
     return {"message": "User created!"}
+
+
+# GET DATA FUNCTIONS FROM DATABASES START
+
+# Get all Telegram IDs from users table
+@accounts_routers.get("/get_all_telegram_ids")
+async def get_all_telegram_ids(session: AsyncSession = Depends(get_async_session)):
+    """Bu funksiya foydalanuvchilarimizni telegram IDlarini qaytaradi.
+       Bu funksiyani qilishdan maqsad foydalanuvchilarga kerakli vaqtda xabar va reklama yuborish uchun olinadi!
+       Va foydalanuvchilarni doimiy statiskasini ko'rish uchun yani botdan nechta foydalanuvchi borligi va ular botni blocklamagnini tekshirish uchun olinadi.
+       
+       
+       Funksiydan foydalanish uchun:
+        /get_all_telegram_ids GET so'rovini yuborish kifoya
+        
+        
+        respone sifatida: dict qaytadi: {"tg_ids": list} shaklida beradi bemalol olish mumkun
+    """
+    query = select(users.c.tg_id)
+    result = await session.execute(query)
+    data = result.scalars().all()  # Use scalars().all() to get a list of values
+    return {"tg_ids": data}
+
+# Get all phone numbers and full names from users table
+@accounts_routers.get("/get_all_phone_numbers")
+async def get_all_phone_numbers(session: AsyncSession = Depends(get_async_session)):
+    """Bu funksiya foydalanuvchilarimizni hamma telefon raqamlarini va ism-familiyani qaytaradi.
+       Bu funksiyani qilishdan maqsad foydalanuvchilarga kerakli vaqtda sms yuborish uchun olinadi!
+       Yani sms da foydalanuvchi ism familiyasi bilan murojat qilishi uchun qilindi.
+    """
+    query = select(users.c.phone, users.c.full_name)
+    result = await session.execute(query)
+    data = result.fetchall()
+    
+    phone_numbers = [row[0] for row in data]
+    full_names = [row[1] for row in data]
+    
+    return {"phone_numbers": phone_numbers, "full_names": full_names}
+
+
+# GET DATA FUNCTIONS FROM DATABASES END

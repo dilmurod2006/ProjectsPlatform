@@ -4,10 +4,10 @@ import requests
 # from Accounts.schemas import TokenRequest
 from typing import Dict
 import re
+from settings import ADMIN_DILMUROD, ADMIN_BEXRUZDEVELOPER, BOT_TOKEN
 
 # Telegram bot tokenini kiritish
-API_TOKEN = '6651751855:AAHKbRLbwupDBCVIFv01d8_m9rvjCQcPYfA'
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(BOT_TOKEN)
 
 # Foydalanuvchi uchun ma'lumotlarni saqlash uchun dict
 user_data: Dict[int, Dict[str, str]] = {}
@@ -22,7 +22,8 @@ def create_temp_account(tg_id: int, phone: str) -> str:
     if response.status_code == 200:
         return response.json().get("token")
     else:
-        raise Exception("Token yaratishda xatolik yuz berdi.")
+        error_message = response.json().get("detail")
+        raise Exception(error_message)  # Exception yoki boshqa mos xato
 
 def is_valid_phone_number(phone: str) -> bool:
     """Telefon raqamining O'zbekiston raqamiga mosligini tekshiradi.

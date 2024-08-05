@@ -91,6 +91,10 @@ def delete_user_by_id(id: int) -> str:
     
     return f"{user_data['full_name']} foydalanuvchi o'chirildi!"
 
+# Test deleting data
+result = delete_user_by_id(3)
+print(result)
+
 # delete forregister by id
 def delete_forregister_by_id(id: int) -> str:
     foregister_data = get_forregister_by_id(id)
