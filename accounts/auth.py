@@ -50,18 +50,18 @@ async def generate_token_forregister(data: TokenRequest, session: AsyncSession =
 # Create user with token
 @accounts_routers.post("/create-user/{token}")
 async def create_user(token: str, data: CreateUser, session: AsyncSession = Depends(get_async_session)):
-    query = select(forregister).where(forregister.c.token == token)
+    query = select(forregister).filter_by(token=token)
     result = await session.execute(query)
-    user = result.fetchone()
-    foregister_data = {
-        "tg_id": user[1],
-        "phone": user[2],
-    }
+    data_forregister = result.fetchone()
+    # foregister_data = {
+    #     "tg_id": user[1],
+    #     "phone": user[2],
+    # }
 
-    if user is None:
+    if data_forregister is None:
         raise HTTPException(status_code=404, detail="Invalid token")
 
-    if user.expires_at < datetime.utcnow():
+    if data_forregister.expires_at < datetime.utcnow():
         delete_query = delete(forregister).where(forregister.c.token == token)
         await session.execute(delete_query)
         await session.commit()
@@ -86,10 +86,10 @@ async def create_user(token: str, data: CreateUser, session: AsyncSession = Depe
         full_name=data.full_name,
         sex=data.sex,
         email=data.email,
-        phone=foregister_data["phone"],
+        phone=data_forregister.phone,
         username=data.username,
         password=data.password,
-        tg_id=foregister_data["tg_id"],
+        tg_id=data_forregister.tg_id,
         token=TOKEN
     )
     delete_query = delete(forregister).where(forregister.c.token == token)
