@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: 36aafc6a88ab
+Revision ID: 62f204565078
 Revises: 
-Create Date: 2024-08-06 11:28:37.976698
+Create Date: 2024-08-07 02:19:33.350555
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '36aafc6a88ab'
+revision: str = '62f204565078'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -61,11 +61,12 @@ def upgrade() -> None:
     sa.Column('username', sa.String(length=30), nullable=True),
     sa.Column('password', sa.String(length=260), nullable=True),
     sa.Column('tg_id', sa.BigInteger(), nullable=True),
-    sa.Column('balance', sa.Integer(), nullable=True),
+    sa.Column('balance', sa.BigInteger(), nullable=True),
     sa.Column('created_at', sa.TIMESTAMP(), nullable=True),
     sa.Column('updated_at', sa.TIMESTAMP(), nullable=True),
     sa.Column('last_login', sa.TIMESTAMP(), nullable=True),
-    sa.Column('code', sa.Integer(), nullable=True),
+    sa.Column('code', sa.BigInteger(), nullable=True),
+    sa.Column('reset_code', sa.BigInteger(), nullable=True),
     sa.Column('how_online', sa.Boolean(), nullable=True),
     sa.Column('token', sa.String(length=700), nullable=True),
     sa.PrimaryKeyConstraint('id')

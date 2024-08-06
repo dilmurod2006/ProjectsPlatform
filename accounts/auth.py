@@ -6,7 +6,10 @@ from .schemes import (
     TokenRequest,
     CreateUser,
     LoginUser,
-    CheckLogin
+    CheckLogin,
+    ChangePassword,
+    ResetPassword,
+    ResetPasswordRequest
 )
 from database import get_async_session
 from models.models import users, forregister
@@ -21,7 +24,9 @@ from .utils import (
     verify_password,
     generate_token_for_forregister,
     generate_token_for_users,
-    send_login_code
+    send_login_code,
+    verify_jwt_token,
+    send_reset_password_code
 )
 
 accounts_routers = APIRouter()
@@ -209,8 +214,112 @@ async def check_code(data: CheckLogin, session: AsyncSession = Depends(get_async
     return {"message": "Code is valid and user logged in", "token": user.token}
 
 
+# reset password request
+@accounts_routers.post("/change-password-request")
+async def reset_password_request(token: str, data: ChangePassword, session: AsyncSession = Depends(get_async_session)):
+    payload = verify_jwt_token(token)
+    
+    # Token orqali foydalanuvchi ma'lumotlarini olish
+    query = select(users).where(users.c.username == payload["username"])
+    result = await session.execute(query)
+    user = result.fetchone()
+
+    if user is None:
+        raise HTTPException(status_code=400, detail="Invalid token")
+
+    if not verify_password(data.last_password, user.password):
+        raise HTTPException(status_code=400, detail="eski parolingiz xato")
+
+    hashed_password = hash_password(data.new_password)
+
+    query = update(users).where(users.c.username == payload["username"]).values(password=hashed_password)
+    await session.execute(query)
+    await session.commit()
+
+    return {"message": "Password changed successfully"}
+
+# reset password request
+@accounts_routers.post("/reset-password-request")
+async def reset_password_request(data: ResetPasswordRequest, session: AsyncSession = Depends(get_async_session)):
+    query = select(users).where(users.c.username == data.username)
+    result = await session.execute(query)
+    user = result.fetchone()
+
+    if user is None:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    code = random.randint(100000, 999999)  # 6 xonali kod
+    query = update(users).where(users.c.username == data.username).values(reset_code=code)
+    await session.execute(query)
+    await session.commit()
+
+    send_code = send_reset_password_code(user.tg_id, code)
+
+    return {"message": send_code}
+
+
+# reset password
+@accounts_routers.post("/reset-password")
+async def reset_password(data: ResetPassword, session: AsyncSession = Depends(get_async_session)):
+    query = select(users).where(users.c.username == data.username)
+    result = await session.execute(query)
+    user = result.fetchone()
+
+    if user is None:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    if user.reset_code != data.reset_code:
+        raise HTTPException(status_code=400, detail="Invalid reset code")
+
+    hashed_password = hash_password(data.password)
+
+    query = update(users).where(users.c.username == data.username).values(password=hashed_password, reset_code=None)
+    await session.execute(query)
+    await session.commit()
+
+    return {"message": "Parol muvaffaqiyatli o'zgartirildi"}
 
 # GET DATA FUNCTIONS FROM DATABASES START
+
+
+# About users get data
+@accounts_routers.post("/about-account")
+async def about_account(token: str, session: AsyncSession = Depends(get_async_session)):
+    """
+    Foydalanuvchi haqida ma'lumot olish va token muddati tekshiruvi.
+
+    Args:
+        token (str): JWT token.
+
+    Raises:
+        HTTPException: Agar token noto'g'ri yoki muddati o'tgan bo'lsa.
+
+    Returns:
+        dict: Foydalanuvchi ma'lumotlarini o'z ichiga olgan lug'at.
+    """
+    # Tokenni tekshirish
+    payload = verify_jwt_token(token)
+    
+    # Token orqali foydalanuvchi ma'lumotlarini olish
+    query = select(users).where(users.c.username == payload["username"])
+    result = await session.execute(query)
+    user = result.fetchone()
+
+    if user is None:
+        raise HTTPException(status_code=400, detail="User not found")
+    
+    # Token muddati o'tmagan bo'lsa, foydalanuvchi ma'lumotlarini qaytarish
+    return {
+        "full_name": user.full_name,
+        "username": user.username,
+        "email": user.email,
+        "phone": user.phone,
+        "sex": user.sex,
+        "tg_id": user.tg_id,
+        "balance": user.balance
+    }
+
+
 
 # Get all Telegram IDs from users table
 @accounts_routers.get("/get_all_telegram_ids")

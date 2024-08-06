@@ -39,11 +39,12 @@ users = Table(
     Column('username', String(length=30), unique=True, index=True),
     Column('password', String(length=260)),
     Column('tg_id', BigInteger, nullable=True, unique=True, index=True),
-    Column('balance', Integer, default=0),
+    Column('balance', BigInteger, default=0),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow),
     Column('last_login', TIMESTAMP, default=datetime.utcnow),
-    Column('code', Integer, nullable=True),
+    Column('code', BigInteger, nullable=True),
+    Column('reset_code', BigInteger, nullable=True),
     Column('how_online', Boolean, default=False),
     Column('token', String(length=700), unique=True, index=True)
 )

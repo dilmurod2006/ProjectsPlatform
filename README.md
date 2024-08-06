@@ -10,7 +10,8 @@
             tg_id: nullable=True
             phone: str
             token: ganarate
-            timer: session
+            created_at: datetime.now
+            expires_at: datetime.now+time
         
         Users:
             id: Primey Key
@@ -20,7 +21,7 @@
             phone: strs
             username: str
             password: str
-            tg_id: Foregin Key from ForRegister in tg_id
+            tg_id: BigInteger
             balace:default=0 add paymaent by admin 
             created_at: datetime.now
             updated_at: datetime.now
@@ -47,7 +48,7 @@
             refresh user.token
             except:
                 new_token
-        about_account_api:
+        about_account:
             post:
                 token: str
             responce:
@@ -190,9 +191,7 @@
             id: Primey Key
             username: str
             password: str 
-            password: str
             tg_id: int
-            active: Boolean
             created_at: datetime.now
             updated_at: datetime.now
             token: str

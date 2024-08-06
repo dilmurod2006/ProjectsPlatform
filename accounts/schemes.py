@@ -23,3 +23,20 @@ class CheckLogin(BaseModel):
     password: str
     code: int
 
+# Reset Password
+class ChangePassword(BaseModel):
+    last_password: str
+    new_password: str
+
+# Reset Password
+class ResetPasswordRequest(BaseModel):
+    username: str
+
+class ResetPassword(BaseModel):
+    username: str
+    password: str
+    reset_code: int
+
+# AboutAccount
+class AboutAccount(BaseModel):
+    token: str
