@@ -17,5 +17,8 @@ async def root():
 
 
 app.include_router(router)
+<<<<<<< HEAD
 app.include_router(accounts_routers, prefix="/accounts")
+=======
+>>>>>>> 78a12182d4fcea9fab5257eac5df6728010108c6
 app.include_router(accounts_routers, prefix="/accounts")

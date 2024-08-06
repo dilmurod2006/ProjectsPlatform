@@ -1,21 +1,31 @@
-import re
+import os
+import base64
 
-def is_valid_uzbek_phone_number(phone_number):
-    """O'zbek telefon raqamini tekshiradi."""
-    # Telefon raqam uchun regex pattern
-    pattern = r'^\+998[1-9][0-9]{8}$'
-    
-    # Telefon raqamni tekshirish
-    if re.match(pattern, phone_number):
-        return True
-    return False
+def generate_secret_key(length=223):
+    """
+    Maxfiy kalit yaratadi.
 
-phone_number = "+998906754406"
-print(len(phone_number))
-if is_valid_uzbek_phone_number(phone_number):
-    print(f"{phone_number} - To'g'ri raqam")
-else:
-    print(f"{phone_number} - Noto'g'ri raqam")
+    Args:
+        length (int): Kalit uzunligi, standart qiymat 32 bayt.
 
+    Returns:
+        str: Yaratilgan maxfiy kalit.
+    """
+    secret_key = base64.urlsafe_b64encode(os.urandom(length)).decode('utf-8')
+    return secret_key
 
+def save_secret_key(file_path, key):
+    """
+    Maxfiy kalitni faylga yozadi.
 
+    Args:
+        file_path (str): Fayl manzili.
+        key (str): Yoziladigan maxfiy kalit.
+    """
+    with open(file_path, 'w') as file:
+        file.write(key)
+
+if __name__ == "__main__":
+    key = generate_secret_key()
+    save_secret_key('secret_key.txt', key)
+    print("Maxfiy kalit yaratildi va 'secret_key.txt' faylga saqlandi.")

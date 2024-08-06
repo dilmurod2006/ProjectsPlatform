@@ -35,17 +35,17 @@ users = Table(
     Column('full_name', String(25), index=True),
     Column('sex', Boolean),
     Column('email', String, unique=True, index=True),   
-    Column('phone', String, ForeignKey('forregister.phone'), unique=True, index=True),
+    Column('phone', String, unique=True, index=True),
     Column('username', String(length=30), unique=True, index=True),
-    Column('password', String(length=64)),
-    Column('tg_id', BigInteger, ForeignKey('forregister.tg_id'), nullable=True),
+    Column('password', String(length=260)),
+    Column('tg_id', BigInteger, nullable=True, unique=True, index=True),
     Column('balance', Integer, default=0),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow),
     Column('last_login', TIMESTAMP, default=datetime.utcnow),
-    Column('code', String, nullable=True),
+    Column('code', Integer, nullable=True),
     Column('how_online', Boolean, default=False),
-    Column('token', String(length=66), unique=True, index=True)
+    Column('token', String(length=700), unique=True, index=True)
 )
 
 # reportsbalance model for users

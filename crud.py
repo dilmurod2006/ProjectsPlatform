@@ -1,114 +1,94 @@
+# crud.py
 import psycopg2 as pg
-from settings import DB_HOST, DB_NAME, DB_PORT, DB_USER, DB_PASSWORD
+from settings import (
+    DB_HOST,
+    DB_NAME,
+    DB_PORT,
+    DB_USER,
+    DB_PASSWORD
+)
 
-# database connection function
-def database_connection():
+
+def create_database_connection():
     try:
-        conn = pg.connect(
+        connection = pg.connect(
             host=DB_HOST,
             database=DB_NAME,
             port=DB_PORT,
             user=DB_USER,
             password=DB_PASSWORD
         )
-        return conn
-    except Exception as err:
-        print("Something went wrong.")
-        print(err)
+        return connection
+    except Exception as error:
+        raise Exception("Failed to establish database connection") from error
 
 
-# READ data functions from databases start function
-
-# get data function
-def fetch_data(table_name: str) -> list:    
-    conn = database_connection()
-    cursor = conn.cursor()
-    cursor.execute(f'''SELECT * FROM {table_name}''')
-    data = cursor.fetchall()
-    conn.close()
+def fetch_data_from_table(table_name):
+    with create_database_connection() as connection:
+        with connection.cursor() as cursor:
+            query = f"SELECT * FROM {table_name}"
+            cursor.execute(query)
+            data = cursor.fetchall()
     return data
 
-# get user by id
-def get_user_by_id(id: int) -> dict:
-    conn = database_connection()
-    cursor = conn.cursor()
-    cursor.execute('''SELECT * FROM users WHERE id = %s''', (id,))
-    row = cursor.fetchone()
-    conn.close()
-    
-    if row is None:
+
+def get_user_by_id(user_id):
+    with create_database_connection() as connection:
+        with connection.cursor() as cursor:
+            query = "SELECT * FROM users WHERE id = %s"
+            cursor.execute(query, (user_id,))
+            row = cursor.fetchone()
+    if not row:
         return None
 
     user_data = {
         "id": row[0],
         "full_name": row[1],
         "email": row[2],
-        # Add other fields as necessary
     }
-    
     return user_data
 
-# get forregister data by id
-def get_forregister_by_id(id: int) -> dict:
-    conn = database_connection()
-    cursor = conn.cursor()
-    cursor.execute('''SELECT * FROM forregister WHERE id = %s''', (id,))
-    row = cursor.fetchone()
-    conn.close()
-    
-    if row is None:
+
+def get_forregister_by_id(forregister_id):
+    with create_database_connection() as connection:
+        with connection.cursor() as cursor:
+            query = "SELECT * FROM forregister WHERE id = %s"
+            cursor.execute(query, (forregister_id,))
+            row = cursor.fetchone()
+    if not row:
         return None
 
-    foregister_data = {
+    forregister_data = {
         "id": row[0],
         "tg_id": row[1],
         "phone": row[2],
+        "token": row[3],
     }
-    
-    return foregister_data
+    return forregister_data
 
-# READ data functions from databases end function
+def delete_user_by_id(user_id):
+    user_data = get_user_by_id(user_id)
+    if not user_data:
+        return "User not found"
 
-# Test fetching data
-foregister_data = get_forregister_by_id(2)
-print(foregister_data)
+    with create_database_connection() as connection:
+        with connection.cursor() as cursor:
+            query = "DELETE FROM users WHERE id = %s"
+            cursor.execute(query, (user_id,))
+            connection.commit()
 
-# DELETE data functions from databases start function
-
-# delete user by id
-def delete_user_by_id(id: int) -> str:
-    user_data = get_user_by_id(id)
-    
-    if user_data is None:
-        return "Foydalanuvchi topilmadi"
-    
-    conn = database_connection()
-    cursor = conn.cursor()
-    cursor.execute('''DELETE FROM users WHERE id = %s''', (id,))
-    conn.commit()
-    conn.close()
-    
-    return f"{user_data['full_name']} foydalanuvchi o'chirildi!"
-
-# delete forregister by id
-def delete_forregister_by_id(id: int) -> str:
-    foregister_data = get_forregister_by_id(id)
-    
-    if foregister_data is None:
-        return "Ma'lumot topilmadi"
-
-    conn = database_connection()
-    cursor = conn.cursor()
-    cursor.execute('''DELETE FROM forregister WHERE id = %s''', (id,))
-    conn.commit()
-    conn.close()
-    
-    return f"{foregister_data['tg_id']} va {foregister_data['phone']} o'chirildi!"
-
-# Test deleting data
-result = delete_forregister_by_id(2)
-print(result)
+    return f"{user_data['full_name']} user deleted!"
 
 
-# egister(5420071824, '+998912106339', 'cpEDw327Skwk4cWNrUUdcg1DVi9I0GVv')
-# print(result)
+def delete_forregister_by_id(forregister_id):
+    forregister_data = get_forregister_by_id(forregister_id)
+    if not forregister_data:
+        return "Data not found"
+
+    with create_database_connection() as connection:
+        with connection.cursor() as cursor:
+            query = "DELETE FROM forregister WHERE id = %s"
+            cursor.execute(query, (forregister_id,))
+            connection.commit()
+
+    return f"{forregister_data['tg_id']} and {forregister_data['phone']} deleted!"

@@ -4,17 +4,17 @@ import requests
 # from Accounts.schemas import TokenRequest
 from typing import Dict
 import re
+from settings import ADMIN_DILMUROD, ADMIN_BEXRUZDEVELOPER, BOT_TOKEN
 
 # Telegram bot tokenini kiritish
-API_TOKEN = '6651751855:AAHKbRLbwupDBCVIFv01d8_m9rvjCQcPYfA'
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(BOT_TOKEN)
 
 # Foydalanuvchi uchun ma'lumotlarni saqlash uchun dict
 user_data: Dict[int, Dict[str, str]] = {}
 
 def create_temp_account(tg_id: int, phone: str) -> str:
     """API orqali token yaratish."""
-    response = requests.post("http://localhost:8000/accounts/generate-token", json={
+    response = requests.post("http://localhost:8000/accounts/for_register_bot_api", json={
         "tg_id": tg_id,
         "phone": phone
     })
@@ -22,7 +22,8 @@ def create_temp_account(tg_id: int, phone: str) -> str:
     if response.status_code == 200:
         return response.json().get("token")
     else:
-        raise Exception("Token yaratishda xatolik yuz berdi.")
+        error_message = response.json().get("detail")
+        raise Exception(error_message)  # Exception yoki boshqa mos xato
 
 def is_valid_phone_number(phone: str) -> bool:
     """Telefon raqamining O'zbekiston raqamiga mosligini tekshiradi.
@@ -52,7 +53,7 @@ def handle_contact(message):
             user_data[chat_id]['phone'] = phone
             try:
                 token = create_temp_account(tg_id=chat_id, phone=phone)
-                bot.send_message(chat_id, f"Vaqtinchalik account yaratildi.\nToken: token\nBot link: http://localhost:8000/create-user/{token}", reply_markup=types.ReplyKeyboardRemove())
+                bot.send_message(chat_id, f"Vaqtinchalik account yaratildi.\nToken:{token} token\nBot link: http://localhost:8000/create-user/{token}", reply_markup=types.ReplyKeyboardRemove())
             except Exception as e:
                 bot.send_message(chat_id, str(e))
         else:
