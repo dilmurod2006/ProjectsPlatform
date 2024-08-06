@@ -11,6 +11,9 @@ load_dotenv()
 # SECRET_KEY for project
 SECRET_KEY=os.environ.get('SECRET_KEY')
 
+# ALGORITHM
+ALGORITHM=os.environ.get('ALGORITHM')
+
 # DATABASE CONFUGRATION KEYS
 DB_NAME=os.environ.get('DB_NAME')
 DB_USER=os.environ.get('DB_USER')

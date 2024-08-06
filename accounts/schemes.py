@@ -12,5 +12,14 @@ class CreateUser(BaseModel):
     username: str
     password: str
 
-class CheckUser(BaseModel):
-    token: str
+# Login user class
+class LoginUser(BaseModel):
+    username: str
+    password: str
+
+# Check Login data and code class
+class CheckLogin(BaseModel):
+    username: str
+    password: str
+    code: int
+

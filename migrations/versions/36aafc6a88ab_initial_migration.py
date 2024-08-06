@@ -1,8 +1,8 @@
-"""Initial migration
+"""initial migration
 
-Revision ID: e2a91a68382b
+Revision ID: 36aafc6a88ab
 Revises: 
-Create Date: 2024-08-03 12:29:23.595609
+Create Date: 2024-08-06 11:28:37.976698
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'e2a91a68382b'
+revision: str = '36aafc6a88ab'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -34,7 +34,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_admins_id'), 'admins', ['id'], unique=False)
     op.create_index(op.f('ix_admins_tg_id'), 'admins', ['tg_id'], unique=True)
     op.create_table('forregister',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('tg_id', sa.BigInteger(), nullable=True),
     sa.Column('phone', sa.String(length=13), nullable=True),
     sa.Column('token', sa.String(), nullable=True),
@@ -53,33 +53,32 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_majburiyobuna_id'), 'majburiyobuna', ['id'], unique=False)
     op.create_table('users',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('full_name', sa.String(length=25), nullable=True),
     sa.Column('sex', sa.Boolean(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
     sa.Column('phone', sa.String(), nullable=True),
     sa.Column('username', sa.String(length=30), nullable=True),
-    sa.Column('password', sa.String(length=64), nullable=True),
+    sa.Column('password', sa.String(length=260), nullable=True),
     sa.Column('tg_id', sa.BigInteger(), nullable=True),
     sa.Column('balance', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.TIMESTAMP(), nullable=True),
     sa.Column('updated_at', sa.TIMESTAMP(), nullable=True),
     sa.Column('last_login', sa.TIMESTAMP(), nullable=True),
-    sa.Column('code', sa.String(), nullable=True),
+    sa.Column('code', sa.Integer(), nullable=True),
     sa.Column('how_online', sa.Boolean(), nullable=True),
-    sa.Column('token', sa.String(length=66), nullable=True),
-    sa.ForeignKeyConstraint(['phone'], ['forregister.phone'], ),
-    sa.ForeignKeyConstraint(['tg_id'], ['forregister.tg_id'], ),
+    sa.Column('token', sa.String(length=700), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
     op.create_index(op.f('ix_users_full_name'), 'users', ['full_name'], unique=False)
     op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=False)
     op.create_index(op.f('ix_users_phone'), 'users', ['phone'], unique=True)
+    op.create_index(op.f('ix_users_tg_id'), 'users', ['tg_id'], unique=True)
     op.create_index(op.f('ix_users_token'), 'users', ['token'], unique=True)
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('loginsdata',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('login', sa.String(), nullable=True),
     sa.Column('password', sa.String(), nullable=True),
@@ -89,7 +88,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_loginsdata_id'), 'loginsdata', ['id'], unique=False)
     op.create_index(op.f('ix_loginsdata_user_id'), 'loginsdata', ['user_id'], unique=False)
     op.create_table('mobilekundalikcom',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('start_active_date', sa.TIMESTAMP(), nullable=True),
     sa.Column('end_active_date', sa.TIMESTAMP(), nullable=True),
@@ -100,7 +99,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_mobilekundalikcom_id'), 'mobilekundalikcom', ['id'], unique=False)
     op.create_index(op.f('ix_mobilekundalikcom_user_id'), 'mobilekundalikcom', ['user_id'], unique=False)
     op.create_table('pckundalikcom',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('token', sa.String(), nullable=True),
     sa.Column('start_active_date', sa.TIMESTAMP(), nullable=True),
@@ -113,7 +112,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_pckundalikcom_id'), 'pckundalikcom', ['id'], unique=False)
     op.create_index(op.f('ix_pckundalikcom_user_id'), 'pckundalikcom', ['user_id'], unique=False)
     op.create_table('products',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('bio', sa.Text(), nullable=True),
@@ -125,7 +124,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_products_name'), 'products', ['name'], unique=False)
     op.create_index(op.f('ix_products_user_id'), 'products', ['user_id'], unique=False)
     op.create_table('reportsbalance',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('balance', sa.Integer(), nullable=True),
     sa.Column('size', sa.Integer(), nullable=True),
@@ -137,7 +136,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_reportsbalance_id'), 'reportsbalance', ['id'], unique=False)
     op.create_index(op.f('ix_reportsbalance_user_id'), 'reportsbalance', ['user_id'], unique=False)
     op.create_table('school_data',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('viloyat', sa.String(), nullable=True),
     sa.Column('tuman', sa.String(), nullable=True),
@@ -173,6 +172,7 @@ def downgrade() -> None:
     op.drop_table('loginsdata')
     op.drop_index(op.f('ix_users_username'), table_name='users')
     op.drop_index(op.f('ix_users_token'), table_name='users')
+    op.drop_index(op.f('ix_users_tg_id'), table_name='users')
     op.drop_index(op.f('ix_users_phone'), table_name='users')
     op.drop_index(op.f('ix_users_id'), table_name='users')
     op.drop_index(op.f('ix_users_full_name'), table_name='users')

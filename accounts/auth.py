@@ -1,9 +1,13 @@
 import os
-import secrets
-import jwt
+import random
 from datetime import datetime, timedelta
 
-from .schemes import TokenRequest, CreateUser
+from .schemes import (
+    TokenRequest,
+    CreateUser,
+    LoginUser,
+    CheckLogin
+)
 from database import get_async_session
 from models.models import users, forregister
 
@@ -12,7 +16,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends, APIRouter, HTTPException
 from passlib.context import CryptContext
 
-from .utils import generate_token_for_forregister, generate_token_for_users
+from .utils import (
+    hash_password,
+    verify_password,
+    generate_token_for_forregister,
+    generate_token_for_users,
+    send_login_code
+)
 
 accounts_routers = APIRouter()
 
@@ -89,10 +99,6 @@ async def create_user(token: str, data: CreateUser, session: AsyncSession = Depe
     query = select(forregister).filter_by(token=token)
     result = await session.execute(query)
     data_forregister = result.fetchone()
-    # foregister_data = {
-    #     "tg_id": user[1],
-    #     "phone": user[2],
-    # }
 
     if data_forregister is None:
         raise HTTPException(status_code=404, detail="Invalid token")
@@ -116,7 +122,14 @@ async def create_user(token: str, data: CreateUser, session: AsyncSession = Depe
     if email_result.fetchone():
         raise HTTPException(status_code=400, detail="Email already exists in the database")
 
-    TOKEN = generate_token_for_users()
+    hashed_password = hash_password(data.password)
+
+     # JWT token yaratish
+    jwt_token_data = {
+        "username": data.username,
+        "password": hashed_password
+    }
+    jwt_token = generate_token_for_users(jwt_token_data)
 
     query = insert(users).values(
         full_name=data.full_name,
@@ -124,16 +137,77 @@ async def create_user(token: str, data: CreateUser, session: AsyncSession = Depe
         email=data.email,
         phone=data_forregister.phone,
         username=data.username,
-        password=data.password,
+        password=hashed_password,
         tg_id=data_forregister.tg_id,
-        token=TOKEN
+        token=jwt_token
     )
+
     delete_query = delete(forregister).where(forregister.c.token == token)
     await session.execute(delete_query)
     await session.execute(query)
     await session.commit()
 
-    return {"message": "User created!"}
+    return {"message": "User created!",}
+
+
+# LOGIN SYSTEM
+
+@accounts_routers.post("/login")
+async def login(data: LoginUser, session: AsyncSession = Depends(get_async_session)):
+    """
+    Foydalanuvchini login qilish va tasdiqlash kodi yaratish.
+
+    Args:
+        data (LoginUser): Login uchun username va password.
+
+    Raises:
+        HTTPException: Agar username yoki password noto'g'ri bo'lsa.
+
+    Returns:
+        dict: Yaratilgan kodni o'z ichiga olgan lug'at.
+    """
+    # Foydalanuvchi mavjudligini tekshirish
+    query = select(users).where(users.c.username == data.username)
+    result = await session.execute(query)
+    user = result.fetchone()
+    
+    if user is None or not verify_password(data.password, user.password):
+        raise HTTPException(status_code=400, detail="Invalid username or password")
+    
+    # Tasdiqlash kodi yaratish
+    code = random.randint(100000, 999999)  # 6 xonali kod
+    query = update(users).where(users.c.username == data.username).values(code=code)
+    await session.execute(query)
+    await session.commit()
+
+    send_code = send_login_code(user.tg_id, code)
+
+    return {"message": send_code}
+
+
+# cheack code for login
+@accounts_routers.post("/check-login-code")
+async def check_code(data: CheckLogin, session: AsyncSession = Depends(get_async_session)):
+    query = select(users).where(users.c.username == data.username)
+    result = await session.execute(query)
+    user = result.fetchone()
+
+    if user is None:
+        raise HTTPException(status_code=400, detail="User not found")
+    
+    if not verify_password(data.password, user.password):
+        raise HTTPException(status_code=400, detail="Invalid password")
+
+    if user.code != data.code:
+        raise HTTPException(status_code=400, detail="Invalid code")
+
+    query = update(users).where(users.c.username == data.username).values(code=None)
+    await session.execute(query)
+    await session.commit()
+
+    # return users.token    
+    return {"message": "Code is valid and user logged in", "token": user.token}
+
 
 
 # GET DATA FUNCTIONS FROM DATABASES START
