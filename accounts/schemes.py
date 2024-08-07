@@ -29,3 +29,20 @@ class CheckLogin(BaseModel):
     code: int
 >>>>>>> 78a12182d4fcea9fab5257eac5df6728010108c6
 
+# Reset Password
+class ChangePassword(BaseModel):
+    last_password: str
+    new_password: str
+
+# Reset Password
+class ResetPasswordRequest(BaseModel):
+    username: str
+
+class ResetPassword(BaseModel):
+    username: str
+    password: str
+    reset_code: int
+
+# AboutAccount
+class AboutAccount(BaseModel):
+    token: str
