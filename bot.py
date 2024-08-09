@@ -47,7 +47,6 @@ def send_welcome(message):
 def handle_contact(message):
     """Foydalanuvchi telefon raqamini yuborganda ishlatiladi."""
     chat_id = message.chat.id
-    print(message.text)
     if message.contact is not None:
         phone = message.contact.phone_number
         if is_valid_phone_number(phone):
@@ -60,8 +59,5 @@ def handle_contact(message):
         else:
             bot.send_message(chat_id, "Telefon raqamingiz O'zbekiston raqami (+998) bilan boshlanishi kerak.")
 
-while __name__ == "__main__":
-    try:
-        bot.polling()
-    except:
-        pass
+if __name__ == "__main__":
+    bot.polling()

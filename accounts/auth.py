@@ -2,7 +2,6 @@ import os
 import random
 from datetime import datetime, timedelta
 
-
 from .schemes import (
     TokenRequest,
     CreateUser,
@@ -12,7 +11,6 @@ from .schemes import (
     ResetPassword,
     ResetPasswordRequest
 )
-
 from database import get_async_session
 from models.models import users, forregister
 
@@ -20,7 +18,6 @@ from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends, APIRouter, HTTPException
 from passlib.context import CryptContext
-
 
 from .utils import (
     hash_password,
@@ -32,18 +29,61 @@ from .utils import (
     send_reset_password_code
 )
 
-
-
-
 accounts_routers = APIRouter()
 
-
-# generate token for forregister
+# Generate token for forregister
 @accounts_routers.post("/for_register_bot_api")
-async def generate_token_forregister(data: TokenRequest, session: AsyncSession = Depends(get_async_session)):
+async def generate_token_forregister(
+    data: TokenRequest, 
+    session: AsyncSession = Depends(get_async_session)
+):
+    """
+    Foydalanuvchi uchun token yaratish va saqlash.
+
+    Bu funksiya Telegram ID va telefon raqamini tekshiradi, agar ular mavjud bo'lmasa,
+    yangi token yaratadi va `forregister` jadvaliga saqlaydi.
+
+    Args:
+        data (TokenRequest): Token yaratish uchun Telegram ID va telefon raqami.
+
+    Raises:
+        HTTPException: Agar Telegram ID yoki telefon raqami mavjud bo'lsa yoki 
+        agar Telegram ID allaqachon `users` jadvalida mavjud bo'lsa.
+
+    Returns:
+        dict: Yangi yaratilgan tokenni o'z ichiga olgan lug'at.
+    """
+    # Telegram ID va telefon raqamlarini tekshirish
+    forregister_tg_id_query = select(forregister).where(forregister.c.tg_id == data.tg_id)
+    forregister_phone_query = select(forregister).where(forregister.c.phone == data.phone)
+    users_tg_id_query = select(users).where(users.c.tg_id == data.tg_id)
+
+    tg_id_result = await session.execute(forregister_tg_id_query)
+    phone_result = await session.execute(forregister_phone_query)
+    users_tg_id_result = await session.execute(users_tg_id_query)
+
+    # Foydalanuvchi Telegram ID'si mavjudligini tekshirish
+    if users_tg_id_result.fetchone():
+        raise HTTPException(
+            status_code=400, 
+            detail="Bu Telegram ID orqali ro'yxatdan o'tilgan. Boshqa Telegram akkaunt orqali ro'yxatdan o'ting."
+        )
     
+    # Telegram ID yoki telefon raqami mavjudligini tekshirish
+    if tg_id_result.fetchone():
+        raise HTTPException(
+            status_code=400, 
+            detail="Telegram ID allaqachon mavjud."
+        )
+    
+    if phone_result.fetchone():
+        raise HTTPException(
+            status_code=400, 
+            detail="Telefon raqam allaqachon mavjud."
+        )
+    
+    # Token yaratish va saqlash
     token = generate_token_for_forregister()
-    # expires_at modeliga 15 daqiqa qoshiladi
     expires_at = datetime.utcnow() + timedelta(minutes=15)  # 15 daqiqa
 
     query = insert(forregister).values(
@@ -55,8 +95,8 @@ async def generate_token_forregister(data: TokenRequest, session: AsyncSession =
 
     await session.execute(query)
     await session.commit()
-    return {"token": token}
 
+    return {"token": token}
 
 # Create user with token
 @accounts_routers.post("/create-user/{token}")
@@ -318,4 +358,3 @@ async def get_all_phone_numbers(session: AsyncSession = Depends(get_async_sessio
 
 
 # GET DATA FUNCTIONS FROM DATABASES END
-
