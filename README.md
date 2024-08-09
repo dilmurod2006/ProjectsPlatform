@@ -39,7 +39,6 @@
             name: str
             bio: str
             price: int
-
     Functions:
         refresh_user_api:
             post:
@@ -190,11 +189,7 @@
         Admins:
             id: Primey Key
             username: str
-<<<<<<< HEAD
             password: str
-=======
-            password: str 
->>>>>>> c936c837bdd2ad782f1e4a9190ec13718fb8c62a
             tg_id: int
             created_at: datetime.now
             updated_at: datetime.now

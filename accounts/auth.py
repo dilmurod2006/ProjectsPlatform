@@ -2,9 +2,7 @@ import os
 import random
 from datetime import datetime, timedelta
 
-<<<<<<< HEAD
-from .schemes import TokenRequest, CreateUser
-=======
+
 from .schemes import (
     TokenRequest,
     CreateUser,
@@ -14,7 +12,7 @@ from .schemes import (
     ResetPassword,
     ResetPasswordRequest
 )
->>>>>>> c936c837bdd2ad782f1e4a9190ec13718fb8c62a
+
 from database import get_async_session
 from models.models import users, forregister
 
@@ -23,9 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends, APIRouter, HTTPException
 from passlib.context import CryptContext
 
-<<<<<<< HEAD
-from .utils import generate_token_for_orregister
-=======
+
 from .utils import (
     hash_password,
     verify_password,
@@ -35,18 +31,18 @@ from .utils import (
     verify_jwt_token,
     send_reset_password_code
 )
->>>>>>> c936c837bdd2ad782f1e4a9190ec13718fb8c62a
 
 
 
-accounts_rotures = APIRouter()
+
+accounts_routers = APIRouter()
 
 
 # generate token for forregister
-@accounts_rotures.post("/generate-token")
+@accounts_routers.post("/for_register_bot_api")
 async def generate_token_forregister(data: TokenRequest, session: AsyncSession = Depends(get_async_session)):
     
-    token = generate_token_for_orregister()
+    token = generate_token_for_forregister()
     # expires_at modeliga 15 daqiqa qoshiladi
     expires_at = datetime.utcnow() + timedelta(minutes=15)  # 15 daqiqa
 
@@ -61,8 +57,7 @@ async def generate_token_forregister(data: TokenRequest, session: AsyncSession =
     await session.commit()
     return {"token": token}
 
-<<<<<<< HEAD
-=======
+
 # Create user with token
 @accounts_routers.post("/create-user/{token}")
 async def create_user(token: str, data: CreateUser, session: AsyncSession = Depends(get_async_session)):
@@ -323,4 +318,4 @@ async def get_all_phone_numbers(session: AsyncSession = Depends(get_async_sessio
 
 
 # GET DATA FUNCTIONS FROM DATABASES END
->>>>>>> c936c837bdd2ad782f1e4a9190ec13718fb8c62a
+

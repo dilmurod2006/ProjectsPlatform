@@ -25,10 +25,9 @@ DB_PORT=os.environ.get('LOCAL_PORT')
 BOT_TOKEN=os.environ.get('BOT_TOKEN')
 ADMIN_DILMUROD=os.environ.get('ADMIN_DILMUROD')
 ADMIN_BEXRUZDEVELOPER=os.environ.get('ADMIN_BEXRUZDEVELOPER')
-<<<<<<< HEAD
+
 
 # cheack GET SECRET KEYS by .env file
 
 # print(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, BOT_TOKEN)
-=======
->>>>>>> c936c837bdd2ad782f1e4a9190ec13718fb8c62a
+
