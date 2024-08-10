@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: 4c79e6b7e04e
+Revision ID: 95cac4ecdd2e
 Revises: 
-Create Date: 2024-08-09 11:13:00.792862
+Create Date: 2024-08-09 14:13:53.660764
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '4c79e6b7e04e'
+revision: str = '95cac4ecdd2e'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -52,6 +52,15 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_majburiyobuna_id'), 'majburiyobuna', ['id'], unique=False)
+    op.create_table('products',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('bio', sa.Text(), nullable=True),
+    sa.Column('settings', sa.JSON(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_products_id'), 'products', ['id'], unique=False)
+    op.create_index(op.f('ix_products_name'), 'products', ['name'], unique=False)
     op.create_table('users',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('full_name', sa.String(length=25), nullable=True),
@@ -112,18 +121,6 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_pckundalikcom_id'), 'pckundalikcom', ['id'], unique=False)
     op.create_index(op.f('ix_pckundalikcom_user_id'), 'pckundalikcom', ['user_id'], unique=False)
-    op.create_table('products',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('name', sa.String(), nullable=True),
-    sa.Column('bio', sa.Text(), nullable=True),
-    sa.Column('price', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_products_id'), 'products', ['id'], unique=False)
-    op.create_index(op.f('ix_products_name'), 'products', ['name'], unique=False)
-    op.create_index(op.f('ix_products_user_id'), 'products', ['user_id'], unique=False)
     op.create_table('reportsbalance',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -158,10 +155,6 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_reportsbalance_user_id'), table_name='reportsbalance')
     op.drop_index(op.f('ix_reportsbalance_id'), table_name='reportsbalance')
     op.drop_table('reportsbalance')
-    op.drop_index(op.f('ix_products_user_id'), table_name='products')
-    op.drop_index(op.f('ix_products_name'), table_name='products')
-    op.drop_index(op.f('ix_products_id'), table_name='products')
-    op.drop_table('products')
     op.drop_index(op.f('ix_pckundalikcom_user_id'), table_name='pckundalikcom')
     op.drop_index(op.f('ix_pckundalikcom_id'), table_name='pckundalikcom')
     op.drop_table('pckundalikcom')
@@ -179,6 +172,9 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_users_full_name'), table_name='users')
     op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_table('users')
+    op.drop_index(op.f('ix_products_name'), table_name='products')
+    op.drop_index(op.f('ix_products_id'), table_name='products')
+    op.drop_table('products')
     op.drop_index(op.f('ix_majburiyobuna_id'), table_name='majburiyobuna')
     op.drop_table('majburiyobuna')
     op.drop_index(op.f('ix_forregister_token'), table_name='forregister')

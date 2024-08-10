@@ -10,7 +10,8 @@ from sqlalchemy import(
 )
 
 from .schemes import (
-    BuySerializer
+    BuySerializer,
+    PriceSerializer
 )
 
 from models.models import (
@@ -80,4 +81,36 @@ async def buy_api(
             "message": "Mablag‘ yetarli emas!"
         }
 
-    
+@kundalik_router.post("/price_months")
+async def price_months_api(
+        data: PriceSerializer,
+        session: AsyncSession = Depends(get_async_session)
+    ):
+    res = await session.execute(select(products).filter_by(id = int(PRODUCT_ID)))
+    prices = res.fetchone().settings
+    all_months_price = months_size_price(month_chegirma=prices["pc_chegirma_price"], month_price=prices["price_pc"], months_count=int(data.months_count))
+    return all_months_price
+
+
+@kundalik_router.post("/price_months")
+async def price_months_api(
+        data: BuySerializer,
+        session: AsyncSession = Depends(get_async_session)
+    ):
+    pass
+
+@kundalik_router.post("/check_pc")
+async def check_pc_api(
+        data: BuySerializer,
+        session: AsyncSession = Depends(get_async_session)
+    ):
+    pass
+
+@kundalik_router.post("/login_user")
+async def login_user_api(
+        data: BuySerializer,
+        session: AsyncSession = Depends(get_async_session)
+    ):
+    pass
+
+
