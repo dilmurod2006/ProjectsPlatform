@@ -1,0 +1,18 @@
+{
+    "permessions": {
+        "admin": {
+            "add_balance": "True",
+            "remove_balance": "True",
+            "add_admin": "True",
+            "update_admin": "True",
+            "remove_admin": "True",
+            "active_admin": "True",
+            "add_product": "True",
+            "remove_product": "True",
+            "add_user": "True",
+            "remove_user": "True",
+            "add_products": "True",
+            "remove_products": "True"
+    }
+    }
+}

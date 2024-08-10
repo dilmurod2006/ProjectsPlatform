@@ -37,10 +37,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     pwdhash = hashlib.pbkdf2_hmac('sha256', plain_password.encode(), salt.encode(), 100000)
     return binascii.hexlify(pwdhash).decode() == stored_password
 
-test = verify_password("Dilmurod1957", "3be8786f0d88a0a71a769d26f85380df$061d889cd7347afc3399d2445d191647f94b2c8e379ca318e666908c315a1e54")
-print(test)
-
-
 # generate token for forregister
 def generate_token_for_forregister(length=32):
     """32 ta simvoldan iborat tokenni yaratadi."""

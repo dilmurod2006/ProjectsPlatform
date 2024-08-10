@@ -10,9 +10,10 @@ from sqlalchemy import (
     ForeignKey, 
     MetaData,
     TIMESTAMP,
-    DateTime,
-    JSON
+    DateTime
 )
+
+from sqlalchemy.dialects.postgresql import JSONB
 
 metadata = MetaData()
 
@@ -69,7 +70,7 @@ products = Table(
     Column('id', Integer, primary_key=True, index=True, autoincrement=True),
     Column('name', String, index=True),
     Column('bio', Text, nullable=True),
-    Column('settings', JSON)
+    Column('settings', JSONB, nullable=True),
 )
 
 # ACCOUNTS MODELS END
@@ -137,12 +138,13 @@ majburiyobuna = Table(
 admins = Table(
     'admins',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('username', String),
     Column('password', String),
     Column('tg_id', BigInteger, unique=True, index=True),
-    Column('active', Boolean),
+    Column('active', Boolean, default=True),
+    Column('premessions', JSONB, nullable=True, index=True),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
-    Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow),
-    Column('token', String),
+    Column('updated_at', TIMESTAMP),
+    Column('token', String(length=700), unique=True, index=True)
 )

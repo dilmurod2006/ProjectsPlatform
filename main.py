@@ -6,6 +6,7 @@ from sqlalchemy import insert, select, update
 
 from accounts.auth import accounts_routers
 from kundalikcom.kundalikcom import kundalik_router
+from admins.admin import admin_router
 from database import get_async_session
 
 
@@ -20,3 +21,4 @@ async def root():
 app.include_router(router)
 app.include_router(accounts_routers, prefix="/accounts")
 app.include_router(kundalik_router, prefix="/kundalikcom")
+app.include_router(admin_router, prefix="/admin")
