@@ -107,7 +107,8 @@ mobilekundalikcom = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('start_active_date', TIMESTAMP),
     Column('end_active_date', TIMESTAMP),
-    Column('device_id', String),
+    Column('device_id', String, nullable=True),
+    Column('end_use_date', TIMESTAMP),
 )
 
 # LOGINSDATA MODEL
