@@ -55,7 +55,7 @@ reportsbalance = Table(
     'reportsbalance',
     metadata,
     Column('id', Integer, primary_key=True, index=True,autoincrement=True),
-    Column('user_id', Integer, ForeignKey('users.id'), index=True),
+    Column('user_id', Integer),
     Column('balance', Integer, default=0),
     Column('size', Integer),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
@@ -84,7 +84,7 @@ school_data = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('viloyat', String),
     Column('tuman', String),
-    Column('school_number', String),
+    Column('school_number', Integer),
 )
 
 # pckundalikcom model
@@ -93,7 +93,6 @@ pckundalikcom = Table(
     metadata,
     Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
-    Column('token', String),
     Column('start_active_date', TIMESTAMP),
     Column('end_active_date', TIMESTAMP),
     Column('device_id', String, nullable=True),

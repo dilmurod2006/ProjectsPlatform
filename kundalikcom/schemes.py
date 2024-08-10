@@ -5,3 +5,16 @@ class BuySerializer(BaseModel):
     months_count: int
 class PriceSerializer(BaseModel):
     months_count: int
+class CheckPcSerializer(BaseModel):
+    device_id: str
+    token: str
+class RegisterLoginsSerializer(BaseModel):
+    login: str
+    password: str
+class SetSchoolSerializer(BaseModel):
+    token: str
+    viloyat: str
+    tuman: str
+    school_number: int
+class GetSchoolSerializer(BaseModel):
+    token: str
