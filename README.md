@@ -2,7 +2,6 @@
     projectsplatform.uz 2024
 
 
-
 # Accounts
     Models:
         ForRegister:
@@ -10,7 +9,8 @@
             tg_id: nullable=True
             phone: str
             token: ganarate
-            timer: session
+            created_at: datetime.now
+            expires_at: datetime.now+time
         
         Users:
             id: Primey Key
@@ -20,7 +20,7 @@
             phone: strs
             username: str
             password: str
-            tg_id: Foregin Key from ForRegister in tg_id
+            tg_id: BigInteger
             balace:default=0 add paymaent by admin 
             created_at: datetime.now
             updated_at: datetime.now
@@ -38,7 +38,6 @@
             name: str
             bio: str
             price: int
-
     Functions:
         refresh_user_api:
             post:
@@ -47,7 +46,7 @@
             refresh user.token
             except:
                 new_token
-        about_account_api:
+        about_account:
             post:
                 token: str
             responce:
@@ -99,10 +98,6 @@
             response:
                 True or False
                 DAVOMI BOR...
-                
-                
-
-
 
 
 # Kundalikcom
@@ -149,26 +144,62 @@
                 all so'm months
         check_pc:
             post:
-                device_id: str
                 token: str
+                device_id: str
             responce:
                 how: True or False
-                end_date: "2025-yil, 2-Sentabr gacha"
-                size: "10 oyu 12 kun" or "0"
-                users:
-                    json -> "[login parollar]"
-                    bunda -> {"login": str, "password": str}
-                message: "" or "Xatolik haqida habar"
-        login_user:
+                end_active_date: datetime
+                size: timedelta
+                all_logins:
+                    json -> "{ login parollar }"
+                    bunda -> {"login": "password" }
+        register_logins:
+            post:
+                user_id: int
+                login: str
+                password: str
+            responce:
+                True or False
+        set_school:
+            post:
+                token: str
+                viloyat: string
+                tuman: string
+                school_number: int
+            responce:
+                True or False
+        get_school:
+            post:
+                token: str
+            responce:
+                viloyat: string
+                tuman: string
+                school_number: int
+    FunctionsMobile:
+        buy_api_mobile:
+            post:
+                token: user tokeni
+                months_count: int
+            responce:
+                how:
+                    True or False
+                message:
+                    "Balansingizga yetarli mablag' mavjud emas!"
+                    "To'lov muvaffaqiyatli amalga oshirildi."
+                    "Nimadur xato ketdi"
+        price_months_mobile:
+            post:
+                months_count: int
+            responce:
+                all so'm months
+        check_mobile:
             post:
                 token: str
                 device_id: str
             responce:
                 how: True or False
-                message: "" or "Xatolik haqida habar"
-        
-
-
+                end_active_date: datetime
+                size: timedelta
 # TestMax
     TeachersModel:
         user_id: Foregin Key from Users in Accounts
@@ -184,12 +215,13 @@
 
 
 # Aloqa -----> keyinchalik
+
 # Admin Panel
     Models:
         Admins:
             id: Primey Key
             username: str
-            password: str
+            password: str 
             tg_id: int
             created_at: datetime.now
             updated_at: datetime.now
@@ -257,10 +289,6 @@
                 # or
                 how: False
                 message: Ayni paytda bunday product mavjud emas!
-        
-
-        
-            
 
 
 
