@@ -21,3 +21,10 @@ class UpdateAdmin(BaseModel):
 # Delete admin class
 class DeleteAdmin(BaseModel):
     username: str
+
+
+# Add products class
+class AddProducts(BaseModel):
+    name: str
+    bio: str
+    settings: Dict[str, Any]

@@ -24,7 +24,8 @@ from models.models import (
 from .schemes import (
     CreateAdmin,
     DeleteAdmin,
-    UpdateAdmin
+    UpdateAdmin,
+    AddProducts
 )
 from .utils import (
     generate_token_for_admin,
@@ -96,7 +97,7 @@ async def update_admin(token: str, admin: UpdateAdmin, session: AsyncSession = D
     }
 
     if not has_permission(admin.premessions, required_permissions):
-        raise HTTPException(status_code=403, detail="siz admin qo'sha olmaysiz!")
+        raise HTTPException(status_code=403, detail="siz admin ma'lumotlarini o'zgartira olmaysiz!")
     
     query = update(admins).where(admins.c.username == admin.username).values(
         username=admin.username,
@@ -110,6 +111,65 @@ async def update_admin(token: str, admin: UpdateAdmin, session: AsyncSession = D
     if result.rowcount == 0:
         raise HTTPException(status_code=404, detail="Admin not found")
     return {"message": "Admin updated successfully"}
+
+# delete admin
+@admin_router.delete("/delete")
+async def delete_admin(token: str, data: DeleteAdmin, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'delete_admin': 'True'
+        }
+    }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz admini o'chira olmaysiz!")
+
+    query = delete(admins).where(admins.c.username == data.username)
+    await session.execute(query)
+    await session.commit()
+    return {"message": "Admin deleted successfully"}
+
+
+# Add products
+@admin_router.post("/add-products")
+async def add_products(token: str, data: AddProducts, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+    
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'add_products': 'True'
+        }
+    }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz product qo'sha olmaysiz!")
+
+    query = insert(products).values(
+        name=data.name,
+        bio=data.bio,
+        settings=data.settings
+    )
+    await session.execute(query)
+    await session.commit()
+    return {"message": "Product added successfully"}
 
 
 # GET DATA FUNCTIONS FROM DATABASES START
