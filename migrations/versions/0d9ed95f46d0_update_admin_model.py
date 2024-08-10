@@ -1,8 +1,8 @@
 """update admin model
 
-Revision ID: 53e264b8a6f9
+Revision ID: 0d9ed95f46d0
 Revises: 
-Create Date: 2024-08-10 12:32:36.855262
+Create Date: 2024-08-10 19:19:35.803304
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '53e264b8a6f9'
+revision: str = '0d9ed95f46d0'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -106,6 +106,7 @@ def upgrade() -> None:
     sa.Column('start_active_date', sa.TIMESTAMP(), nullable=True),
     sa.Column('end_active_date', sa.TIMESTAMP(), nullable=True),
     sa.Column('device_id', sa.String(), nullable=True),
+    sa.Column('end_use_date', sa.TIMESTAMP(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -114,7 +115,6 @@ def upgrade() -> None:
     op.create_table('pckundalikcom',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('token', sa.String(), nullable=True),
     sa.Column('start_active_date', sa.TIMESTAMP(), nullable=True),
     sa.Column('end_active_date', sa.TIMESTAMP(), nullable=True),
     sa.Column('device_id', sa.String(), nullable=True),
@@ -141,7 +141,7 @@ def upgrade() -> None:
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('viloyat', sa.String(), nullable=True),
     sa.Column('tuman', sa.String(), nullable=True),
-    sa.Column('school_number', sa.String(), nullable=True),
+    sa.Column('school_number', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

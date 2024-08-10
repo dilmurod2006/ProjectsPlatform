@@ -85,7 +85,7 @@ school_data = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('viloyat', String),
     Column('tuman', String),
-    Column('school_number', String),
+    Column('school_number', Integer),
 )
 
 # pckundalikcom model
@@ -94,7 +94,6 @@ pckundalikcom = Table(
     metadata,
     Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
-    Column('token', String),
     Column('start_active_date', TIMESTAMP),
     Column('end_active_date', TIMESTAMP),
     Column('device_id', String, nullable=True),
@@ -109,7 +108,8 @@ mobilekundalikcom = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('start_active_date', TIMESTAMP),
     Column('end_active_date', TIMESTAMP),
-    Column('device_id', String),
+    Column('device_id', String, nullable=True),
+    Column('end_use_date', TIMESTAMP),
 )
 
 # LOGINSDATA MODEL
