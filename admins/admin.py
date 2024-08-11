@@ -68,9 +68,25 @@ async def login_admin(data: LoginAdmin, session: AsyncSession = Depends(get_asyn
         raise HTTPException(status_code=401, detail="admin not found")
     if admin.password != data.password:
         raise HTTPException(status_code=401, detail="password is wrong")
-    if not verify_jwt_token(admin.token):
-        raise HTTPException(status_code=401, detail="token expired")
+    
+    # Tokenni tekshirish
+    try:
+        payload = verify_jwt_token(admin.token)
+    except HTTPException as e:
+        if e.detail == "Token has expired":
+            # Token eskirgan bo'lsa, yangi token yaratish
+            jwt_token_data = {
+                "username": data.username,
+                "password": admin.password
+            }
+            new_token = generate_token_for_admin(jwt_token_data)
 
+            # Tokenni yangilash
+            query = update(admins).where(admin.c.username == data.username).values(token=new_token)
+            await session.execute(query)
+            await session.commit()
+        else:
+            raise e
     # cheack premessions in admin table
     required_permissions = {
         "permessions": {

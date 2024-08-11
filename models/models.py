@@ -28,7 +28,6 @@ forregister = Table(
     Column('phone', String(length=13), unique=True, index=True),
     Column('token', String, unique=True, index=True),
     Column('created_at', DateTime, default=datetime.utcnow),
-    Column('expires_at', DateTime, default=lambda: datetime.utcnow() + timedelta(minutes=15))
 )
 
 users = Table(

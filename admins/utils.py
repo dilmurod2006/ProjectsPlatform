@@ -96,8 +96,7 @@ def serialize_forregister(row):
         "tg_id": row.tg_id,
         "phone": row.phone,
         "token": row.token,
-        "created_at": row.created_at,
-        "expires_at": row.expires_at
+        "created_at": row.created_at
     }
 def serialize_users(row):
     return {

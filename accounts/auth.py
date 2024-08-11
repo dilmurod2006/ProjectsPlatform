@@ -37,22 +37,6 @@ async def generate_token_forregister(
     data: TokenRequest, 
     session: AsyncSession = Depends(get_async_session)
 ):
-    """
-    Foydalanuvchi uchun token yaratish va saqlash.
-
-    Bu funksiya Telegram ID va telefon raqamini tekshiradi, agar ular mavjud bo'lmasa,
-    yangi token yaratadi va `forregister` jadvaliga saqlaydi.
-
-    Args:
-        data (TokenRequest): Token yaratish uchun Telegram ID va telefon raqami.
-
-    Raises:
-        HTTPException: Agar Telegram ID yoki telefon raqami mavjud bo'lsa yoki 
-        agar Telegram ID allaqachon `users` jadvalida mavjud bo'lsa.
-
-    Returns:
-        dict: Yangi yaratilgan tokenni o'z ichiga olgan lug'at.
-    """
     # Telegram ID va telefon raqamlarini tekshirish
     forregister_tg_id_query = select(forregister).where(forregister.c.tg_id == data.tg_id)
     forregister_phone_query = select(forregister).where(forregister.c.phone == data.phone)
@@ -83,14 +67,16 @@ async def generate_token_forregister(
         )
     
     # Token yaratish va saqlash
-    token = generate_token_for_forregister()
-    expires_at = datetime.utcnow() + timedelta(minutes=15)  # 15 daqiqa
+    jwt_token_data = {
+        "username": data.tg_id,
+        "password": data.phone
+            }
+    token = generate_token_for_forregister(jwt_token_data)
 
     query = insert(forregister).values(
         tg_id=data.tg_id,
         phone=data.phone,
-        token=token,
-        expires_at=expires_at
+        token=token
     )
 
     await session.execute(query)
@@ -105,14 +91,21 @@ async def create_user(token: str, data: CreateUser, session: AsyncSession = Depe
     result = await session.execute(query)
     data_forregister = result.fetchone()
 
+    # Tokenni tekshirish
     if data_forregister is None:
         raise HTTPException(status_code=404, detail="Invalid token")
 
-    if data_forregister.expires_at < datetime.utcnow():
-        delete_query = delete(forregister).where(forregister.c.token == token)
-        await session.execute(delete_query)
-        await session.commit()
-        raise HTTPException(status_code=400, detail="Token expired and deleted!")
+    try:
+        payload = verify_jwt_token(data_forregister.token)
+    except HTTPException as e:
+        if e.detail == "Token has expired":
+            # Token eskirgan bo'lsa, uni o'chirish
+            delete_query = delete(forregister).where(forregister.c.token == token)
+            await session.execute(delete_query)
+            await session.commit()
+            raise HTTPException(status_code=400, detail="Token has expired")
+        else:
+            raise e
 
     # cheack username and email
     username_query = select(users).where(users.c.username == data.username)
@@ -159,18 +152,6 @@ async def create_user(token: str, data: CreateUser, session: AsyncSession = Depe
 
 @accounts_routers.post("/login")
 async def login(data: LoginUser, session: AsyncSession = Depends(get_async_session)):
-    """
-    Foydalanuvchini login qilish va tasdiqlash kodi yaratish.
-
-    Args:
-        data (LoginUser): Login uchun username va password.
-
-    Raises:
-        HTTPException: Agar username yoki password noto'g'ri bo'lsa.
-
-    Returns:
-        dict: Yaratilgan kodni o'z ichiga olgan lug'at.
-    """
     # Foydalanuvchi mavjudligini tekshirish
     query = select(users).where(users.c.username == data.username)
     result = await session.execute(query)
@@ -179,6 +160,25 @@ async def login(data: LoginUser, session: AsyncSession = Depends(get_async_sessi
     if user is None or not verify_password(data.password, user.password):
         raise HTTPException(status_code=400, detail="Invalid username or password")
     
+    # Tokenni tekshirish
+    try:
+        payload = verify_jwt_token(user.token)
+    except HTTPException as e:
+        if e.detail == "Token has expired":
+            # Token eskirgan bo'lsa, yangi token yaratish
+            jwt_token_data = {
+                "username": data.username,
+                "password": user.password
+            }
+            new_token = generate_token_for_users(jwt_token_data)
+
+            # Tokenni yangilash
+            query = update(users).where(users.c.username == data.username).values(token=new_token)
+            await session.execute(query)
+            await session.commit()
+        else:
+            raise e
+
     # Tasdiqlash kodi yaratish
     code = random.randint(100000, 999999)  # 6 xonali kod
     query = update(users).where(users.c.username == data.username).values(code=code)
@@ -188,7 +188,6 @@ async def login(data: LoginUser, session: AsyncSession = Depends(get_async_sessi
     send_code = send_login_code(user.tg_id, code)
 
     return {"message": send_code}
-
 
 # cheack code for login
 @accounts_routers.post("/check-login-code")
@@ -278,4 +277,3 @@ async def reset_password(data: ResetPassword, session: AsyncSession = Depends(ge
     await session.commit()
 
     return {"message": "Parol muvaffaqiyatli o'zgartirildi"}
-
