@@ -10,7 +10,8 @@ from sqlalchemy import (
     ForeignKey, 
     MetaData,
     TIMESTAMP,
-    DateTime
+    DateTime,
+    LargeBinary
 )
 
 from sqlalchemy.dialects.postgresql import JSONB
@@ -41,7 +42,7 @@ users = Table(
     Column('username', String(length=30), unique=True, index=True),
     Column('password', String(length=260)),
     Column('tg_id', BigInteger, nullable=True, unique=True, index=True),
-    Column('balance', BigInteger, default=0),
+    Column('balance', BigInteger, default=25000),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow),
     Column('last_login', TIMESTAMP, default=datetime.utcnow),
@@ -56,11 +57,12 @@ reportsbalance = Table(
     'reportsbalance',
     metadata,
     Column('id', Integer, primary_key=True, index=True,autoincrement=True),
+    Column('payment_number', BigInteger, index=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
-    Column('balance', Integer, default=0),
-    Column('size', Integer),
-    Column('created_at', TIMESTAMP, default=datetime.utcnow),
-    Column('bio', String, nullable=True)
+    Column('balance', BigInteger, default=0),
+    Column('tulov_summasi', BigInteger),
+    Column('bio', String, nullable=True),
+    Column('created_at', TIMESTAMP, default=datetime.utcnow)
 )
 
 # Products model for users
@@ -71,6 +73,8 @@ products = Table(
     Column('name', String, index=True),
     Column('bio', Text, nullable=True),
     Column('settings', JSONB, nullable=True),
+    Column('created_at', TIMESTAMP, default=datetime.utcnow),
+    Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
 )
 
 # ACCOUNTS MODELS END

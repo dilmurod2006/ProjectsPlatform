@@ -21,7 +21,17 @@ import secrets
 from settings import BOT_TOKEN, SECRET_KEY_FOR_ADMINS, ALGORITHM
 
 
+# send login code to admin via bot
+def send_login_code(tg_id: int, code: int) -> str:
+    """Foydalanuvchi login kodi yuborish."""
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    data = {
+        "chat_id": tg_id,
+        "text": f"Your login code is: {code}",
+    }
+    post(url, data)
 
+    return f"code yuborildi!"
 
 # generate jwt token for admin
 def generate_token_for_admin(data: Dict[str, str], expires_delta: timedelta = timedelta(days=731)) -> str:
@@ -64,3 +74,116 @@ def has_permission(premessions: Dict, required_permissions: Dict) -> bool:
         if admin_perms.get('admin', {}).get(category) != required:
             return False
     return True
+
+# cheack user payment function start
+
+# bank web sites control function
+def bank_web_site_control():
+    pass
+
+# cheack payment
+def check_payment():
+    return True
+
+
+
+# check user payment function end
+
+# get data serializer functions start
+def serialize_forregister(row):
+    return {
+        "id": row.id,
+        "tg_id": row.tg_id,
+        "phone": row.phone,
+        "token": row.token,
+        "created_at": row.created_at,
+        "expires_at": row.expires_at
+    }
+def serialize_users(row):
+    return {
+        "full_name": row.full_name,
+        "username": row.username,
+        "email": row.email,
+        "phone": row.phone,
+        "sex": row.sex,
+        "tg_id": row.tg_id,
+        "balance": row.balance,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+        "last_login": row.last_login,
+        "code": row.code,
+        "reset_code": row.reset_code,
+        "how_online": row.how_online,
+        "token": row.token
+    }
+def serialize_reports_balance(row):
+    return {
+        "id": row.id,
+        "user_id": row.user_id,
+        "balance": row.balance,
+        "size": row.size,
+        "bio": row.bio,
+        "created_at": row.created_at
+    }
+def serialize_products(row):
+    return {
+        "id": row.id,
+        "name": row.name,
+        "bio": row.bio,
+        "settings": row.settings,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at
+    }
+def serialize_school_data(row):
+    return {
+        "id": row.id,
+        "user_id": row.user_id,
+        "viloyat": row.viloyat,
+        "tuman": row.tuman,
+        "school_number": row.school_number
+    }
+def serialize_pckundalikcom(row):
+    return {
+        "id": row.id,
+        "user_id": row.user_id,
+        "start_active_date": row.start_active_date,
+        "end_active_date": row.end_active_date,
+        "device_id": row.device_id,
+        "end_use_date": row.end_use_date
+    }
+def serialize_mobilekundalikcom(row):
+    return {
+        "id": row.id,
+        "user_id": row.user_id,
+        "start_active_date": row.start_active_date,
+        "end_active_date": row.end_active_date,
+        "device_id": row.device_id,
+        "end_use_date": row.end_use_date
+    }
+def serialize_majburiyobuna(row):
+    return {
+        "id": row.id,
+        "device_id": row.device_id
+    }
+def serialize_admins(row):
+    return {
+        "id": row.id,
+        "username": row.username,
+        "password": row.password,
+        "tg_id": row.tg_id,
+        "active": row.active,
+        "premessions": row.premessions,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+        "token": row.token
+    }
+def serialize_get_all_telegram_ids(row):
+    return {
+        "tg_id": row.tg_id
+    }
+def serialize_get_all_phone_numbers(row):
+    return {
+        "full_names": row.full_names,
+        "phone": row.phone
+    }
+# get data serializer functions end

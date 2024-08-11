@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from settings import PRODUCT_ID
@@ -363,3 +364,17 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
         "message": f"Boshqa qurilmadan kirilgan.\nBoshqa qurulmangizdan {total_hours} soat mobaynida foydalanmang. Keyin bu qurulmaga login qilib foydalanishingiz mumkin"
     }
 
+
+### EXE AND APK DOWNLOADING START ###
+
+# Exe downloading
+@kundalik_router.get("/download_exe_kundalikcom")
+async def download_exe_kundalikcom_api():
+    pass
+
+# Apk downloading
+@kundalik_router.get("/download_apk_kundalikcom")
+async def download_apk_kundalikcom_api():
+    pass
+
+### EXE AND APK DOWNLOADING END ###

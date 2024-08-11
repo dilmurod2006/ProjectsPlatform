@@ -1,8 +1,8 @@
 """update admin model
 
-Revision ID: 0d9ed95f46d0
+Revision ID: c275ff54de02
 Revises: 
-Create Date: 2024-08-10 19:19:35.803304
+Create Date: 2024-08-11 21:00:04.185783
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '0d9ed95f46d0'
+revision: str = 'c275ff54de02'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -60,6 +60,8 @@ def upgrade() -> None:
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('bio', sa.Text(), nullable=True),
     sa.Column('settings', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+    sa.Column('created_at', sa.TIMESTAMP(), nullable=True),
+    sa.Column('updated_at', sa.TIMESTAMP(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_products_id'), 'products', ['id'], unique=False)
@@ -126,15 +128,17 @@ def upgrade() -> None:
     op.create_index(op.f('ix_pckundalikcom_user_id'), 'pckundalikcom', ['user_id'], unique=False)
     op.create_table('reportsbalance',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('payment_number', sa.BigInteger(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('balance', sa.Integer(), nullable=True),
-    sa.Column('size', sa.Integer(), nullable=True),
-    sa.Column('created_at', sa.TIMESTAMP(), nullable=True),
+    sa.Column('balance', sa.BigInteger(), nullable=True),
+    sa.Column('tulov_summasi', sa.BigInteger(), nullable=True),
     sa.Column('bio', sa.String(), nullable=True),
+    sa.Column('created_at', sa.TIMESTAMP(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_reportsbalance_id'), 'reportsbalance', ['id'], unique=False)
+    op.create_index(op.f('ix_reportsbalance_payment_number'), 'reportsbalance', ['payment_number'], unique=False)
     op.create_index(op.f('ix_reportsbalance_user_id'), 'reportsbalance', ['user_id'], unique=False)
     op.create_table('school_data',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -156,6 +160,7 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_school_data_id'), table_name='school_data')
     op.drop_table('school_data')
     op.drop_index(op.f('ix_reportsbalance_user_id'), table_name='reportsbalance')
+    op.drop_index(op.f('ix_reportsbalance_payment_number'), table_name='reportsbalance')
     op.drop_index(op.f('ix_reportsbalance_id'), table_name='reportsbalance')
     op.drop_table('reportsbalance')
     op.drop_index(op.f('ix_pckundalikcom_user_id'), table_name='pckundalikcom')

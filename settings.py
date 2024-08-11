@@ -29,3 +29,9 @@ PRODUCT_ID=os.environ.get('PRODUCT_ID')
 
 # ADMINS CONFUGRATIONS KEYS
 SECRET_KEY_FOR_ADMINS=os.environ.get('SECRET_KEY_FOR_ADMINS')
+
+
+
+# UPLOAD FILES
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'UPLOADFILES')
