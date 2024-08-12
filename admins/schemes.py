@@ -58,4 +58,3 @@ class AddPayment(BaseModel):
     payment_number: int
     tulov_summasi: int
     bio: str
-    payment_date: str

@@ -149,5 +149,6 @@ admins = Table(
     Column('premessions', JSONB, nullable=True, index=True),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP),
-    Column('token', String(length=700), unique=True, index=True)
+    Column('token', String(length=700), unique=True, index=True),
+    Column("code", BigInteger, nullable=True)
 )

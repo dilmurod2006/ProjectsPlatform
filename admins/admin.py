@@ -52,7 +52,6 @@ from .utils import (
     serialize_get_all_telegram_ids,
     serialize_get_all_phone_numbers
 )
-from settings import UPLOAD_FOLDER
 from datetime import datetime, timedelta
 
 admin_router = APIRouter()
@@ -379,7 +378,7 @@ async def add_payment(token: str, data: AddPayment, session: AsyncSession = Depe
     query = insert(reportsbalance).values(
         payment_number = data.payment_number,
         user_id=user.id,
-        balance=reportsbalance_data.balance + data.tulov_summasi,
+        balance= data.tulov_summasi,
         tulov_summasi=data.tulov_summasi,
         bio=data.bio
     )

@@ -120,7 +120,7 @@ def serialize_reports_balance(row):
         "id": row.id,
         "user_id": row.user_id,
         "balance": row.balance,
-        "size": row.size,
+        "tulov_summasi": row.tulov_summasi,
         "bio": row.bio,
         "created_at": row.created_at
     }
@@ -182,7 +182,7 @@ def serialize_get_all_telegram_ids(row):
     }
 def serialize_get_all_phone_numbers(row):
     return {
-        "full_names": row.full_names,
+        "full_name": row.full_name,
         "phone": row.phone
     }
 # get data serializer functions end
