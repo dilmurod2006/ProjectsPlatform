@@ -150,10 +150,11 @@ admins = Table(
     Column('tg_id', BigInteger, unique=True, index=True),
     Column('active', Boolean, default=True),
     Column('premessions', JSONB, nullable=True, index=True),
+    Column('token', String(length=700), unique=True, index=True),
+    Column("code", BigInteger, nullable=True),
+    Column("reset_code", BigInteger, nullable=True),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP),
-    Column('token', String(length=700), unique=True, index=True),
-    Column("code", BigInteger, nullable=True)
 )
 
 # Loyiha ma'lumotlari
@@ -164,8 +165,8 @@ ProjectsData = Table(
     Column('name', String),
     Column('email', String, nullable=True),
     Column('domen', String, nullable=True),
-    Column('telegram_chaneel', String, nullable=True),
-    Column('youtube', String, nullable=True),
+    Column('telegram_channel', String, nullable=True),
+    Column('youtube_channel', String, nullable=True),
     Column('telegram_group', String, nullable=True),
     Column('telegram_bot', String, nullable=True),
     Column('about', Text, nullable=True),

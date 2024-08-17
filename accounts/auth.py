@@ -254,7 +254,7 @@ async def reset_password_request(data: ResetPasswordRequest, session: AsyncSessi
 
     send_code = send_reset_password_code(user.tg_id, code)
 
-    return {"message": send_code}
+    return {"message": "parolni qayta tiklash kodi yuborildi"}
 
 
 # reset password

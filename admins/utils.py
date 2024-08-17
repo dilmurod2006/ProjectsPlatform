@@ -33,6 +33,19 @@ def send_login_code(tg_id: int, code: int) -> str:
 
     return f"code yuborildi!"
 
+
+# reset password send code
+def send_reset_password_code(tg_id: int, reset_code: int) -> str:
+    """Foydalanuvchi login kodi yuborish."""
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    data = {
+        "chat_id": tg_id,
+        "text": f"Your reset password code is: {reset_code}",
+    }
+    post(url, data)
+
+    return f"parolni tiklovchi code yuborildi!"
+
 # generate jwt token for admin
 def generate_token_for_admin(data: Dict[str, str], expires_delta: timedelta = timedelta(days=731)) -> str:
     to_encode = data.copy()
@@ -74,6 +87,16 @@ def has_permission(premessions: Dict, required_permissions: Dict) -> bool:
         if admin_perms.get('admin', {}).get(category) != required:
             return False
     return True
+
+# O'zbekiston raqamini tekshirish
+def is_valid_phone_number(phone: str) -> bool:
+    """Telefon raqamining O'zbekiston raqamiga mosligini tekshiradi.
+       Masalan: O'zbekiston code:+998 dan boshlanadi
+       agar boshqa davlatning raqami berilsa qabul qilmaydi.
+    """
+    return bool(re.match(r'^\+998[1-9][0-9]{8}$', phone))
+
+
 
 # cheack user payment function start
 
@@ -167,14 +190,17 @@ def serialize_majburiyobuna(row):
 def serialize_admins(row):
     return {
         "id": row.id,
-        "username": row.username,
-        "password": row.password,
-        "tg_id": row.tg_id,
-        "active": row.active,
-        "premessions": row.premessions,
-        "created_at": row.created_at,
-        "updated_at": row.updated_at,
-        "token": row.token
+        'full_name': row.full_name,
+        'phone': row.phone,
+        'email': row.email,
+        'username': row.username,
+        'password': row.password,
+        'sex': row.sex,
+        'tg_id': row.tg_id,
+        'active': row.active,
+        'premessions': row.premessions,
+        'created_at': row.creasted_at,
+        'updated_at': row.updated_at
     }
 def serialize_get_all_telegram_ids(row):
     return {
@@ -184,5 +210,21 @@ def serialize_get_all_phone_numbers(row):
     return {
         "full_name": row.full_name,
         "phone": row.phone
+    }
+def serialize_get_projectsdata(row):
+    return {
+        'id': row.id,
+        'name': row.name,
+        'email': row.email,
+        'domen': row.domen,
+        'telegram_chaneel': row.telegram_chaneel,
+        'youtube': row.youtube,
+        'telegram_group': row.telegram_group,
+        'telegram_bot': row.telegram_bot,
+        'about': row.about,
+        'balance': row.balance,
+        'created_at': row.created_at,
+        'updated_at': row.updated_atsssss
+
     }
 # get data serializer functions end

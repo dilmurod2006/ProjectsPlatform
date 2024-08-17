@@ -1,11 +1,13 @@
 {
     "permessions": {
         "admin": {
-            "add_projectsdata": "True",
+            "create_projectsdata": "True",
             "update_projectsdata": "True",
             "get_projectsdata": "True",
             "login_admin": "True",
             "check_login_admin": "True",
+            "reset_password_request_admin": "True",
+            "reset_password_admin": "True",
             "add_admin": "True",
             "update_admin": "True",
             "delete_admin": "True",

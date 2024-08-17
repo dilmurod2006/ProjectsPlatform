@@ -15,18 +15,34 @@ class CheckLoginAdmin(BaseModel):
     password: str
     code: int
 
-# Create admin class
-class CreateAdmin(BaseModel):
+class ResetPasswordRequest(BaseModel):
+    username: str
+
+class ResetPassword(BaseModel):
     username: str
     password: str
+    reset_code: int
+
+# Create admin class
+class CreateAdmin(BaseModel):
+    full_name: str
+    phone: str
+    email: str
+    username: str
+    password: str
+    sex: bool
     tg_id: int
     premessions: Dict[str, Any]
 
 # Update admin class
 class UpdateAdmin(BaseModel):
+    full_name: str
+    phone: str
+    email: str
     username: str
     password: str
     tg_id: int
+    active: bool
     premessions: Dict[str, Any]
 
 
@@ -58,3 +74,26 @@ class AddPayment(BaseModel):
     payment_number: int
     tulov_summasi: int
     bio: str
+
+# CreateProjectsData class
+class CreateProjectsData(BaseModel):
+    name: str
+    email: str
+    domen: str
+    telegram_channel: str
+    youtube_channel: str
+    telegram_group: str
+    telegram_bot: str
+    about: str
+
+
+# UpdateProjectsData class
+class UpdateProjectsData(BaseModel):
+    name: str
+    email: str
+    domen: str
+    telegram_channel: str
+    youtube_channel: str
+    telegram_group: str
+    telegram_bot: str
+    about: str

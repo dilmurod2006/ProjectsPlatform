@@ -21,24 +21,31 @@ from models.models import (
     pckundalikcom,
     mobilekundalikcom,
     school_data,
-    products
+    products,
+    ProjectsData
 )
 from .schemes import (
     LoginAdmin,
     CheckLoginAdmin,
+    ResetPasswordRequest,
+    ResetPassword,
     CreateAdmin,
     DeleteAdmin,
     UpdateAdmin,
     AddProducts,
     UpdateProducts,
     DeleteProducts,
-    AddPayment
+    AddPayment,
+    CreateProjectsData,
+    UpdateProjectsData,
 )
 from .utils import (
     send_login_code,
+    send_reset_password_code,
     generate_token_for_admin,
     verify_jwt_token,
     has_permission,
+    is_valid_phone_number,
     check_payment,
     serialize_forregister,
     serialize_users,
@@ -50,7 +57,8 @@ from .utils import (
     serialize_majburiyobuna,
     serialize_admins,
     serialize_get_all_telegram_ids,
-    serialize_get_all_phone_numbers
+    serialize_get_all_phone_numbers,
+    serialize_get_projectsdata
 )
 from datetime import datetime, timedelta
 
@@ -135,8 +143,85 @@ async def check_login_admin(data: CheckLoginAdmin, session: AsyncSession = Depen
     if not has_permission(admin.premessions, required_permissions):
         raise HTTPException(status_code=403, detail="siz admin login olmaysiz!")
 
+    if admin.code != data.code:
+        raise HTTPException(status_code=401, detail="code is wrong")
+
+    query = update(admins).where(admins.c.username == data.username).values(code=None)
+    await session.execute(query)
+    await session.commit()
+
     return {"message": "Admin login success", "token": admin.token}
 
+
+# reset password admin
+@admin_router.post("/reset-password-request")
+async def reset_password_request_admin(data: ResetPasswordRequest, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.username == data.username)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None:
+        raise HTTPException(status_code=401, detail="admin not found")
+
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'reset_password_request_admin': 'True'
+        }
+    }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz admin parol tiklash uchun so'rov yubora olmaysiz!")
+
+    code = random.randint(100000, 999999)  # 6 xonali kod
+    query = update(admins).where(admins.c.username == data.username).values(reset_code=code)
+    await session.execute(query)
+    await session.commit()
+
+    send_code = send_reset_password_code(admin.tg_id, code)
+
+    if not send_code:
+        raise HTTPException(status_code=500, detail="code not sent")
+
+    return {"message": "Tasdiqlash kodi yuborildi!"}
+
+
+# reset password admin
+@admin_router.post("/reset-password")
+async def reset_password_admin(data: ResetPassword, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.username == data.username)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None:
+        raise HTTPException(status_code=401, detail="admin not found")
+
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'reset_password_admin': 'True'
+        }
+    }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz admin parolini o'zgartira olmaysiz!")
+
+    # cheack reset code
+    if admin.reset_code != data.reset_code:
+        raise HTTPException(status_code=401, detail="code not found")   
+    
+    query = update(admins).where(admins.c.username == data.username).values(
+        password=data.password,
+        reset_code=None
+    )
+    await session.execute(query)
+    await session.commit()
+
+    return {"message": "Parol yangilandi!"}
 
 # create admin
 @admin_router.post("/add-admin")
@@ -161,6 +246,8 @@ async def create_admin(token:str,data: CreateAdmin, session: AsyncSession = Depe
     if not has_permission(admin.premessions, required_permissions):
         raise HTTPException(status_code=403, detail="siz admin qo'sha olmaysiz!")
 
+    phone_number = is_valid_phone_number(data.phone)
+
     data_token = {
         "username": data.username,
         "password": data.password,
@@ -168,19 +255,22 @@ async def create_admin(token:str,data: CreateAdmin, session: AsyncSession = Depe
     }
     TOKEN = generate_token_for_admin(data_token)
     query = insert(admins).values(
-        username=data.username,
-        password=data.password,
-        tg_id=data.tg_id,
-        token=TOKEN,
-        premessions=data.premessions
+        full_name = data.full_name,
+        phone = phone_number,
+        email = data.email,
+        username = data.username,
+        password = data.password,
+        tg_id = data.tg_id,
+        premessions = data.premessions,
+        token = TOKEN
     )
     await session.execute(query)
     await session.commit()
     return {"message": "Admin created successfully"}
 
 # update admin
-@admin_router.put("/update")
-async def update_admin(token: str, admin: UpdateAdmin, session: AsyncSession = Depends(get_async_session)):
+@admin_router.put("/update-admin")
+async def update_admin(token: str, data: UpdateAdmin, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
@@ -200,12 +290,18 @@ async def update_admin(token: str, admin: UpdateAdmin, session: AsyncSession = D
     if not has_permission(admin.premessions, required_permissions):
         raise HTTPException(status_code=403, detail="siz admin ma'lumotlarini o'zgartira olmaysiz!")
     
+    phone_number = is_valid_phone_number(data.phone)
+    
     query = update(admins).where(admins.c.username == admin.username).values(
-        username=admin.username,
-        password=admin.password,
-        tg_id=admin.tg_id,
-        premessions=admin.premessions,  # JSONB formatidagi qiymat
-        updated_at=datetime.utcnow()  # Yangilanish vaqtini qo'shish
+        full_name = data.full_name,
+        phone = phone_number,
+        email = data.email,
+        username=data.username,
+        password=data.password,
+        tg_id=data.tg_id,
+        premessions=data.premessions,
+        active=data.active,
+        updated_at=datetime.utcnow()
     )
     result = await session.execute(query)
     await session.commit()
@@ -214,7 +310,7 @@ async def update_admin(token: str, admin: UpdateAdmin, session: AsyncSession = D
     return {"message": "Admin updated successfully"}
 
 # delete admin
-@admin_router.delete("/delete")
+@admin_router.delete("/delete-admin")
 async def delete_admin(token: str, data: DeleteAdmin, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
@@ -391,7 +487,84 @@ async def add_payment(token: str, data: AddPayment, session: AsyncSession = Depe
 
 # ADD PAYMENT FUNCTIONS END
 
+# CREATE, UPDATE PROJECTSDATA FUNCTIONS START
 
+# Create ProjectsData
+@admin_router.post("/create-projectsdata")
+async def create_projectsdata(token: str, data: CreateProjectsData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'create_projectsdata': 'True'
+        }
+        }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz projectsdata qo'sha olmaysiz!")
+
+    query = insert(ProjectsData).values(
+        name = data.name,
+        email = data.email,
+        domen = data.domen,
+        telegram_channel = data.telegram_channel,
+        youtube_channel = data.youtube_channel,
+        telegram_group = data.telegram_group,
+        telegram_bot = data.telegram_bot,
+        about = data.about
+    )
+
+    await session.execute(query)
+    await session.commit()
+    return {"message": "ProjectsData created successfully"}
+
+# Update ProjectsData
+@admin_router.put("/update-projectsdata")
+async def update_projectsdata(token: str, data: UpdateProjectsData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'update_projectsdata': 'True'
+        }
+        }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz projectsdata o'zgartira olmaysiz!")
+
+    query = update(ProjectsData).where(ProjectsData.c.id == data.id).values(
+        name = data.name,
+        email = data.email,
+        domen = data.domen,
+        telegram_channel = data.telegram_channel,
+        youtube_channel = data.youtube_channel,
+        telegram_group = data.telegram_group,
+        telegram_bot = data.telegram_bot,
+        about = data.about
+    )
+
+    await session.execute(query)
+    await session.commit()
+    return {"message": "ProjectsData updated successfully"}
+
+
+# CREATE, UPDATE PROJECTSDATA FUNCTIONS END
 
 # GET DATA FUNCTIONS FROM DATABASES START
 
@@ -742,5 +915,36 @@ async def get_all_phone_numbers(token: str, session: AsyncSession = Depends(get_
     serialized_data = [serialize_get_all_phone_numbers(row) for row in data]
 
     return {"all_phone_numbers": serialized_data}
+
+# get ProjectsData
+@admin_router.get("/get-projectsdata")
+async def get_projectsdata(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):    
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'get_projectsdata': 'True'
+        }
+    }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz projectsdata datalarni ololmaysiz!")
+
+    query = select(ProjectsData)
+    result = await session.execute(query)
+    data = result.fetchall()
+
+    # Ma'lumotlarni JSON formatiga aylantirish
+    serialized_data = [serialize_get_projectsdata(row) for row in data]
+
+    return {"projectsdata": serialized_data}
 
 # GET DATA FUNCTIONS FROM DATABASES END
