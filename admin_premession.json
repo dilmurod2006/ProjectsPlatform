@@ -1,6 +1,9 @@
 {
     "permessions": {
         "admin": {
+            "add_projectsdata": "True",
+            "update_projectsdata": "True",
+            "get_projectsdata": "True",
             "login_admin": "True",
             "check_login_admin": "True",
             "add_admin": "True",

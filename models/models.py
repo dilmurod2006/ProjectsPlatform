@@ -10,8 +10,7 @@ from sqlalchemy import (
     ForeignKey, 
     MetaData,
     TIMESTAMP,
-    DateTime,
-    LargeBinary
+    DateTime
 )
 
 from sqlalchemy.dialects.postgresql import JSONB
@@ -142,8 +141,12 @@ admins = Table(
     'admins',
     metadata,
     Column('id', Integer, primary_key=True, index=True,autoincrement=True),
+    Column('full_name', String(25), index=True),
+    Column('phone', String, unique=True, index=True),
+    Column('email', String, unique=True, index=True),
     Column('username', String),
     Column('password', String),
+    Column('sex', Boolean, default=True),
     Column('tg_id', BigInteger, unique=True, index=True),
     Column('active', Boolean, default=True),
     Column('premessions', JSONB, nullable=True, index=True),
@@ -151,4 +154,23 @@ admins = Table(
     Column('updated_at', TIMESTAMP),
     Column('token', String(length=700), unique=True, index=True),
     Column("code", BigInteger, nullable=True)
+)
+
+# Loyiha ma'lumotlari
+ProjectsData = Table(
+    'projectsdata',
+    metadata,
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
+    Column('name', String),
+    Column('email', String, nullable=True),
+    Column('domen', String, nullable=True),
+    Column('telegram_chaneel', String, nullable=True),
+    Column('youtube', String, nullable=True),
+    Column('telegram_group', String, nullable=True),
+    Column('telegram_bot', String, nullable=True),
+    Column('about', Text, nullable=True),
+    Column('balance', BigInteger, default=0),
+    Column('created_at', TIMESTAMP, default=datetime.utcnow),
+    Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 )

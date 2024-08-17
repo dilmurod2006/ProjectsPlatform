@@ -1,0 +1,5 @@
+SSH ULANISH:
+username: root
+ip4: 45.138.158.199
+password:ProjectsPlatformAdmin
+

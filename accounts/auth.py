@@ -85,9 +85,9 @@ async def generate_token_forregister(
     return {"token": token}
 
 # Create user with token
-@accounts_routers.post("/create-user/{token}")
-async def create_user(token: str, data: CreateUser, session: AsyncSession = Depends(get_async_session)):
-    query = select(forregister).filter_by(token=token)
+@accounts_routers.post("/create-user")
+async def create_user(data: CreateUser, session: AsyncSession = Depends(get_async_session)):
+    query = select(forregister).filter_by(token=data.token)
     result = await session.execute(query)
     data_forregister = result.fetchone()
 
@@ -100,7 +100,7 @@ async def create_user(token: str, data: CreateUser, session: AsyncSession = Depe
     except HTTPException as e:
         if e.detail == "Token has expired":
             # Token eskirgan bo'lsa, uni o'chirish
-            delete_query = delete(forregister).where(forregister.c.token == token)
+            delete_query = delete(forregister).where(forregister.c.token == data.token)
             await session.execute(delete_query)
             await session.commit()
             raise HTTPException(status_code=400, detail="Token has expired")
@@ -140,7 +140,7 @@ async def create_user(token: str, data: CreateUser, session: AsyncSession = Depe
         token=jwt_token
     )
 
-    delete_query = delete(forregister).where(forregister.c.token == token)
+    delete_query = delete(forregister).where(forregister.c.token == data.token)
     await session.execute(delete_query)
     await session.execute(query)
     await session.commit()

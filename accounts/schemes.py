@@ -6,6 +6,7 @@ class TokenRequest(BaseModel):
 
 # Create user class
 class CreateUser(BaseModel):
+    token: str
     full_name: str
     sex: bool
     email: str
