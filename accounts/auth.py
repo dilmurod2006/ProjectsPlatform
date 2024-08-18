@@ -13,6 +13,7 @@ from .schemes import (
 )
 from database import get_async_session
 from models.models import users, forregister
+from settings import API_FORREGISTER_SECRET_KEY
 
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -37,6 +38,10 @@ async def generate_token_forregister(
     data: TokenRequest, 
     session: AsyncSession = Depends(get_async_session)
 ):
+    # cheack api secret key
+    if data.secret_key != API_FORREGISTER_SECRET_KEY:
+        raise HTTPException(status_code=400, detail="Invalid secret key")
+
     # Telegram ID va telefon raqamlarini tekshirish
     forregister_tg_id_query = select(forregister).where(forregister.c.tg_id == data.tg_id)
     forregister_phone_query = select(forregister).where(forregister.c.phone == data.phone)

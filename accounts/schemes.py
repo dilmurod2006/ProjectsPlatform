@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 class TokenRequest(BaseModel):
+    secret_key: str
     tg_id: int
     phone: str
 

@@ -1,14 +1,17 @@
 import psycopg2
+import sys
+sys.path.append('c:/Users/dilmu/ProjectsPlatform') 
+from settings import DB_HOST, DB_NAME, DB_PORT, DB_USER, DB_PASSWORD
 
 def check_postgres_connection():
     try:
         # PostgreSQL ma'lumotlar bazasiga ulanish
         conn = psycopg2.connect(
-            host="0.tcp.eu.ngrok.io",
-            port="11524",
-            database="PROJECTSPLATFORM",
-            user="postgres",
-            password="admin1957"
+            host=DB_HOST,
+            database=DB_NAME,
+            port=DB_PORT,
+            user=DB_USER,
+            password=DB_PASSWORD
         )
         conn.close()
         print("Ulanish muvaffaqiyatli")

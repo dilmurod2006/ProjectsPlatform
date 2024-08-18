@@ -245,7 +245,15 @@ async def create_admin(token:str,data: CreateAdmin, session: AsyncSession = Depe
 
     if not has_permission(admin.premessions, required_permissions):
         raise HTTPException(status_code=403, detail="siz admin qo'sha olmaysiz!")
-
+    
+    # cheack username in admin table
+    if data.username==admin.username:
+        raise HTTPException(status_code=401, detail="Bu username allaqachon bor!")
+    
+    # cheack email in admin table
+    if data.email==admin.email:
+        raise HTTPException(status_code=401, detail="Bu email allaqachon bor!")
+    
     phone_number = is_valid_phone_number(data.phone)
 
     data_token = {
@@ -289,6 +297,14 @@ async def update_admin(token: str, data: UpdateAdmin, session: AsyncSession = De
 
     if not has_permission(admin.premessions, required_permissions):
         raise HTTPException(status_code=403, detail="siz admin ma'lumotlarini o'zgartira olmaysiz!")
+    
+    # cheack username in admin tabless
+    if data.username==admin.username:
+        raise HTTPException(status_code=401, detail="Bu username allaqachon bor!")
+    
+    # cheack email in admin table
+    if data.email==admin.email:
+        raise HTTPException(status_code=401, detail="Bu email allaqachon bor!")
     
     phone_number = is_valid_phone_number(data.phone)
     
