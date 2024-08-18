@@ -1,0 +1,15 @@
+Description=FastAPI application
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/projects/ProjectsPlatform
+ExecStart=/projects/ProjectsPlatform/projectsplatformvenv/bin/uvicorn main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+Environment="PATH=/projects/ProjectsPlatform/projectsplatformvenv/bin"
+
+[Install]
+WantedBy=multi-user.target
+
+
