@@ -9,7 +9,8 @@ from .schemes import (
     CheckLogin,
     ChangePassword,
     ResetPassword,
-    ResetPasswordRequest
+    ResetPasswordRequest,
+    AboutAccount
 )
 from database import get_async_session
 from models.models import users, forregister
@@ -27,7 +28,8 @@ from .utils import (
     generate_token_for_users,
     send_login_code,
     verify_jwt_token,
-    send_reset_password_code
+    send_reset_password_code,
+    serialize_user
 )
 
 accounts_routers = APIRouter()
@@ -282,3 +284,21 @@ async def reset_password(data: ResetPassword, session: AsyncSession = Depends(ge
     await session.commit()
 
     return {"message": "Parol muvaffaqiyatli o'zgartirildi"}
+
+
+# GET AboutAccount
+@accounts_routers.post("/about_account")
+async def get_about_account(data: AboutAccount, session: AsyncSession = Depends(get_async_session)):
+    query = select(users).where(users.c.token == data.token)
+    result = await session.execute(query)
+    user = result.fetchone()
+
+
+    # cheack token
+    if user is None or not verify_jwt_token(data.token):
+        raise HTTPException(status_code=401, detail="user not found or token expired")
+    
+    # Ma'lumotlarni JSON formatiga aylantirish
+    serialized_data = [serialize_user(row) for row in user]
+
+    return serialized_data

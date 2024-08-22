@@ -117,3 +117,21 @@ def send_reset_password_code(tg_id: int, reset_code: int) -> str:
     post(url, data)
 
     return f"parolni tiklovchi code yuborildi!"
+
+# serialize data
+def serialize_user(row):
+    return {
+        "id": row.id,
+        "full_name": row.full_name,
+        "username": row.username,
+        "email": row.email,
+        "phone": row.phone,
+        "sex": row.sex,
+        "tg_id": row.tg_id,
+        "balance": row.balance,
+        "created_at": row.created_at,
+        "updated_at": row.updated_at,
+        "last_login": row.last_login,
+        "how_online": row.how_online,
+        "token": row.token
+    }
