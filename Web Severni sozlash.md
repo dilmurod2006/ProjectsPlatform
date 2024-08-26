@@ -43,3 +43,21 @@
         sudo apt install certbot
         sudo apt-get install python3-certbot-nginx
         sudo certbot --nginx
+
+
+
+<!-- SSH ORQALI FILELAR VVA FOLDER O'TKAZISH -->
+
+# SSH orqali file o'tkazish severga
+    folder o'tkzish:
+        1. scp -r /local/folder/path username@remote_host:/remote/folder/path
+    
+    file o'tkzish:
+        1. scp /local/file/path username@remote_host:/remote/file/path
+    
+    EXAMPLE:
+        1. Folder o'tkazish:
+            scp -r C:/Users/dilmu/ProjectsPlatform root@45.138.158.199:/projects/
+
+        2. File o'tkazish:
+            scp C:/Users/dilmu/ProjectsPlatform/bot.py root@45.138.158.199:/projects/ProjectsPlatform/bot.py
