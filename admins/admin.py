@@ -254,7 +254,8 @@ async def create_admin(token:str,data: CreateAdmin, session: AsyncSession = Depe
     if data.email==admin.email:
         raise HTTPException(status_code=401, detail="Bu email allaqachon bor!")
     
-    phone_number = is_valid_phone_number(data.phone)
+    if not is_valid_phone_number(data.phone):
+        raise HTTPException(status_code=401, detail="Telefon raqam noto'g'ri kiritildi!")
 
     data_token = {
         "username": data.username,
@@ -264,7 +265,7 @@ async def create_admin(token:str,data: CreateAdmin, session: AsyncSession = Depe
     TOKEN = generate_token_for_admin(data_token)
     query = insert(admins).values(
         full_name = data.full_name,
-        phone = phone_number,
+        phone = data.phone,
         email = data.email,
         username = data.username,
         password = data.password,

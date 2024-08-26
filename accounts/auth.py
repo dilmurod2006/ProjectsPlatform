@@ -28,8 +28,7 @@ from .utils import (
     generate_token_for_users,
     send_login_code,
     verify_jwt_token,
-    send_reset_password_code,
-    serialize_user
+    send_reset_password_code
 )
 
 accounts_routers = APIRouter()
@@ -299,6 +298,15 @@ async def get_about_account(data: AboutAccount, session: AsyncSession = Depends(
         raise HTTPException(status_code=401, detail="user not found or token expired")
     
     # Ma'lumotlarni JSON formatiga aylantirish
-    serialized_data = [serialize_user(row) for row in user]
+    # serialized_data = [serialize_user(row) for row in user]
 
-    return serialized_data
+    return {
+        "id": user.id,
+        "full_name": user.full_name,
+        "username": user.username,
+        "email": user.email,
+        "phone": user.phone,
+        "sex": user.sex,
+        "tg_id": user.tg_id,
+        "balance": user.balance,
+    }
