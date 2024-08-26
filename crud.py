@@ -36,7 +36,6 @@ def create_admin():
     password = "ProjectsPlatformAdmin@Dilmurod1945&1957"
     sex=True
     tg_id = 5420071824
-    created_at = datetime.utcnow()
     premissions = {
     "permessions": {
         "admin": {
