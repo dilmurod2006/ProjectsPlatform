@@ -80,12 +80,12 @@ def create_admin():
     token = generate_token_for_admin(data_token)
     
     insert_query = """
-    INSERT INTO admins (full_name, phone, email, username, password, sex,tg_id, premessions, token, created_at)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO admins (full_name, phone, email, username, password, sex,tg_id, premessions, token)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     RETURNING id;
     """
     
-    cursor.execute(insert_query, (full_name, phone, email, username, password, sex, tg_id, premessions_str, token, created_at))
+    cursor.execute(insert_query, (full_name, phone, email, username, password, sex, tg_id, premessions_str, token))
     
     connection.commit()
     cursor.close()
