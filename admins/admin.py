@@ -22,7 +22,7 @@ from models.models import (
     mobilekundalikcom,
     school_data,
     products,
-    ProjectsData
+    payment_admin
 )
 from .schemes import (
     LoginAdmin,
@@ -35,9 +35,7 @@ from .schemes import (
     AddProducts,
     UpdateProducts,
     DeleteProducts,
-    AddPayment,
-    CreateProjectsData,
-    UpdateProjectsData,
+    AddPayment
 )
 from .utils import (
     send_login_code,
