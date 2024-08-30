@@ -54,13 +54,6 @@ def create_admin(full_name, phone, email, username, password, sex, tg_id, premis
     
     return {"username": username, "password": password, "token": token}
 
-# def send_admins_data(admin_id: int, file):
-#     TOKEN="6067125214:AAHx7q4z9451T_TsyvlQOrN2Lqfn27GglOI"
-#     # url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
-#     url = f"https://api.telegram.org/bot{TOKEN}/sendDocument"
-#     params = {'chat_id': admin_id, 'document': file}
-#     response = post(url, params=params)
-#     return response
 def send_admins_data(admin_id: int, file: str):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
     
