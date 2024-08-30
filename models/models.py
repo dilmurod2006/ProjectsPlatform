@@ -175,3 +175,5 @@ ProjectsData = Table(
     Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 )
+
+
