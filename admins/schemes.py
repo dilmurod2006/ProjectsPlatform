@@ -1,6 +1,6 @@
 # create schemes
 from pydantic import BaseModel
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from fastapi import UploadFile
 
 
@@ -76,9 +76,11 @@ class DeleteProducts(BaseModel):
 # AddPayment class
 class AddPayment(BaseModel):
     admin_token: str
-    token: str
     tg_id: int
-    payment_number: int
     tulov_summasi: int
-    bio: str
+    payment_chek_img: Optional[bytes] = None
+    bio: Optional[str] = None
 
+# Get Data class
+class GetData(BaseModel):
+    admin_token: str

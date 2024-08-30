@@ -35,7 +35,8 @@ from .schemes import (
     AddProducts,
     UpdateProducts,
     DeleteProducts,
-    AddPayment
+    AddPayment,
+    GetData
 )
 from .utils import (
     send_login_code,
@@ -44,10 +45,11 @@ from .utils import (
     verify_jwt_token,
     has_permission,
     is_valid_phone_number,
-    check_payment,
+    send_payment_data,
     serialize_forregister,
     serialize_users,
     serialize_reports_balance,
+    serialize_payment,
     serialize_products,
     serialize_school_data,
     serialize_pckundalikcom,
@@ -55,8 +57,7 @@ from .utils import (
     serialize_majburiyobuna,
     serialize_admins,
     serialize_get_all_telegram_ids,
-    serialize_get_all_phone_numbers,
-    serialize_get_projectsdata
+    serialize_get_all_phone_numbers
 )
 from datetime import datetime, timedelta
 
@@ -444,7 +445,7 @@ async def delete_products(data: DeleteProducts, session: AsyncSession = Depends(
 
 
 # ADD PAYYMENT FUNCTIONS START
-@admin_router.post("/add-payment")
+@admin_router.post("/payment")
 async def add_payment(data: AddPayment, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -465,39 +466,35 @@ async def add_payment(data: AddPayment, session: AsyncSession = Depends(get_asyn
     if not has_permission(admin.premessions, required_permissions):
         raise HTTPException(status_code=403, detail="siz payment qo'sha olmaysiz!")
     
-    # cheack user token
-    user_query = select(users).where(users.c.token == data.token)
-    result = await session.execute(user_query)
-    user = result.fetchone()
-
-    reportsbalance_query = select(reportsbalance).where(reportsbalance.c.payment_number == data.payment_number)
-    result = await session.execute(reportsbalance_query)
-    reportsbalance_data = result.fetchone()
-
+    # cheack telegam id
+    user_query = select(users).where(users.c.tg_id == data.tg_id)
+    user_result = await session.execute(user_query)
+    user = user_result.fetchone()
+    
     if user is None:
-        raise HTTPException(status_code=400, detail="User not found")
-
-    # cheack payment 
-    if check_payment() is False:
-        raise HTTPException(status_code=400, detail="Bunaqa to'lov hali amalga oshmadi qaytadan urinib ko'ring!")
-
-    # add balance in users table
-    balance_query = update(users).where(users.c.token == data.token).values(
-        balance = user.balance + data.tulov_summasi
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # payment qo'shish
+    payment_query = insert(payment_admin).values(
+        admin_id = admin.id,
+        user_id = user.id,
+        tulov_summasi = data.tulov_summasi,
+        payment_chek_img = data.payment_chek_img,
+        bio = data.bio
     )
-
-    query = insert(reportsbalance).values(
-        payment_number = data.payment_number,
-        user_id=user.id,
-        balance= data.tulov_summasi,
+    # update balance
+    update_balance_query = update(users).where(users.c.id == user.id).values(balance = user.balance + data.tulov_summasi)
+    await session.execute(update_balance_query)
+    await session.execute(payment_query)
+    send_about_payment_data = send_payment_data(
+        tg_id=data.tg_id,
+        username=user.username,
         tulov_summasi=data.tulov_summasi,
+        payment_chek_img=data.payment_chek_img,
         bio=data.bio
-    )
-    await session.execute(balance_query)
-    await session.execute(query)
-
+        )
     await session.commit()
-    return {"message": "Payment added successfully"}
+    return {"message": f"{user.username} foydalanuvchiga {data.tulov_summasi} so'm to'lov o'tkazildi. {send_about_payment_data}"}
 
 
 # ADD PAYMENT FUNCTIONS END
@@ -507,12 +504,12 @@ async def add_payment(data: AddPayment, session: AsyncSession = Depends(get_asyn
 
 # get forregister data
 @admin_router.get("/get-forregister")
-async def get_forregister(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+async def get_forregister(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -540,12 +537,12 @@ async def get_forregister(token: str, session: AsyncSession = Depends(get_async_
 
 # get users data
 @admin_router.get("/get-users")
-async def get_users(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+async def get_users(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -572,12 +569,12 @@ async def get_users(token: str, session: AsyncSession = Depends(get_async_sessio
 
 # get reportsbalance data
 @admin_router.get("/get-reportsbalance")
-async def get_reportsbalance(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+async def get_reportsbalance(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -602,14 +599,46 @@ async def get_reportsbalance(token: str, session: AsyncSession = Depends(get_asy
 
     return {"reportsbalance": serialized_data}
 
-# get products data
-@admin_router.get("/get-products")
-async def get_products(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+# get payment data
+@admin_router.get("/get-payment-data")
+async def get_payment(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'get_payment_data': 'True'
+        }
+    }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz payment datalarni ololmaysiz!")
+
+    # Payment datalarni olish
+    query = select(payment_admin)
+    result = await session.execute(query)
+    data = result.fetchall()
+
+    # Ma'lumotlarni JSON formatiga aylantirish
+    serialized_data = [serialize_payment(row) for row in data]
+
+    return {"payment": serialized_data}
+
+# get products data
+@admin_router.get("/get-products")
+async def get_products(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -635,12 +664,12 @@ async def get_products(token: str, session: AsyncSession = Depends(get_async_ses
     return {"products": serialized_data}
 # get school data
 @admin_router.get("/get-schooldata")
-async def get_schooldata(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+async def get_schooldata(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -666,12 +695,12 @@ async def get_schooldata(token: str, session: AsyncSession = Depends(get_async_s
 
 # get pckundalikcom data
 @admin_router.get("/get-pckundalikcom")
-async def get_pckundalikcom(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)   
+async def get_pckundalikcom(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)   
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -697,12 +726,12 @@ async def get_pckundalikcom(token: str, session: AsyncSession = Depends(get_asyn
 
 # get mobilekundalikcom data
 @admin_router.get("/get-mobilekundalikcom")
-async def get_mobilekundalikcom(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+async def get_mobilekundalikcom(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -728,12 +757,12 @@ async def get_mobilekundalikcom(token: str, session: AsyncSession = Depends(get_
 
 # get majburiyobuna data
 @admin_router.get("/get-majburiyobuna")
-async def get_majburiyobuna(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+async def get_majburiyobuna(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -759,12 +788,12 @@ async def get_majburiyobuna(token: str, session: AsyncSession = Depends(get_asyn
 
 # get admins data
 @admin_router.get("/get-admins")
-async def get_admins(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+async def get_admins(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -791,12 +820,12 @@ async def get_admins(token: str, session: AsyncSession = Depends(get_async_sessi
 
 # get all Telegram IDs from users table
 @admin_router.get("/get_all_telegram_ids")
-async def get_all_telegram_ids(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+async def get_all_telegram_ids(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -824,12 +853,12 @@ async def get_all_telegram_ids(token: str, session: AsyncSession = Depends(get_a
 
 # Get all phone numbers and full names from users table
 @admin_router.get("/get_all_phone_numbers")
-async def get_all_phone_numbers(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
+async def get_all_phone_numbers(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(token):
+    if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
