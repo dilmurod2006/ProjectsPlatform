@@ -157,10 +157,10 @@ if __name__ == "__main__":
     )
     
     # Ikkala admin ma'lumotlarini saqlash
-    with open("admin1_data.json", "w") as f:
+    with open("sizning_admin_malumotlaringiz.json", "w") as f:
         json.dump(admin1_data, f)
     
-    with open("admin2_data.json", "w") as f:
+    with open("sizning_admin_malumotlaringiz.json", "w") as f:
         json.dump(admin2_data, f)
     
     # send data to telegram bot
