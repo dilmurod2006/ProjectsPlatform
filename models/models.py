@@ -87,7 +87,7 @@ school_data = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('viloyat', String),
     Column('tuman', String),
-    Column('school_number', Integer),
+    Column('school_number', BigInteger),
 )
 
 # pckundalikcom model
