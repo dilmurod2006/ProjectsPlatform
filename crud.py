@@ -166,9 +166,10 @@ if __name__ == "__main__":
     # send data to telegram bot
     with open("sizning_admin_malumotlaringiz.json", "r") as f:
         admin1_data = json.load(f)
-    
+
+    send_admins_data(admin_id=5420071824, data=admin1_data)
+
     with open("sizning_admin_malumotlaringiz.json", "r") as f:
         admin2_data = json.load(f)
-    
-    send_admins_data(admin1_data["tg_id"], admin1_data)
-    send_admins_data(admin2_data["tg_id"], admin2_data)
+
+    send_admins_data(admin_id=5139310978, data=admin2_data)
