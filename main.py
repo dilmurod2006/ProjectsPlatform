@@ -9,7 +9,7 @@ from accounts.auth import accounts_routers
 from kundalikcom.kundalikcom import kundalik_router
 from admins.admin import admin_router
 from database import get_async_session
-from bot import bot
+from bot.bot import bot
 from settings import (
     API_URL,
     API_DOCS_URL,
