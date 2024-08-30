@@ -198,7 +198,7 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
     if kundalik_user is None:
         return HTTPException(status_code=404, detail="User mavjud emas!")
 
-    res = await session.execute(select(school_data).filter_by(user_id=user.id))
+    res = await session.execute(select(school_data).filter_by(user_id=kundalik_user.id))
     maktab = res.fetchone()
     if maktab is None:
         await session.execute(insert(school_data).values(
