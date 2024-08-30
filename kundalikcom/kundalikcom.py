@@ -25,10 +25,15 @@ from models.models import (
     pckundalikcom,
     mobilekundalikcom,
     reportsbalance,
-    school_data
+    school_data,
+    loginsdata
 )
 
-from .utils import *
+from utils import (
+    months_size_price,
+    get_user_logins,
+    verify_jwt_token
+)
 
 from database import get_async_session
 
@@ -218,8 +223,8 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
 async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
-    if user is None:
-        return HTTPException(status_code=404, detail="User mavjud emas!")
+    if user is None or not verify_jwt_token(data.token):
+        return HTTPException(status_code=404, detail="User mavjud emas yoki token xato!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:

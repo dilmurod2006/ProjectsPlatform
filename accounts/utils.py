@@ -55,7 +55,7 @@ def generate_token_for_users(data: Dict[str, str], expires_delta: timedelta = ti
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def verify_jwt_token(token: str):
+def verify_jwt_token(token: str) ->dict:
     try:
         # Tokenni dekodlash
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)

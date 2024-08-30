@@ -259,9 +259,3 @@
                 how: False
                 message: Ayni paytda bunday product mavjud emas!
         
-
-        
-            
-
-
-
