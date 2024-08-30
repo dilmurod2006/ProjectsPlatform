@@ -10,9 +10,10 @@ from sqlalchemy import (
     ForeignKey, 
     MetaData,
     TIMESTAMP,
-    DateTime,
-    JSON
+    DateTime
 )
+
+from sqlalchemy.dialects.postgresql import JSONB
 
 metadata = MetaData()
 
@@ -26,7 +27,6 @@ forregister = Table(
     Column('phone', String(length=13), unique=True, index=True),
     Column('token', String, unique=True, index=True),
     Column('created_at', DateTime, default=datetime.utcnow),
-    Column('expires_at', DateTime, default=lambda: datetime.utcnow() + timedelta(minutes=15))
 )
 
 users = Table(
@@ -40,7 +40,7 @@ users = Table(
     Column('username', String(length=30), unique=True, index=True),
     Column('password', String(length=260)),
     Column('tg_id', BigInteger, nullable=True, unique=True, index=True),
-    Column('balance', BigInteger, default=0),
+    Column('balance', BigInteger, default=25000),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow),
     Column('last_login', TIMESTAMP, default=datetime.utcnow),
@@ -55,11 +55,12 @@ reportsbalance = Table(
     'reportsbalance',
     metadata,
     Column('id', Integer, primary_key=True, index=True,autoincrement=True),
-    Column('user_id', Integer),
-    Column('balance', Integer, default=0),
-    Column('size', Integer),
-    Column('created_at', TIMESTAMP, default=datetime.utcnow),
-    Column('bio', String, nullable=True)
+    Column('payment_number', BigInteger, index=True),
+    Column('user_id', Integer, ForeignKey('users.id'), index=True),
+    Column('balance', BigInteger, default=0),
+    Column('tulov_summasi', BigInteger),
+    Column('bio', String, nullable=True),
+    Column('created_at', TIMESTAMP, default=datetime.utcnow)
 )
 
 # Products model for users
@@ -69,7 +70,9 @@ products = Table(
     Column('id', Integer, primary_key=True, index=True, autoincrement=True),
     Column('name', String, index=True),
     Column('bio', Text, nullable=True),
-    Column('settings', JSON)
+    Column('settings', JSONB, nullable=True),
+    Column('created_at', TIMESTAMP, default=datetime.utcnow),
+    Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
 )
 
 # ACCOUNTS MODELS END
@@ -137,12 +140,38 @@ majburiyobuna = Table(
 admins = Table(
     'admins',
     metadata,
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
+    Column('full_name', String(25), index=True),
+    Column('phone', String, unique=True, index=True),
+    Column('email', String, unique=True, index=True),
     Column('username', String),
     Column('password', String),
+    Column('sex', Boolean, default=True),
     Column('tg_id', BigInteger, unique=True, index=True),
-    Column('active', Boolean),
+    Column('active', Boolean, default=True),
+    Column('premessions', JSONB, nullable=True, index=True),
+    Column('token', String(length=700), unique=True, index=True),
+    Column("code", BigInteger, nullable=True),
+    Column("reset_code", BigInteger, nullable=True),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
-    Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow),
-    Column('token', String),
+    Column('updated_at', TIMESTAMP),
+)
+
+# Loyiha ma'lumotlari
+ProjectsData = Table(
+    'projectsdata',
+    metadata,
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
+    Column('name', String),
+    Column('email', String, nullable=True),
+    Column('domen', String, nullable=True),
+    Column('telegram_channel', String, nullable=True),
+    Column('youtube_channel', String, nullable=True),
+    Column('telegram_group', String, nullable=True),
+    Column('telegram_bot', String, nullable=True),
+    Column('about', Text, nullable=True),
+    Column('balance', BigInteger, default=0),
+    Column('created_at', TIMESTAMP, default=datetime.utcnow),
+    Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 )

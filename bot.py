@@ -38,6 +38,7 @@ def send_welcome(message):
     chat_id = message.chat.id
     user_data[chat_id] = {}
     user_data[chat_id]['tg_id'] = chat_id
+
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     markup.add(types.KeyboardButton('Telefon raqamni berish', request_contact=True))
     bot.send_message(chat_id, "Telefon raqamingizni yuboring:", reply_markup=markup)
@@ -58,8 +59,5 @@ def handle_contact(message):
         else:
             bot.send_message(chat_id, "Telefon raqamingiz O'zbekiston raqami (+998) bilan boshlanishi kerak.")
 
-while __name__ == "__main__":
-    try:
-        bot.polling()
-    except:
-        pass
+if __name__ == "__main__":
+    bot.polling()

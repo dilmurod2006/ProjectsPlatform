@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from settings import PRODUCT_ID
@@ -112,7 +113,7 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("Bunday user mavjud emas!")
+        return HTTPException(status_code=404, detail="Bunday user mavjud emas!")
 
     # hozirgi vaqtni aniqlash
     now = datetime.utcnow()
@@ -191,11 +192,11 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("User mavjud emas!")
+        return HTTPException(status_code=404, detail="User mavjud emas!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:
-        return HTTPException("User mavjud emas!")
+        return HTTPException(status_code=404, detail="User mavjud emas!")
 
     res = await session.execute(select(school_data).filter_by(user_id=user.id))
     maktab = res.fetchone()
@@ -218,11 +219,11 @@ async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("User mavjud emas!")
+        return HTTPException(status_code=404, detail="User mavjud emas!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:
-        return HTTPException("User mavjud emas!")
+        return HTTPException(status_code=404, detail="User mavjud emas!")
 
     res = await session.execute(select(school_data).filter_by(user_id=user.id))
     maktab = res.fetchone()
@@ -312,7 +313,7 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("Bunday user mavjud emas!")
+        return HTTPException(status_code=404, detail="Bunday user mavjud emas!")
 
     # hozirgi vaqtni aniqlash
     now = datetime.utcnow()
@@ -364,3 +365,16 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
     }
 
 
+### EXE AND APK DOWNLOADING START ###
+
+# Exe downloading
+@kundalik_router.get("/download_exe_kundalikcom")
+async def download_exe_kundalikcom_api():
+    pass
+
+# Apk downloading
+@kundalik_router.get("/download_apk_kundalikcom")
+async def download_apk_kundalikcom_api():
+    pass
+
+### EXE AND APK DOWNLOADING END ###

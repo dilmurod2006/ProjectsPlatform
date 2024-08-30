@@ -1,0 +1,35 @@
+{
+    "permessions": {
+        "admin": {
+            "create_projectsdata": "True",
+            "update_projectsdata": "True",
+            "get_projectsdata": "True",
+            "login_admin": "True",
+            "check_login_admin": "True",
+            "reset_password_request_admin": "True",
+            "reset_password_admin": "True",
+            "add_admin": "True",
+            "update_admin": "True",
+            "delete_admin": "True",
+            "add_products": "True",
+            "update_products": "True",
+            "delete_products": "True",
+            "add_payment": "True",
+            "get_forregister_data": "True",
+            "get_users_data": "True",
+            "get_reportsbalance_data": "True",
+            "get_products_data": "True",
+            "get_school_data": "True",
+            "get_pckundalikcom_data": "True",
+            "get_mobilekundalikcom_data": "True",
+            "get_majburiyobuna_data": "True",
+            "get_admins_data": "True",
+            "get_all_telegram_ids_data": "True",
+            "get_all_phone_numbers_data": "True",
+            "update_users_data": "True",
+            "delete_users_data": "True"
+           
+
+    }
+    }
+}

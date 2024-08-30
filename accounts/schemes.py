@@ -1,11 +1,13 @@
 from pydantic import BaseModel
 
 class TokenRequest(BaseModel):
+    secret_key: str
     tg_id: int
     phone: str
 
 # Create user class
 class CreateUser(BaseModel):
+    token: str
     full_name: str
     sex: bool
     email: str
