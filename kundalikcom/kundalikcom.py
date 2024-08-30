@@ -1,4 +1,3 @@
--- Active: 1722686683082@@0.tcp.eu.ngrok.io@11524
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
