@@ -202,7 +202,7 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
     maktab = res.fetchone()
     if maktab is None:
         await session.execute(insert(school_data).values(
-            user_id=kundalik_user.user_id,
+            user_id=kundalik_user.id,
             viloyat=data.viloyat,
             tuman=data.tuman,
             school_number=data.school_number
