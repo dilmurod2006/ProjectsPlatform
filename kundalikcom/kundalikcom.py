@@ -205,12 +205,12 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
             user_id=kundalik_user.id,
             viloyat=data.viloyat,
             tuman=data.tuman,
-            school_number=data.school_number
+            school_name=data.school_name
         ))
     await session.execute(update(school_data).filter_by(user_id=user.id).values(
         viloyat=data.viloyat,
         tuman=data.tuman,
-        school_number=data.school_number
+        school_name=data.school_name
     ))
     await session.commit()
     return "Maktab ma'lumotlari muvaffaqiyatli kiritildi"
@@ -235,7 +235,7 @@ async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depen
     return {
         "viloyat": maktab.viloyat,
         "tuman": maktab.tuman,
-        "school_number": maktab.school_number
+        "school_name": maktab.school_name
     }
 
 
