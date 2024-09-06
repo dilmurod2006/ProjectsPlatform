@@ -20,9 +20,13 @@ import secrets
 
 from settings import BOT_TOKEN, SECRET_KEY_FOR_ADMINS, ALGORITHM
 <<<<<<< HEAD
+<<<<<<< HEAD
 import re
 =======
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+import re
+>>>>>>> dilmurod006
 
 
 # send login code to admin via bot
@@ -57,7 +61,7 @@ def generate_token_for_admin(data: Dict[str, str], expires_delta: timedelta = ti
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY_FOR_ADMINS, algorithm=ALGORITHM)
 
-def verify_jwt_token(token: str):
+def verify_jwt_token(token: str) ->dict:
     try:
         # Tokenni dekodlash
         payload = jwt.decode(token, SECRET_KEY_FOR_ADMINS, algorithms=ALGORITHM)
@@ -112,6 +116,35 @@ def bank_web_site_control():
 def check_payment():
     return True
 
+# send about payment data
+def send_payment_data(tg_id: int, username: str, tulov_summasi: int, payment_chek_img: bytes, bio: str) -> str:
+    """Foydalanuvchiga to'lov o'tkazilganligi haqida ma'lumot yuborish"""
+    try:
+        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
+        
+        # Faylni yuborish uchun files parametrlardan foydalanamiz
+        files = {
+            "photo": payment_chek_img
+        }
+        
+        data = {
+            "chat_id": tg_id,
+            "caption": (
+                f"To'lov o'tkazildi:\n\n"
+                f"Username: {username}\n"
+                f"To'lov summasi: {tulov_summasi}\n"
+                f"Bio: {bio}"
+            )
+        }
+        
+        response = post(url, data=data, files=files)
+        
+        if response.status_code == 200:
+            return "To'lov haqidagi ma'lumotlar yuborildi foydalanuvchiga!"
+        else:
+            return f"Xato: {response.text}"
+    except Exception as e:
+        return f"Xato: {e}"
 
 
 # check user payment function end
@@ -148,6 +181,16 @@ def serialize_reports_balance(row):
         "user_id": row.user_id,
         "balance": row.balance,
         "tulov_summasi": row.tulov_summasi,
+        "bio": row.bio,
+        "created_at": row.created_at
+    }
+def serialize_payment(row):
+    return {
+        "id": row.id,
+        "admin_id": row.admin_id,
+        "user_id": row.user_id,
+        "tulov_summasi": row.tulov_summasi,
+        "payment_chek_img": row.payment_chek_img,
         "bio": row.bio,
         "created_at": row.created_at
     }
@@ -203,7 +246,7 @@ def serialize_admins(row):
         'tg_id': row.tg_id,
         'active': row.active,
         'premessions': row.premessions,
-        'created_at': row.creasted_at,
+        'created_at': row.created_at,
         'updated_at': row.updated_at
     }
 def serialize_get_all_telegram_ids(row):

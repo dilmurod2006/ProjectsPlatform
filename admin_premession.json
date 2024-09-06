@@ -18,6 +18,7 @@
             "get_forregister_data": "True",
             "get_users_data": "True",
             "get_reportsbalance_data": "True",
+            "get_payment_data": "True",
             "get_products_data": "True",
             "get_school_data": "True",
             "get_pckundalikcom_data": "True",

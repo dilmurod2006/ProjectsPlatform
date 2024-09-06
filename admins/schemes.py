@@ -1,6 +1,6 @@
 # create schemes
 from pydantic import BaseModel
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from fastapi import UploadFile
 
 
@@ -26,9 +26,13 @@ class ResetPassword(BaseModel):
 # Create admin class
 class CreateAdmin(BaseModel):
 <<<<<<< HEAD
+<<<<<<< HEAD
     admin_token: str
 =======
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+    admin_token: str
+>>>>>>> dilmurod006
     full_name: str
     phone: str
     email: str
@@ -41,9 +45,13 @@ class CreateAdmin(BaseModel):
 # Update admin class
 class UpdateAdmin(BaseModel):
 <<<<<<< HEAD
+<<<<<<< HEAD
     admin_token: str
 =======
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+    admin_token: str
+>>>>>>> dilmurod006
     full_name: str
     phone: str
     email: str
@@ -57,18 +65,26 @@ class UpdateAdmin(BaseModel):
 # Delete admin class
 class DeleteAdmin(BaseModel):
 <<<<<<< HEAD
+<<<<<<< HEAD
     admin_token: str
 =======
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+    admin_token: str
+>>>>>>> dilmurod006
     username: str
 
 
 # Add products class
 class AddProducts(BaseModel):
 <<<<<<< HEAD
+<<<<<<< HEAD
     admin_token: str
 =======
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+    admin_token: str
+>>>>>>> dilmurod006
     name: str
     bio: str
     settings: Dict[str, Any]
@@ -76,9 +92,13 @@ class AddProducts(BaseModel):
 # Update products class
 class UpdateProducts(BaseModel):
 <<<<<<< HEAD
+<<<<<<< HEAD
     admin_token: str
 =======
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+    admin_token: str
+>>>>>>> dilmurod006
     name: str
     bio: str
     settings: Dict[str, Any]
@@ -86,23 +106,32 @@ class UpdateProducts(BaseModel):
 # Delete products class
 class DeleteProducts(BaseModel):
 <<<<<<< HEAD
+<<<<<<< HEAD
     admin_token: str
 =======
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+    admin_token: str
+>>>>>>> dilmurod006
     name: str
 
 # AddPayment class
 class AddPayment(BaseModel):
 <<<<<<< HEAD
+<<<<<<< HEAD
     admin_token: str
 =======
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     token: str
+=======
+    admin_token: str
+>>>>>>> dilmurod006
     tg_id: int
-    payment_number: int
     tulov_summasi: int
-    bio: str
+    payment_chek_img: Optional[bytes] = None
+    bio: Optional[str] = None
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 # CreateProjectsData class
@@ -128,3 +157,8 @@ class UpdateProjectsData(BaseModel):
     telegram_bot: str
     about: str
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+# Get Data class
+class GetData(BaseModel):
+    admin_token: str
+>>>>>>> dilmurod006

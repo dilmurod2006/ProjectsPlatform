@@ -17,6 +17,7 @@ class SetSchoolSerializer(BaseModel):
     viloyat: str
     tuman: str
 <<<<<<< HEAD
+<<<<<<< HEAD
     school_name: str
 class GetSchoolSerializer(BaseModel):
     token: str
@@ -25,3 +26,11 @@ class GetSchoolSerializer(BaseModel):
 class GetSchoolSerializer(BaseModel):
     token: str
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+    school_name: str
+
+class GetSchoolSerializer(BaseModel):
+    token: str
+
+
+>>>>>>> dilmurod006

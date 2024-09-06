@@ -10,7 +10,8 @@ from sqlalchemy import (
     ForeignKey, 
     MetaData,
     TIMESTAMP,
-    DateTime
+    DateTime,
+    LargeBinary
 )
 
 from sqlalchemy.dialects.postgresql import JSONB
@@ -50,6 +51,19 @@ users = Table(
     Column('token', String(length=700), unique=True, index=True)
 )
 
+# Payment model for admin
+payment_admin = Table(
+    'payment',
+    metadata,
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
+    Column("admin_id", Integer, ForeignKey('admins.id'), index=True),
+    Column("user_id", Integer, ForeignKey('users.id'), index=True),
+    Column("tulov_summasi", BigInteger),
+    Column("payment_chek_img", LargeBinary, nullable=True),
+    Column("bio", Text, nullable=True),
+    Column("created_at", TIMESTAMP, default=datetime.utcnow),
+)
+
 # reportsbalance model for users
 reportsbalance = Table(
     'reportsbalance',
@@ -57,7 +71,7 @@ reportsbalance = Table(
     Column('id', Integer, primary_key=True, index=True,autoincrement=True),
     Column('payment_number', BigInteger, index=True),
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
-    Column('balance', BigInteger, default=0),
+    Column('balance', BigInteger),
     Column('tulov_summasi', BigInteger),
     Column('bio', String, nullable=True),
     Column('created_at', TIMESTAMP, default=datetime.utcnow)
@@ -70,10 +84,12 @@ products = Table(
     Column('id', Integer, primary_key=True, index=True, autoincrement=True),
     Column('name', String, index=True),
     Column('bio', Text, nullable=True),
+    Column('logo', LargeBinary, nullable=True),
     Column('settings', JSONB, nullable=True),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
 )
+
 
 # ACCOUNTS MODELS END
 
@@ -88,10 +104,14 @@ school_data = Table(
     Column('viloyat', String),
     Column('tuman', String),
 <<<<<<< HEAD
+<<<<<<< HEAD
     Column('school_name', String)
 =======
     Column('school_number', Integer),
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+    Column('school_name', String)
+>>>>>>> dilmurod006
 )
 
 # pckundalikcom model
@@ -161,6 +181,7 @@ admins = Table(
     Column('updated_at', TIMESTAMP),
 )
 
+<<<<<<< HEAD
 # Loyiha ma'lumotlari
 ProjectsData = Table(
     'projectsdata',
@@ -185,3 +206,6 @@ ProjectsData = Table(
 =======
 )
 >>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
+=======
+# ADMIN PANEL MODELS END
+>>>>>>> dilmurod006
