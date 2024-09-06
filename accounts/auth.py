@@ -283,6 +283,7 @@ async def reset_password(data: ResetPassword, session: AsyncSession = Depends(ge
     await session.commit()
 
     return {"message": "Parol muvaffaqiyatli o'zgartirildi"}
+<<<<<<< HEAD
 
 
 # GET AboutAccount
@@ -310,3 +311,5 @@ async def get_about_account(data: AboutAccount, session: AsyncSession = Depends(
         "tg_id": user.tg_id,
         "balance": user.balance,
     }
+=======
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85

@@ -87,7 +87,11 @@ school_data = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('viloyat', String),
     Column('tuman', String),
+<<<<<<< HEAD
     Column('school_name', String)
+=======
+    Column('school_number', Integer),
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
 )
 
 # pckundalikcom model
@@ -174,6 +178,10 @@ ProjectsData = Table(
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+<<<<<<< HEAD
 )
 
 
+=======
+)
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85

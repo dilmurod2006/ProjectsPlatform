@@ -42,6 +42,7 @@
     1. SSL sertifikat olish:
         sudo apt install certbot
         sudo apt-get install python3-certbot-nginx
+<<<<<<< HEAD
         sudo certbot --nginx
 
 
@@ -61,3 +62,6 @@
 
         2. File o'tkazish:
             scp C:/Users/dilmu/ProjectsPlatform/bot.py root@45.138.158.199:/projects/ProjectsPlatform/bot.py
+=======
+        sudo certbot --nginx
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85

@@ -36,6 +36,10 @@ def create_admin():
     password = "ProjectsPlatformAdmin@Dilmurod1945&1957"
     sex=True
     tg_id = 5420071824
+<<<<<<< HEAD
+=======
+    created_at = datetime.utcnow()
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     premissions = {
     "permessions": {
         "admin": {
@@ -80,12 +84,21 @@ def create_admin():
     token = generate_token_for_admin(data_token)
     
     insert_query = """
+<<<<<<< HEAD
     INSERT INTO admins (full_name, phone, email, username, password, sex,tg_id, premessions, token)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     RETURNING id;
     """
     
     cursor.execute(insert_query, (full_name, phone, email, username, password, sex, tg_id, premessions_str, token))
+=======
+    INSERT INTO admins (full_name, phone, email, username, password, sex,tg_id, premessions, token, created_at)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    RETURNING id;
+    """
+    
+    cursor.execute(insert_query, (full_name, phone, email, username, password, sex, tg_id, premessions_str, token, created_at))
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     
     connection.commit()
     cursor.close()

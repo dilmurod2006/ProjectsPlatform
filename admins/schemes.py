@@ -25,7 +25,10 @@ class ResetPassword(BaseModel):
 
 # Create admin class
 class CreateAdmin(BaseModel):
+<<<<<<< HEAD
     admin_token: str
+=======
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     full_name: str
     phone: str
     email: str
@@ -37,7 +40,10 @@ class CreateAdmin(BaseModel):
 
 # Update admin class
 class UpdateAdmin(BaseModel):
+<<<<<<< HEAD
     admin_token: str
+=======
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     full_name: str
     phone: str
     email: str
@@ -50,35 +56,75 @@ class UpdateAdmin(BaseModel):
 
 # Delete admin class
 class DeleteAdmin(BaseModel):
+<<<<<<< HEAD
     admin_token: str
+=======
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     username: str
 
 
 # Add products class
 class AddProducts(BaseModel):
+<<<<<<< HEAD
     admin_token: str
+=======
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     name: str
     bio: str
     settings: Dict[str, Any]
 
 # Update products class
 class UpdateProducts(BaseModel):
+<<<<<<< HEAD
     admin_token: str
+=======
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     name: str
     bio: str
     settings: Dict[str, Any]
 
 # Delete products class
 class DeleteProducts(BaseModel):
+<<<<<<< HEAD
     admin_token: str
+=======
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     name: str
 
 # AddPayment class
 class AddPayment(BaseModel):
+<<<<<<< HEAD
     admin_token: str
+=======
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
     token: str
     tg_id: int
     payment_number: int
     tulov_summasi: int
     bio: str
 
+<<<<<<< HEAD
+=======
+# CreateProjectsData class
+class CreateProjectsData(BaseModel):
+    name: str
+    email: str
+    domen: str
+    telegram_channel: str
+    youtube_channel: str
+    telegram_group: str
+    telegram_bot: str
+    about: str
+
+
+# UpdateProjectsData class
+class UpdateProjectsData(BaseModel):
+    name: str
+    email: str
+    domen: str
+    telegram_channel: str
+    youtube_channel: str
+    telegram_group: str
+    telegram_bot: str
+    about: str
+>>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
