@@ -103,15 +103,7 @@ school_data = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('viloyat', String),
     Column('tuman', String),
-<<<<<<< HEAD
-<<<<<<< HEAD
     Column('school_name', String)
-=======
-    Column('school_number', Integer),
->>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
-=======
-    Column('school_name', String)
->>>>>>> dilmurod006
 )
 
 # pckundalikcom model
@@ -181,31 +173,4 @@ admins = Table(
     Column('updated_at', TIMESTAMP),
 )
 
-<<<<<<< HEAD
-# Loyiha ma'lumotlari
-ProjectsData = Table(
-    'projectsdata',
-    metadata,
-    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
-    Column('name', String),
-    Column('email', String, nullable=True),
-    Column('domen', String, nullable=True),
-    Column('telegram_channel', String, nullable=True),
-    Column('youtube_channel', String, nullable=True),
-    Column('telegram_group', String, nullable=True),
-    Column('telegram_bot', String, nullable=True),
-    Column('about', Text, nullable=True),
-    Column('balance', BigInteger, default=0),
-    Column('created_at', TIMESTAMP, default=datetime.utcnow),
-    Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-<<<<<<< HEAD
-)
-
-
-=======
-)
->>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
-=======
 # ADMIN PANEL MODELS END
->>>>>>> dilmurod006

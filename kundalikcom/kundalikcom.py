@@ -118,15 +118,7 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-<<<<<<< HEAD
-<<<<<<< HEAD
         return HTTPException(status_code=404, detail="Bunday user mavjud emas!")
-=======
-        return HTTPException("Bunday user mavjud emas!")
->>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
-=======
-        return HTTPException(status_code=404, detail="Bunday user mavjud emas!")
->>>>>>> dilmurod006
 
     # hozirgi vaqtni aniqlash
     now = datetime.utcnow()
@@ -205,8 +197,6 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
     if user is None:
-<<<<<<< HEAD
-<<<<<<< HEAD
         return HTTPException(status_code=404, detail="User mavjud emas!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
@@ -221,42 +211,11 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
             viloyat=data.viloyat,
             tuman=data.tuman,
             school_name=data.school_name
-=======
-        return HTTPException("User mavjud emas!")
-=======
-        return HTTPException(status_code=404, detail="User mavjud emas!")
->>>>>>> dilmurod006
-    res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
-    kundalik_user = res.fetchone()
-    if kundalik_user is None:
-        return HTTPException(status_code=404, detail="User mavjud emas!")
-
-    res = await session.execute(select(school_data).filter_by(user_id=kundalik_user.id))
-    maktab = res.fetchone()
-    if maktab is None:
-        await session.execute(insert(school_data).values(
-            user_id=kundalik_user.id,
-            viloyat=data.viloyat,
-            tuman=data.tuman,
-<<<<<<< HEAD
-            school_number=data.school_number
->>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
-=======
-            school_name=data.school_name
->>>>>>> dilmurod006
         ))
     await session.execute(update(school_data).filter_by(user_id=user.id).values(
         viloyat=data.viloyat,
         tuman=data.tuman,
-<<<<<<< HEAD
-<<<<<<< HEAD
         school_name=data.school_name
-=======
-        school_number=data.school_number
->>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
-=======
-        school_name=data.school_name
->>>>>>> dilmurod006
     ))
     await session.commit()
     return "Maktab ma'lumotlari muvaffaqiyatli kiritildi"
@@ -264,29 +223,12 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
 async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
-<<<<<<< HEAD
-    if user is None:
-<<<<<<< HEAD
-        return HTTPException(status_code=404, detail="User mavjud emas!")
-    res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
-    kundalik_user = res.fetchone()
-    if kundalik_user is None:
-        return HTTPException(status_code=404, detail="User mavjud emas!")
-=======
-        return HTTPException("User mavjud emas!")
-    res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
-    kundalik_user = res.fetchone()
-    if kundalik_user is None:
-        return HTTPException("User mavjud emas!")
->>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
-=======
     if user is None or not verify_jwt_token(data.token):
         return HTTPException(status_code=404, detail="User mavjud emas yoki token xato!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:
         return HTTPException(status_code=404, detail="User mavjud emas!")
->>>>>>> dilmurod006
 
     res = await session.execute(select(school_data).filter_by(user_id=user.id))
     maktab = res.fetchone()
@@ -298,15 +240,7 @@ async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depen
     return {
         "viloyat": maktab.viloyat,
         "tuman": maktab.tuman,
-<<<<<<< HEAD
-<<<<<<< HEAD
         "school_name": maktab.school_name
-=======
-        "school_number": maktab.school_number
->>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
-=======
-        "school_name": maktab.school_name
->>>>>>> dilmurod006
     }
 
 
@@ -384,15 +318,7 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-<<<<<<< HEAD
-<<<<<<< HEAD
         return HTTPException(status_code=404, detail="Bunday user mavjud emas!")
-=======
-        return HTTPException("Bunday user mavjud emas!")
->>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
-=======
-        return HTTPException(status_code=404, detail="Bunday user mavjud emas!")
->>>>>>> dilmurod006
 
     # hozirgi vaqtni aniqlash
     now = datetime.utcnow()

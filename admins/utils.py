@@ -19,14 +19,7 @@ from requests import post, get
 import secrets
 
 from settings import BOT_TOKEN, SECRET_KEY_FOR_ADMINS, ALGORITHM
-<<<<<<< HEAD
-<<<<<<< HEAD
 import re
-=======
->>>>>>> 340a437b1ce802d8b37f0b8f3be24dddc7446c85
-=======
-import re
->>>>>>> dilmurod006
 
 
 # send login code to admin via bot
