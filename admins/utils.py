@@ -28,7 +28,7 @@ def send_login_code(tg_id: int, code: int) -> str:
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     data = {
         "chat_id": tg_id,
-        "text": f"Your login code is: {code}",
+        "text": f"Sizning tasdiqlash kodingiz: {code}",
     }
     post(url, data)
 

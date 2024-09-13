@@ -29,7 +29,7 @@ from models.models import (
     loginsdata
 )
 
-from utils import (
+from .  utils import (
     months_size_price,
     get_user_logins,
     verify_jwt_token

@@ -36,7 +36,8 @@ from .schemes import (
     UpdateProducts,
     DeleteProducts,
     AddPayment,
-    GetData
+    GetData,
+    FindData
 )
 from .utils import (
     send_login_code,
@@ -503,7 +504,7 @@ async def add_payment(data: AddPayment, session: AsyncSession = Depends(get_asyn
 # GET DATA FUNCTIONS FROM DATABASES START
 
 # get forregister data
-@admin_router.get("/get-forregister")
+@admin_router.post("/get-forregister")
 async def get_forregister(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -536,7 +537,7 @@ async def get_forregister(data: GetData, session: AsyncSession = Depends(get_asy
 
 
 # get users data
-@admin_router.get("/get-users")
+@admin_router.post("/get-users")
 async def get_users(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -568,7 +569,7 @@ async def get_users(data: GetData, session: AsyncSession = Depends(get_async_ses
     return {"users": serialized_data}
 
 # get reportsbalance data
-@admin_router.get("/get-reportsbalance")
+@admin_router.post("/get-reportsbalance")
 async def get_reportsbalance(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -600,7 +601,7 @@ async def get_reportsbalance(data: GetData, session: AsyncSession = Depends(get_
     return {"reportsbalance": serialized_data}
 
 # get payment data
-@admin_router.get("/get-payment-data")
+@admin_router.post("/get-payment-data")
 async def get_payment(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -632,7 +633,7 @@ async def get_payment(data: GetData, session: AsyncSession = Depends(get_async_s
     return {"payment": serialized_data}
 
 # get products data
-@admin_router.get("/get-products")
+@admin_router.post("/get-products")
 async def get_products(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -663,7 +664,7 @@ async def get_products(data: GetData, session: AsyncSession = Depends(get_async_
     
     return {"products": serialized_data}
 # get school data
-@admin_router.get("/get-schooldata")
+@admin_router.post("/get-schooldata")
 async def get_schooldata(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -694,7 +695,7 @@ async def get_schooldata(data: GetData, session: AsyncSession = Depends(get_asyn
     return {"school": serialized_data}
 
 # get pckundalikcom data
-@admin_router.get("/get-pckundalikcom")
+@admin_router.post("/get-pckundalikcom")
 async def get_pckundalikcom(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)   
     result = await session.execute(query)
@@ -725,7 +726,7 @@ async def get_pckundalikcom(data: GetData, session: AsyncSession = Depends(get_a
     return {"pckundalikcom": serialized_data}
 
 # get mobilekundalikcom data
-@admin_router.get("/get-mobilekundalikcom")
+@admin_router.post("/get-mobilekundalikcom")
 async def get_mobilekundalikcom(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -756,7 +757,7 @@ async def get_mobilekundalikcom(data: GetData, session: AsyncSession = Depends(g
     return {"mobilekundalikcom": serialized_data}
 
 # get majburiyobuna data
-@admin_router.get("/get-majburiyobuna")
+@admin_router.post("/get-majburiyobuna")
 async def get_majburiyobuna(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -787,7 +788,7 @@ async def get_majburiyobuna(data: GetData, session: AsyncSession = Depends(get_a
     return {"majburiyobuna": serialized_data}
 
 # get admins data
-@admin_router.get("/get-admins")
+@admin_router.post("/get-admins")
 async def get_admins(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -819,7 +820,7 @@ async def get_admins(data: GetData, session: AsyncSession = Depends(get_async_se
 
 
 # get all Telegram IDs from users table
-@admin_router.get("/get_all_telegram_ids")
+@admin_router.post("/get_all_telegram_ids")
 async def get_all_telegram_ids(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -852,7 +853,7 @@ async def get_all_telegram_ids(data: GetData, session: AsyncSession = Depends(ge
 
 
 # Get all phone numbers and full names from users table
-@admin_router.get("/get_all_phone_numbers")
+@admin_router.post("/get_all_phone_numbers")
 async def get_all_phone_numbers(data: GetData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
@@ -883,4 +884,30 @@ async def get_all_phone_numbers(data: GetData, session: AsyncSession = Depends(g
     return {"all_phone_numbers": serialized_data}
 
 
-# GET DATA FUNCTIONS FROM DATABASES END
+@admin_router.post("/about_admin")
+async def about_admin(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(data.admin_token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+    return {
+        "full_name": admin.full_name,
+        "phone": admin.phone,
+        "tg_id": admin.tg_id,
+        "username": admin.username,
+        "premessions": admin.premessions
+    }
+
+@admin_router.post("/find_user")
+async def find_user(data: FindData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(data.admin_token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+    MyModel = select(users).where(data.text in admins.c.full_name or data.text in admins.c.username)
+    results = session.query(MyModel).offset(10).limit(10).all()
+    return results
