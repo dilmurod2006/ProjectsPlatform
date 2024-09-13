@@ -107,6 +107,8 @@ if __name__ == "__main__":
                     "add_payment": "True",
                     "get_forregister_data": "True",
                     "get_users_data": "True",
+                    "get_user_data": "True",
+                    "find_user_data": "True",
                     "get_reportsbalance_data": "True",
                     "get_payment_data": "True",
                     "get_products_data": "True",
@@ -119,6 +121,8 @@ if __name__ == "__main__":
                     "get_all_phone_numbers_data": "True",
                     "update_users_data": "True",
                     "delete_users_data": "True"
+                
+
                 }
             }
         }
@@ -152,6 +156,8 @@ if __name__ == "__main__":
                     "add_payment": "True",
                     "get_forregister_data": "True",
                     "get_users_data": "True",
+                    "get_user_data": "True",
+                    "find_user_data": "True",
                     "get_reportsbalance_data": "True",
                     "get_payment_data": "True",
                     "get_products_data": "True",
@@ -164,6 +170,8 @@ if __name__ == "__main__":
                     "get_all_phone_numbers_data": "True",
                     "update_users_data": "True",
                     "delete_users_data": "True"
+                
+
                 }
             }
         }
