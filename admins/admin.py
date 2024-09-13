@@ -36,7 +36,8 @@ from .schemes import (
     UpdateProducts,
     DeleteProducts,
     AddPayment,
-    GetData
+    GetData,
+    FindData
 )
 from .utils import (
     send_login_code,
@@ -884,3 +885,31 @@ async def get_all_phone_numbers(data: GetData, session: AsyncSession = Depends(g
 
 
 # GET DATA FUNCTIONS FROM DATABASES END
+
+@admin_router.post("/about_admin")
+async def about_admin(data: GetData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(data.admin_token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+    return {
+        "full_name": admin.full_name,
+        "phone": admin.phone,
+        "tg_id": admin.tg_id,
+        "username": admin.username,
+        "premessions": admin.premessions
+    }
+
+@admin_router.post("/find_user")
+async def find_user(data: FindData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(data.admin_token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+    MyModel = select(users).where(data.text in admins.c.full_name or data.text in admins.c.username)
+    results = session.query(MyModel).offset(10).limit(10).all()
+    return results

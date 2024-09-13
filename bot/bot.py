@@ -14,7 +14,7 @@ user_data: Dict[int, Dict[str, str]] = {}
 
 def create_for_register(tg_id: int, phone: str) -> str:
     """API orqali token yaratish."""
-    response = requests.post("http://localhost:8000/accounts/for_register_bot_api", json={
+    response = requests.post("https://api.projectsplatform.uz/accounts/for_register_bot_api", json={
         "secret_key": API_FORREGISTER_SECRET_KEY,
         "tg_id": tg_id,
         "phone": phone
