@@ -17,6 +17,8 @@
             "add_payment": "True",
             "get_forregister_data": "True",
             "get_users_data": "True",
+            "get_user_data": "True",
+            "find_user_data": "True",
             "get_reportsbalance_data": "True",
             "get_payment_data": "True",
             "get_products_data": "True",

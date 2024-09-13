@@ -85,6 +85,11 @@ class AddPayment(BaseModel):
 class GetData(BaseModel):
     admin_token: str
 
+# Get Data User class
+class GetDataUser(BaseModel):
+    admin_token: str
+    user_id: int
+
 # Find Data class
 class FindData(BaseModel):
     admin_token: str

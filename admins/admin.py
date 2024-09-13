@@ -37,6 +37,7 @@ from .schemes import (
     DeleteProducts,
     AddPayment,
     GetData,
+    GetDataUser,
     FindData
 )
 from .utils import (
@@ -568,6 +569,52 @@ async def get_users(data: GetData, session: AsyncSession = Depends(get_async_ses
 
     return {"users": serialized_data}
 
+# get user data
+@admin_router.get("/get-user")
+async def get_user(data: GetDataUser, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(data.admin_token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'get_user_data': 'True'
+        }
+    }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz user datalarni ololmaysiz!")
+
+    # Userslarni olish
+    query = select(users).where(users.c.id == data.user_id)
+    result = await session.execute(query)
+    data = result.fetchone()
+
+    return {
+        "id": data.id,
+        "full_name": data.full_name,
+        "username": data.username,
+        "email": data.email,
+        "phone": data.phone,
+        "sex": data.sex,
+        "tg_id": data.tg_id,
+        "balance": data.balance,
+        "created_at": data.created_at,
+        "updated_at": data.updated_at,
+        "last_login": data.last_login,
+        "how_online": data.how_online,
+    }
+
+
+
+
+
 # get reportsbalance data
 @admin_router.get("/get-reportsbalance")
 async def get_reportsbalance(data: GetData, session: AsyncSession = Depends(get_async_session)):
@@ -902,6 +949,7 @@ async def about_admin(data: GetData, session: AsyncSession = Depends(get_async_s
         "premessions": admin.premessions
     }
 
+
 @admin_router.post("/find_user")
 async def find_user(data: FindData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
@@ -910,6 +958,19 @@ async def find_user(data: FindData, session: AsyncSession = Depends(get_async_se
 
     if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
+    
+    # cheack premessions in admin table
+    required_permissions = {
+        "permessions": {
+        'admin': {
+            'find_user_data': 'True'
+        }
+    }
+    }
+
+    if not has_permission(admin.premessions, required_permissions):
+        raise HTTPException(status_code=403, detail="siz find_user datalarni ololmaysiz!")
+
     MyModel = select(users).where(data.text in admins.c.full_name or data.text in admins.c.username)
     results = session.query(MyModel).offset(10).limit(10).all()
-    return results
+    return {"users_id": list(results)}
