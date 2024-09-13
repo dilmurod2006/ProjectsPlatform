@@ -82,7 +82,8 @@ async def generate_token_forregister(
     query = insert(forregister).values(
         tg_id=data.tg_id,
         phone=data.phone,
-        token=token
+        token=token,
+        ref_id=data.ref_id
     )
 
     await session.execute(query)
@@ -143,6 +144,7 @@ async def create_user(data: CreateUser, session: AsyncSession = Depends(get_asyn
         username=data.username,
         password=hashed_password,
         tg_id=data_forregister.tg_id,
+        ref_id=data_forregister.ref_id,
         token=jwt_token
     )
 

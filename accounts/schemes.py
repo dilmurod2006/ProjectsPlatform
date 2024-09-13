@@ -4,6 +4,7 @@ class TokenRequest(BaseModel):
     secret_key: str
     tg_id: int
     phone: str
+    ref_id: str
 
 # Create user class
 class CreateUser(BaseModel):
