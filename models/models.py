@@ -27,6 +27,7 @@ forregister = Table(
     Column('tg_id', BigInteger, unique=True, nullable=True),
     Column('phone', String(length=13), unique=True, index=True),
     Column('token', String, unique=True, index=True),
+    Column('ref_id', String, default="-"),
     Column('created_at', DateTime, default=datetime.utcnow),
 )
 
@@ -42,6 +43,7 @@ users = Table(
     Column('password', String(length=260)),
     Column('tg_id', BigInteger, nullable=True, unique=True, index=True),
     Column('balance', BigInteger, default=25000),
+    Column('ref_id', String, default="-"),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow),
     Column('last_login', TIMESTAMP, default=datetime.utcnow),
