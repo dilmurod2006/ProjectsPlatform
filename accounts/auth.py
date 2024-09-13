@@ -41,7 +41,7 @@ async def generate_token_forregister(
 ):
     # cheack api secret key
     if data.secret_key != API_FORREGISTER_SECRET_KEY:
-        raise HTTPException(status_code=400, detail="Invalid secret key")
+        raise HTTPException(status_code=400, detail="Qandaydir xato kiritildi!")
 
     # Telegram ID va telefon raqamlarini tekshirish
     forregister_tg_id_query = select(forregister).where(forregister.c.tg_id == data.tg_id)
