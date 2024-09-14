@@ -117,4 +117,3 @@ def send_reset_password_code(tg_id: int, reset_code: int) -> str:
     post(url, data)
 
     return f"parolni tiklovchi code yuborildi!"
-

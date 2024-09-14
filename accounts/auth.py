@@ -153,7 +153,7 @@ async def create_user(data: CreateUser, session: AsyncSession = Depends(get_asyn
     await session.execute(query)
     await session.commit()
 
-    return {"message": "User created!",}
+    return {"message": "User created!"}
 
 
 # LOGIN SYSTEM
