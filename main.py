@@ -15,6 +15,7 @@ from settings import (
     API_DOCS_URL,
     API_REDOC_URL
 )
+# from starlette.middleware.cors import CORSMiddleware
 
 # Loyiha haqida
 loyiha_haqida = """
@@ -54,6 +55,18 @@ app = FastAPI(
     },
     include_in_schema = True
 )
+
+# CORS-ni faqat kerakli domenlarga ruxsat berish
+# app.add_middleware(
+    # CORSMiddleware,
+    # allow_origins=["*"],
+    # allow_origins=["https://api.prjectsplatform.uz","https://projectsplatform.uz","www.projectsplatform.uz","www.api.prjectsplatform.uz"],  # Faol domenlar ro'yxati
+    # allow_credentials=True,
+    # allow_methods=["GET", "POST"],  # Kerakli metodlarni belgilash
+    # allow_headers=["*"],  # Barcha headerlarga ruxsat beradi
+# )
+
+
 
 # include routers
 app.include_router(accounts_routers, prefix="/accounts", tags=["accounts"])
