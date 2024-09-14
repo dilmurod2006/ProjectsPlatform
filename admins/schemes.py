@@ -78,8 +78,7 @@ class AddPayment(BaseModel):
     admin_token: str
     tg_id: int
     tulov_summasi: int
-    payment_chek_img: Optional[bytes] = None
-    bio: Optional[str] = None
+    bio: str
 
 # Get Data class
 class GetData(BaseModel):

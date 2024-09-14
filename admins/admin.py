@@ -448,7 +448,7 @@ async def delete_products(data: DeleteProducts, session: AsyncSession = Depends(
 
 # ADD PAYYMENT FUNCTIONS START
 @admin_router.post("/payment")
-async def add_payment(data: AddPayment, session: AsyncSession = Depends(get_async_session)):
+async def add_payment(data: AddPayment, payment_chek_img: UploadFile = File(...), session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
@@ -476,12 +476,14 @@ async def add_payment(data: AddPayment, session: AsyncSession = Depends(get_asyn
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     
+    image_data = await payment_chek_img.read() 
+
     # payment qo'shish
     payment_query = insert(payment_admin).values(
         admin_id = admin.id,
         user_id = user.id,
         tulov_summasi = data.tulov_summasi,
-        payment_chek_img = data.payment_chek_img,
+        payment_chek_img = image_data,
         bio = data.bio
     )
     # update balance
@@ -492,7 +494,7 @@ async def add_payment(data: AddPayment, session: AsyncSession = Depends(get_asyn
         tg_id=data.tg_id,
         username=user.username,
         tulov_summasi=data.tulov_summasi,
-        payment_chek_img=data.payment_chek_img,
+        payment_chek_img=image_data,
         bio=data.bio
         )
     await session.commit()
