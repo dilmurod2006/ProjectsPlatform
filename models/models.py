@@ -42,7 +42,7 @@ users = Table(
     Column('username', String(length=30), unique=True, index=True),
     Column('password', String(length=260)),
     Column('tg_id', BigInteger, nullable=True, unique=True, index=True),
-    Column('balance', BigInteger, default=25000),
+    Column('balance', BigInteger, default=0),
     Column('ref_id', String, default="-"),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
     Column('updated_at', TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow),

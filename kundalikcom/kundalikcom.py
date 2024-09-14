@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from settings import PRODUCT_ID
@@ -25,15 +24,10 @@ from models.models import (
     pckundalikcom,
     mobilekundalikcom,
     reportsbalance,
-    school_data,
-    loginsdata
+    school_data
 )
 
-from utils import (
-    months_size_price,
-    get_user_logins,
-    verify_jwt_token
-)
+from .utils import *
 
 from database import get_async_session
 
@@ -118,7 +112,7 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException(status_code=404, detail="Bunday user mavjud emas!")
+        return HTTPException("Bunday user mavjud emas!")
 
     # hozirgi vaqtni aniqlash
     now = datetime.utcnow()
@@ -197,25 +191,25 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException(status_code=404, detail="User mavjud emas!")
+        return HTTPException("User mavjud emas!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:
-        return HTTPException(status_code=404, detail="User mavjud emas!")
+        return HTTPException("User mavjud emas!")
 
-    res = await session.execute(select(school_data).filter_by(user_id=kundalik_user.id))
+    res = await session.execute(select(school_data).filter_by(user_id=user.id))
     maktab = res.fetchone()
     if maktab is None:
         await session.execute(insert(school_data).values(
-            user_id=kundalik_user.id,
+            user_id=kundalik_user.user_id,
             viloyat=data.viloyat,
             tuman=data.tuman,
-            school_name=data.school_name
+            school_number=data.school_number
         ))
     await session.execute(update(school_data).filter_by(user_id=user.id).values(
         viloyat=data.viloyat,
         tuman=data.tuman,
-        school_name=data.school_name
+        school_number=data.school_number
     ))
     await session.commit()
     return "Maktab ma'lumotlari muvaffaqiyatli kiritildi"
@@ -223,12 +217,12 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
 async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
-    if user is None or not verify_jwt_token(data.token):
-        return HTTPException(status_code=404, detail="User mavjud emas yoki token xato!")
+    if user is None:
+        return HTTPException("User mavjud emas!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:
-        return HTTPException(status_code=404, detail="User mavjud emas!")
+        return HTTPException("User mavjud emas!")
 
     res = await session.execute(select(school_data).filter_by(user_id=user.id))
     maktab = res.fetchone()
@@ -240,7 +234,7 @@ async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depen
     return {
         "viloyat": maktab.viloyat,
         "tuman": maktab.tuman,
-        "school_name": maktab.school_name
+        "school_number": maktab.school_number
     }
 
 
@@ -318,7 +312,7 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException(status_code=404, detail="Bunday user mavjud emas!")
+        return HTTPException("Bunday user mavjud emas!")
 
     # hozirgi vaqtni aniqlash
     now = datetime.utcnow()
@@ -369,17 +363,3 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
         "message": f"Boshqa qurilmadan kirilgan.\nBoshqa qurulmangizdan {total_hours} soat mobaynida foydalanmang. Keyin bu qurulmaga login qilib foydalanishingiz mumkin"
     }
 
-
-### EXE AND APK DOWNLOADING START ###
-
-# Exe downloading
-@kundalik_router.get("/download_exe_kundalikcom")
-async def download_exe_kundalikcom_api():
-    pass
-
-# Apk downloading
-@kundalik_router.get("/download_apk_kundalikcom")
-async def download_apk_kundalikcom_api():
-    pass
-
-### EXE AND APK DOWNLOADING END ###

@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel
 
 class BuySerializer(BaseModel):
@@ -16,9 +15,6 @@ class SetSchoolSerializer(BaseModel):
     token: str
     viloyat: str
     tuman: str
-    school_name: str
-
+    school_number: int
 class GetSchoolSerializer(BaseModel):
     token: str
-
-
