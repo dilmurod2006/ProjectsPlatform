@@ -73,13 +73,6 @@ class DeleteProducts(BaseModel):
     admin_token: str
     name: str
 
-# AddPayment class
-class AddPayment(BaseModel):
-    admin_token: str
-    tg_id: int
-    tulov_summasi: int
-    bio: str
-
 # Get Data class
 class GetData(BaseModel):
     admin_token: str

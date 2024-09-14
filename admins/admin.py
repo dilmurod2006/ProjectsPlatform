@@ -2,7 +2,14 @@
 import os
 import json
 import random
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    UploadFile,
+    File,
+    Form
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (
     insert,
@@ -448,58 +455,70 @@ async def delete_products(data: DeleteProducts, session: AsyncSession = Depends(
 
 # ADD PAYYMENT FUNCTIONS START
 @admin_router.post("/payment")
-async def add_payment(data: AddPayment, payment_chek_img: UploadFile = File(...), session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def add_payment(
+    admin_token: str = Form(...),
+    tg_id: int = Form(...),
+    tulov_summasi: int = Form(...),
+    bio: str = Form(None),
+    payment_chek_img: UploadFile = File(...),  # Tasvirni fayl shaklida qabul qilish
+    session: AsyncSession = Depends(get_async_session)
+):
+    # Adminni tekshirish
+    query = select(admins).where(admins.c.token == admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
-    # cheack premessions in admin table
+    # Adminning huquqlarini tekshirish
     required_permissions = {
         "permessions": {
-        'admin': {
-            'add_payment': 'True'
+            'admin': {
+                'add_payment': 'True'
+            }
         }
-    }
     }
 
     if not has_permission(admin.premessions, required_permissions):
         raise HTTPException(status_code=403, detail="siz payment qo'sha olmaysiz!")
     
-    # cheack telegam id
-    user_query = select(users).where(users.c.tg_id == data.tg_id)
+    # Foydalanuvchini tekshirish
+    user_query = select(users).where(users.c.tg_id == tg_id)
     user_result = await session.execute(user_query)
     user = user_result.fetchone()
     
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     
-    image_data = await payment_chek_img.read() 
+    # Tasvir ma'lumotlarini o'qish
+    image_data = await payment_chek_img.read()  # Faylni `bytes` ga o'qish
 
-    # payment qo'shish
+    # Payment qo'shish
     payment_query = insert(payment_admin).values(
-        admin_id = admin.id,
-        user_id = user.id,
-        tulov_summasi = data.tulov_summasi,
-        payment_chek_img = image_data,
-        bio = data.bio
+        admin_id=admin.id,
+        user_id=user.id,
+        tulov_summasi=tulov_summasi,
+        payment_chek_img=image_data,  # Tasvir ma'lumotlarini bazaga yozish
+        bio=bio,
+        created_at=datetime.utcnow()
     )
-    # update balance
-    update_balance_query = update(users).where(users.c.id == user.id).values(balance = user.balance + data.tulov_summasi)
+
+    # Foydalanuvchi balansini yangilash
+    update_balance_query = update(users).where(users.c.id == user.id).values(balance=user.balance + tulov_summasi)
     await session.execute(update_balance_query)
     await session.execute(payment_query)
-    send_about_payment_data = send_payment_data(
-        tg_id=data.tg_id,
-        username=user.username,
-        tulov_summasi=data.tulov_summasi,
-        payment_chek_img=image_data,
-        bio=data.bio
-        )
-    await session.commit()
-    return {"message": f"{user.username} foydalanuvchiga {data.tulov_summasi} so'm to'lov o'tkazildi. {send_about_payment_data}"}
 
+    send_about_payment_data = send_payment_data(
+        tg_id=tg_id,
+        username=user.username,
+        tulov_summasi=tulov_summasi,
+        payment_chek_img=image_data,
+        bio=bio
+    )
+
+    await session.commit()
+    return {"message": f"{user.username} foydalanuvchiga {tulov_summasi} so'm to'lov o'tkazildi. {send_about_payment_data}"}
 
 # ADD PAYMENT FUNCTIONS END
 
