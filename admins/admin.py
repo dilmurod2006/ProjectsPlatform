@@ -42,7 +42,6 @@ from .schemes import (
     AddProducts,
     UpdateProducts,
     DeleteProducts,
-    AddPayment,
     GetData,
     GetDataUser,
     FindData
