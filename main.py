@@ -51,7 +51,7 @@ app = FastAPI(
     redirect_slashes=False,
     license_info={
         "name": "ProjectsPlatform Litsenziyasi",
-        "url": "https://your-license-url.com"  # Agar litsenziya URL manzilingiz bo'lsa, uni kiritishingiz mumkin
+        "url": "https://projectsplatform.uz"  # Agar litsenziya URL manzilingiz bo'lsa, uni kiritishingiz mumkin
     },
     include_in_schema = True
 )
