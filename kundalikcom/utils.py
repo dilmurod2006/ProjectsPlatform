@@ -8,6 +8,7 @@ from fastapi import Depends, HTTPException
 from typing import Dict
 from models.models import loginsdata
 def months_size_price(months_count: int, month_price: int, month_chegirma: int) -> int:
+    months_count = months_count - (months_count//12)*3
     if months_count < 3:
         return month_price*months_count
     return month_chegirma*months_count
