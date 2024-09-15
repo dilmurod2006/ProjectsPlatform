@@ -45,11 +45,9 @@ async def generate_token_forregister(
 
     # Telegram ID va telefon raqamlarini tekshirish
     forregister_tg_id_query = select(forregister).where(forregister.c.tg_id == data.tg_id)
-    forregister_phone_query = select(forregister).where(forregister.c.phone == data.phone)
     users_tg_id_query = select(users).where(users.c.tg_id == data.tg_id)
 
     tg_id_result = await session.execute(forregister_tg_id_query)
-    phone_result = await session.execute(forregister_phone_query)
     users_tg_id_result = await session.execute(users_tg_id_query)
 
     # Foydalanuvchi Telegram ID'si mavjudligini tekshirish
@@ -61,16 +59,12 @@ async def generate_token_forregister(
     
     # Telegram ID yoki telefon raqami mavjudligini tekshirish
     if tg_id_result.fetchone():
-        raise HTTPException(
-            status_code=400, 
-            detail="Telegram ID allaqachon mavjud."
-        )
-    
-    if phone_result.fetchone():
-        raise HTTPException(
-            status_code=400, 
-            detail="Telefon raqam allaqachon mavjud."
-        )
+        # send forregister token
+        query = select(forregister).where(forregister.c.tg_id == data.tg_id)
+        result = await session.execute(query)
+        data_forregister = result.fetchone()
+        token = data_forregister.token
+        return {"token": token}
     
     # Token yaratish va saqlash
     jwt_token_data = {
