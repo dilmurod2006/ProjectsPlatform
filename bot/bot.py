@@ -57,7 +57,7 @@ def handle_contact(message):
                 bot.send_message(chat_id, f"konatkt ma'lumotlaringiz muvaffaqiyatli yuborildi!", reply_markup=types.ReplyKeyboardRemove())
                 # add inline button add link
                 bot.send_message(chat_id, f"Davom etish tugmasini bosing!", reply_markup=types.InlineKeyboardMarkup([
-                    [types.InlineKeyboardButton("Davom etish", url=f"https://projectsplatform.uz/register/?token={token}")]
+                    [types.InlineKeyboardButton("Davom etish", url=f"https://projectsplatform.uz/register?token={token}")]
                 ]))
             except Exception as e:
                 bot.send_message(chat_id, str(e))
