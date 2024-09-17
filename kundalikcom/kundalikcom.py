@@ -44,7 +44,7 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-        raise HTTPException(status_code=400, detail="User not found")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
     res = await session.execute(select(products).filter_by(id = int(PRODUCT_ID)))
     prices = res.fetchone().settings
     all_months_price = months_size_price(month_chegirma=prices["pc_chegirma_price"], month_price=prices["price_pc"], months_count=int(data.months_count))
@@ -128,7 +128,7 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("Bunday user mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
 
     # hozirgi vaqtni aniqlash
     now = datetime.utcnow()
@@ -207,11 +207,11 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("User mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:
-        return HTTPException("User mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
 
     res = await session.execute(select(school_data).filter_by(user_id=user.id))
     maktab = res.fetchone()
@@ -234,11 +234,11 @@ async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("User mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:
-        return HTTPException("User mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
 
     res = await session.execute(select(school_data).filter_by(user_id=user.id))
     maktab = res.fetchone()
