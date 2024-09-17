@@ -202,7 +202,7 @@ def serialize_school_data(row):
         "user_id": row.user_id,
         "viloyat": row.viloyat,
         "tuman": row.tuman,
-        "school_number": row.school_number
+        "school_name": row.school_name
     }
 def serialize_pckundalikcom(row):
     return {
