@@ -66,7 +66,7 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
                         # update aktivatsiya
                     await session.execute(
                         update(pckundalikcom).where(pckundalikcom.c.user_id == ref_user.id).values(
-                            end_use_date = ref_user_check.end_use_date + timedelta(days=90)
+                            end_use_date = ref_user_check.end_use_date + timedelta(days=30)
                         )
                     )
                 except Exception as e:
