@@ -221,15 +221,16 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
             user_id=kundalik_user.user_id,
             viloyat=data.viloyat,
             tuman=data.tuman,
-            school_number=data.school_number
+            school_name=data.school_name
         ))
     await session.execute(update(school_data).filter_by(user_id=user.id).values(
         viloyat=data.viloyat,
         tuman=data.tuman,
-        school_number=data.school_number
+        school_name=data.school_name
     ))
     await session.commit()
     return "Maktab ma'lumotlari muvaffaqiyatli kiritildi"
+
 @kundalik_router.post("/get_school")
 async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).filter_by(token=data.token))
@@ -251,7 +252,7 @@ async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depen
     return {
         "viloyat": maktab.viloyat,
         "tuman": maktab.tuman,
-        "school_number": maktab.school_number
+        "school_name": maktab.school_name
     }
 
 

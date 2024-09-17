@@ -15,7 +15,7 @@ class SetSchoolSerializer(BaseModel):
     token: str
     viloyat: str
     tuman: str
-    school_number: int
+    school_name: str
 class GetSchoolSerializer(BaseModel):
     token: str
 
