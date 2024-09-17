@@ -18,3 +18,7 @@ class SetSchoolSerializer(BaseModel):
     school_number: int
 class GetSchoolSerializer(BaseModel):
     token: str
+
+# About kundalikpc
+class AboutKundalikpcSerializer(BaseModel):
+    token: str

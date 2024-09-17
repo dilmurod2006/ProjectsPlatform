@@ -15,7 +15,8 @@ from .schemes import (
     CheckPcSerializer,
     RegisterLoginsSerializer,
     SetSchoolSerializer,
-    GetSchoolSerializer
+    GetSchoolSerializer,
+    AboutKundalikpcSerializer
 )
 
 from models.models import (
@@ -254,6 +255,29 @@ async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depen
     }
 
 
+# about_kundalikpc
+@kundalik_router.post("/about_kundalikpc")
+async def about_kundalikpc_api(data: AboutKundalikpcSerializer, session: AsyncSession = Depends(get_async_session)):
+    res = await session.execute(select(users).where(users.c.token == data.token))
+    user = res.fetchone()
+    if user is None:
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
+    
+    user_pckundalikcom = await session.execute(select(pckundalikcom).where(pckundalikcom.c.user_id == user.id))
+    user_pckundalikcom = user_pckundalikcom.fetchone()
+    if user_pckundalikcom is None:
+        raise HTTPException(status_code=400, detail="Mavjud emas!")
+
+    return {
+        "id": user_pckundalikcom.id,
+        "user_id": user_pckundalikcom.user_id,
+        "start_active_date": user_pckundalikcom.start_active_date,
+        "end_active_date": user_pckundalikcom.end_active_date,
+        "device_id": user_pckundalikcom.device_id,
+        "end_use_date": user_pckundalikcom.end_use_date
+    }
+
+
 
 
 ######  M O B I L E  ######
@@ -378,4 +402,5 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
         "how": False,
         "message": f"Boshqa qurilmadan kirilgan.\nBoshqa qurulmangizdan {total_hours} soat mobaynida foydalanmang. Keyin bu qurulmaga login qilib foydalanishingiz mumkin"
     }
+
 
