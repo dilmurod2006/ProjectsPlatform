@@ -125,7 +125,7 @@ def send_payment_data(tg_id: int, username: str, tulov_summasi: int, payment_che
             "caption": (
                 f"✅ *To'lov o'tkazildi* \n\n"
                 f"👤 Username: *{username}*\n"
-                f"💵 To'lov summasi: *{"{:,}".format(tulov_summasi)} so'm*\n"
+                f"💵 To'lov summasi: *{tulov_summasi:,} so'm*\n"
                 f"💬 Izoh: *{bio}*"
             ),
             "parse_mode": "markdown"
