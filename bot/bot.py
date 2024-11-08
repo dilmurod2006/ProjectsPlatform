@@ -59,12 +59,8 @@ def handle_contact(message):
         if is_valid_phone_number(phone):
             user_data[chat_id]['phone'] = phone
             try:
-                token = create_for_register(tg_id=chat_id, phone=phone, ref_id=user_data[chat_id]['ref_id'])
-                bot.send_message(chat_id, f"konatkt ma'lumotlaringiz muvaffaqiyatli yuborildi!", reply_markup=types.ReplyKeyboardRemove())
-                # add inline button add link
-                bot.send_message(chat_id, f"Davom etish tugmasini bosing!", reply_markup=types.InlineKeyboardMarkup([
-                    [types.InlineKeyboardButton("Davom etish", url=f"https://projectsplatform.uz/register?token={token}")]
-                ]))
+                token = create_for_register(tg_id=chat_id, phone=phone)
+                bot.send_message(chat_id, f"Vaqtinchalik account yaratildi.\nToken:{token} token\nBot link: http://localhost:8000/create-user/{token}", reply_markup=types.ReplyKeyboardRemove())
             except Exception as e:
                 bot.send_message(chat_id, str(e))
         else:

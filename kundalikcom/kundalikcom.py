@@ -56,22 +56,6 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
         )
         user_check = res.fetchone()
         if user_check is None:
-            if user.ref_id != "-":
-                try:
-                    # search tg_id using ref_id
-                    res = await session.execute(select(users).where(users.c.tg_id == int(user.ref_id)))
-                    ref_user = res.fetchone()
-                    # search pckundalikcom.user_id using ref_user
-                    res = await session.execute(select(pckundalikcom).where(pckundalikcom.c.user_id == ref_user.id))
-                    ref_user_check = res.fetchone()
-                        # update aktivatsiya
-                    await session.execute(
-                        update(pckundalikcom).where(pckundalikcom.c.user_id == ref_user.id).values(
-                            end_use_date = ref_user_check.end_active_date + timedelta(days=30)
-                        )
-                    )
-                except Exception as e:
-                    print(e)
             await session.execute(
                 insert(pckundalikcom).values(
                     user_id = user.id,
