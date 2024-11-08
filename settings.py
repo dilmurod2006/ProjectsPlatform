@@ -5,6 +5,7 @@ Projects all settings function in this file
 
 import os
 from dotenv import load_dotenv
+# import aioredis
 
 load_dotenv()
 
@@ -43,3 +44,15 @@ API_FORREGISTER_SECRET_KEY=os.environ.get('API_FORREGISTER_SECRET_KEY')
 # REDIS
 REDIS_HOST=os.environ.get('REDIS_HOST')
 REDIS_PORT=os.environ.get('REDIS_PORT')
+
+# CHEACK_USER_FOR_BOT
+CHEACK_USER_FOR_BOT=os.environ.get('CHEACK_USER_FOR_BOT')
+
+
+# async def get_redis():
+#     global redis
+#     if redis is None:
+#         redis = await aioredis.create_redis_pool("redis://localhost")
+#     return redis
+
+

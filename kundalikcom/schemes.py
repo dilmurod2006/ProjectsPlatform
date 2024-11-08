@@ -10,11 +10,17 @@ class CheckPcSerializer(BaseModel):
     token: str
 class RegisterLoginsSerializer(BaseModel):
     login: str
-    password: str
+    parol: str
+    capcha_id: str
+    capcha_value: str
 class SetSchoolSerializer(BaseModel):
     token: str
     viloyat: str
     tuman: str
-    school_number: int
+    school_name: str
 class GetSchoolSerializer(BaseModel):
+    token: str
+
+# About kundalikpc
+class AboutKundalikpcSerializer(BaseModel):
     token: str

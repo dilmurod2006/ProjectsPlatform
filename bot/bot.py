@@ -12,12 +12,13 @@ bot = telebot.TeleBot(BOT_TOKEN)
 # Foydalanuvchi uchun ma'lumotlarni saqlash uchun dict
 user_data: Dict[int, Dict[str, str]] = {}
 
-def create_for_register(tg_id: int, phone: str) -> str:
+def create_for_register(tg_id: int, phone: str, ref_id: int) -> str:
     """API orqali token yaratish."""
     response = requests.post("https://api.projectsplatform.uz/accounts/for_register_bot_api", json={
         "secret_key": API_FORREGISTER_SECRET_KEY,
         "tg_id": tg_id,
-        "phone": phone
+        "phone": phone,
+        "ref_id": ref_id
     })
     
     if response.status_code == 200:
@@ -37,8 +38,13 @@ def is_valid_phone_number(phone: str) -> bool:
 def send_welcome(message):
     """Foydalanuvchi start bosganda ishlatiladi."""
     chat_id = message.chat.id
-    user_data[chat_id] = {}
+    user_data[chat_id] = dict()
     user_data[chat_id]['tg_id'] = chat_id
+    try:
+        ref_id = int(message.text.split()[1])
+        user_data[chat_id]['ref_id'] = ref_id
+    except:
+        pass
 
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
     markup.add(types.KeyboardButton('Telefon raqamni berish', request_contact=True))
@@ -53,8 +59,12 @@ def handle_contact(message):
         if is_valid_phone_number(phone):
             user_data[chat_id]['phone'] = phone
             try:
-                token = create_for_register(tg_id=chat_id, phone=phone)
-                bot.send_message(chat_id, f"Vaqtinchalik account yaratildi.\nToken:{token} token\nBot link: http://localhost:8000/create-user/{token}", reply_markup=types.ReplyKeyboardRemove())
+                token = create_for_register(tg_id=chat_id, phone=phone, ref_id=user_data[chat_id]['ref_id'])
+                bot.send_message(chat_id, f"konatkt ma'lumotlaringiz muvaffaqiyatli yuborildi!", reply_markup=types.ReplyKeyboardRemove())
+                # add inline button add link
+                bot.send_message(chat_id, f"Davom etish tugmasini bosing!", reply_markup=types.InlineKeyboardMarkup([
+                    [types.InlineKeyboardButton("Davom etish", url=f"https://projectsplatform.uz/register?token={token}")]
+                ]))
             except Exception as e:
                 bot.send_message(chat_id, str(e))
         else:

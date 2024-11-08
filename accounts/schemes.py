@@ -43,3 +43,4 @@ class ResetPassword(BaseModel):
 # AboutAccount
 class AboutAccount(BaseModel):
     token: str
+

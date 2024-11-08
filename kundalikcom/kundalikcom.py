@@ -15,7 +15,8 @@ from .schemes import (
     CheckPcSerializer,
     RegisterLoginsSerializer,
     SetSchoolSerializer,
-    GetSchoolSerializer
+    GetSchoolSerializer,
+    AboutKundalikpcSerializer
 )
 
 from models.models import (
@@ -44,7 +45,7 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-        raise HTTPException(status_code=400, detail="User not found")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
     res = await session.execute(select(products).filter_by(id = int(PRODUCT_ID)))
     prices = res.fetchone().settings
     all_months_price = months_size_price(month_chegirma=prices["pc_chegirma_price"], month_price=prices["price_pc"], months_count=int(data.months_count))
@@ -55,6 +56,22 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
         )
         user_check = res.fetchone()
         if user_check is None:
+            if user.ref_id != "-":
+                try:
+                    # search tg_id using ref_id
+                    res = await session.execute(select(users).where(users.c.tg_id == int(user.ref_id)))
+                    ref_user = res.fetchone()
+                    # search pckundalikcom.user_id using ref_user
+                    res = await session.execute(select(pckundalikcom).where(pckundalikcom.c.user_id == ref_user.id))
+                    ref_user_check = res.fetchone()
+                        # update aktivatsiya
+                    await session.execute(
+                        update(pckundalikcom).where(pckundalikcom.c.user_id == ref_user.id).values(
+                            end_use_date = ref_user_check.end_active_date + timedelta(days=30)
+                        )
+                    )
+                except Exception as e:
+                    print(e)
             await session.execute(
                 insert(pckundalikcom).values(
                     user_id = user.id,
@@ -69,14 +86,14 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
                     user_id = user.id,
                     start_active_date = now,
                     end_use_date = now,
-                    end_active_date = now + timedelta(days=30*data.months_count)
+                    end_active_date = user_check.end_active_date + timedelta(days=30*data.months_count)
                 )
             )
         await session.execute(update(users).where(users.c.token == data.token).values(balance = user.balance-all_months_price))
         await session.execute(insert(reportsbalance).values(
             user_id=user.id,
             balance=user.balance-all_months_price,
-            size=all_months_price,
+            tulov_summasi=all_months_price,
             bio="For product: Kundalikcom"
         ))
         await session.commit()
@@ -112,7 +129,7 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("Bunday user mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
 
     # hozirgi vaqtni aniqlash
     now = datetime.utcnow()
@@ -175,27 +192,33 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
 async def register_logins(user_id: int, data: RegisterLoginsSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user_id))
     kundalik_user = res.fetchone()
-    if kundalik_user is not None:
-        await session.execute(insert(loginsdata).values(
-            user_id=user_id,
-            login=data.login,
-            password=data.password
-        ))
+    if kundalik_user is None:
+        return False
+    how, data_login = await login_user_check(data)
+    if how:
+        logindata_res = await session.execute(select(loginsdata).filter_by(user_id=user_id, login=data.login))
+        logindata = logindata_res.fetchone()
+        if logindata is None:
+            await session.execute(insert(loginsdata).values(
+                user_id=user_id,
+                login=data.login,
+                password=data.parol
+            ))
+        else:
+            await session.execute(update(loginsdata).filter_by(user_id=user_id, login=data.login).values(password=data.parol))
         await session.commit()
-        return True
-    return False
-
+    return data_login
 
 @kundalik_router.post("/set_school")
 async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("User mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:
-        return HTTPException("User mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
 
     res = await session.execute(select(school_data).filter_by(user_id=user.id))
     maktab = res.fetchone()
@@ -204,25 +227,26 @@ async def set_school_api(data: SetSchoolSerializer,session: AsyncSession = Depen
             user_id=kundalik_user.user_id,
             viloyat=data.viloyat,
             tuman=data.tuman,
-            school_number=data.school_number
+            school_name=data.school_name
         ))
     await session.execute(update(school_data).filter_by(user_id=user.id).values(
         viloyat=data.viloyat,
         tuman=data.tuman,
-        school_number=data.school_number
+        school_name=data.school_name
     ))
     await session.commit()
     return "Maktab ma'lumotlari muvaffaqiyatli kiritildi"
+
 @kundalik_router.post("/get_school")
 async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).filter_by(token=data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("User mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
     res = await session.execute(select(pckundalikcom).filter_by(user_id=user.id))
     kundalik_user = res.fetchone()
     if kundalik_user is None:
-        return HTTPException("User mavjud emas!")
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
 
     res = await session.execute(select(school_data).filter_by(user_id=user.id))
     maktab = res.fetchone()
@@ -234,7 +258,30 @@ async def get_school_api(data: GetSchoolSerializer,session: AsyncSession = Depen
     return {
         "viloyat": maktab.viloyat,
         "tuman": maktab.tuman,
-        "school_number": maktab.school_number
+        "school_name": maktab.school_name
+    }
+
+
+# about_kundalikpc
+@kundalik_router.post("/about_kundalikpc")
+async def about_kundalikpc_api(data: AboutKundalikpcSerializer, session: AsyncSession = Depends(get_async_session)):
+    res = await session.execute(select(users).where(users.c.token == data.token))
+    user = res.fetchone()
+    if user is None:
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
+    
+    user_pckundalikcom = await session.execute(select(pckundalikcom).where(pckundalikcom.c.user_id == user.id))
+    user_pckundalikcom = user_pckundalikcom.fetchone()
+    if user_pckundalikcom is None:
+        raise HTTPException(status_code=400, detail="Mavjud emas!")
+
+    return {
+        "id": user_pckundalikcom.id,
+        "user_id": user_pckundalikcom.user_id,
+        "start_active_date": user_pckundalikcom.start_active_date,
+        "end_active_date": user_pckundalikcom.end_active_date,
+        "device_id": user_pckundalikcom.device_id,
+        "end_use_date": user_pckundalikcom.end_use_date
     }
 
 
@@ -279,7 +326,7 @@ async def buy_api_mobile_api(data: BuySerializer,session: AsyncSession = Depends
         await session.execute(insert(reportsbalance).values(
             user_id=user.id,
             balance=user.balance-all_months_price,
-            size=all_months_price,
+            tulov_summasi=all_months_price,
             bio="For product: Kundalikcom Mobile"
         ))
         await session.commit()
@@ -312,7 +359,7 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
-        return HTTPException("Bunday user mavjud emas!")
+        return HTTPException(status_code=404, detail="Bunday user mavjud emas!")
 
     # hozirgi vaqtni aniqlash
     now = datetime.utcnow()
@@ -362,4 +409,5 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
         "how": False,
         "message": f"Boshqa qurilmadan kirilgan.\nBoshqa qurulmangizdan {total_hours} soat mobaynida foydalanmang. Keyin bu qurulmaga login qilib foydalanishingiz mumkin"
     }
+
 

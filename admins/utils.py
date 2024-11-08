@@ -123,11 +123,12 @@ def send_payment_data(tg_id: int, username: str, tulov_summasi: int, payment_che
         data = {
             "chat_id": tg_id,
             "caption": (
-                f"To'lov o'tkazildi:\n\n"
-                f"Username: {username}\n"
-                f"To'lov summasi: {tulov_summasi}\n"
-                f"Bio: {bio}"
-            )
+                f"✅ *To'lov o'tkazildi* \n\n"
+                f"👤 Username: *{username}*\n"
+                f"💵 To'lov summasi: *{"{:,}".format(tulov_summasi)} so'm*\n"
+                f"💬 Izoh: *{bio}*"
+            ),
+            "parse_mode": "markdown"
         }
         
         response = post(url, data=data, files=files)
@@ -202,7 +203,7 @@ def serialize_school_data(row):
         "user_id": row.user_id,
         "viloyat": row.viloyat,
         "tuman": row.tuman,
-        "school_number": row.school_number
+        "school_name": row.school_name
     }
 def serialize_pckundalikcom(row):
     return {

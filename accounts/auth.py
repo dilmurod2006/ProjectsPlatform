@@ -14,7 +14,10 @@ from .schemes import (
 )
 from database import get_async_session
 from models.models import users, forregister
-from settings import API_FORREGISTER_SECRET_KEY
+from settings import (
+    API_FORREGISTER_SECRET_KEY,
+    CHEACK_USER_FOR_BOT
+    )
 
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -28,7 +31,8 @@ from .utils import (
     generate_token_for_users,
     send_login_code,
     verify_jwt_token,
-    send_reset_password_code
+    send_reset_password_code,
+    validate_username
 )
 
 accounts_routers = APIRouter()
@@ -45,11 +49,9 @@ async def generate_token_forregister(
 
     # Telegram ID va telefon raqamlarini tekshirish
     forregister_tg_id_query = select(forregister).where(forregister.c.tg_id == data.tg_id)
-    forregister_phone_query = select(forregister).where(forregister.c.phone == data.phone)
     users_tg_id_query = select(users).where(users.c.tg_id == data.tg_id)
 
     tg_id_result = await session.execute(forregister_tg_id_query)
-    phone_result = await session.execute(forregister_phone_query)
     users_tg_id_result = await session.execute(users_tg_id_query)
 
     # Foydalanuvchi Telegram ID'si mavjudligini tekshirish
@@ -61,16 +63,12 @@ async def generate_token_forregister(
     
     # Telegram ID yoki telefon raqami mavjudligini tekshirish
     if tg_id_result.fetchone():
-        raise HTTPException(
-            status_code=400, 
-            detail="Telegram ID allaqachon mavjud."
-        )
-    
-    if phone_result.fetchone():
-        raise HTTPException(
-            status_code=400, 
-            detail="Telefon raqam allaqachon mavjud."
-        )
+        # send forregister token
+        query = select(forregister).where(forregister.c.tg_id == data.tg_id)
+        result = await session.execute(query)
+        data_forregister = result.fetchone()
+        token = data_forregister.token
+        return {"token": token}
     
     # Token yaratish va saqlash
     jwt_token_data = {
@@ -113,6 +111,9 @@ async def create_user(data: CreateUser, session: AsyncSession = Depends(get_asyn
             raise HTTPException(status_code=400, detail="Token has expired")
         else:
             raise e
+    
+    # Username validatsiyasi
+    validate_username(data.username)  # Yangi qo'shilgan funksiya
 
     # cheack username and email
     username_query = select(users).where(users.c.username == data.username)
@@ -311,4 +312,29 @@ async def get_about_account(data: AboutAccount, session: AsyncSession = Depends(
         "sex": user.sex,
         "tg_id": user.tg_id,
         "balance": user.balance,
+    }
+
+# cheack user for bot
+@accounts_routers.get("/check_user")
+async def check_user(KeySecret: str, tg_id: int, session: AsyncSession = Depends(get_async_session)):
+    # KeySecret ni tekshirish
+    if KeySecret != CHEACK_USER_FOR_BOT:
+        raise HTTPException(status_code=400, detail="Invalid KeySecret")
+
+    # Foydalanuvchini topish uchun query
+    query = select(users).where(users.c.tg_id == tg_id)
+    result = await session.execute(query)
+    user = result.fetchone()
+
+    # Agar foydalanuvchi topilmasa
+    if user is None:
+        raise HTTPException(status_code=400, detail="User not found")
+    
+    # result.fetchone() natijasi tuple bo'lishi mumkin
+    user_data = user._mapping  # Bu usul natijani dict formatiga o'giradi
+
+    return {
+        "full_name": user_data['full_name'],
+        "balance": user_data['balance'],
+        "username": user_data['username']
     }

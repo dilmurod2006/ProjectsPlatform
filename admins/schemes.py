@@ -86,3 +86,8 @@ class GetDataUser(BaseModel):
 class FindData(BaseModel):
     admin_token: str
     text: str
+
+# Delete User Data class
+class DeleteUserData(BaseModel):
+    admin_token: str
+    tg_id: int

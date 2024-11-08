@@ -16,6 +16,7 @@ from sqlalchemy import (
     select,
     update,
     delete,
+    or_
 )
 from database import get_async_session
 from models.models import (
@@ -42,10 +43,10 @@ from .schemes import (
     AddProducts,
     UpdateProducts,
     DeleteProducts,
-    AddPayment,
     GetData,
     GetDataUser,
-    FindData
+    FindData,
+    DeleteUserData
 )
 from .utils import (
     send_login_code,
@@ -527,12 +528,12 @@ async def add_payment(
 
 # get forregister data
 @admin_router.get("/get-forregister")
-async def get_forregister(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_forregister(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -560,12 +561,12 @@ async def get_forregister(data: GetData, session: AsyncSession = Depends(get_asy
 
 # get users data
 @admin_router.get("/get-users")
-async def get_users(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_users(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -591,8 +592,8 @@ async def get_users(data: GetData, session: AsyncSession = Depends(get_async_ses
     return {"users": serialized_data}
 
 # get user data
-@admin_router.get("/get-user")
-async def get_user(data: GetDataUser, session: AsyncSession = Depends(get_async_session)):
+@admin_router.post("/get-user")
+async def get_user(data:GetDataUser, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
     result = await session.execute(query)
     admin = result.fetchone()
@@ -638,12 +639,12 @@ async def get_user(data: GetDataUser, session: AsyncSession = Depends(get_async_
 
 # get reportsbalance data
 @admin_router.get("/get-reportsbalance")
-async def get_reportsbalance(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_reportsbalance(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -670,12 +671,12 @@ async def get_reportsbalance(data: GetData, session: AsyncSession = Depends(get_
 
 # get payment data
 @admin_router.get("/get-payment-data")
-async def get_payment(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_payment(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -702,12 +703,12 @@ async def get_payment(data: GetData, session: AsyncSession = Depends(get_async_s
 
 # get products data
 @admin_router.get("/get-products")
-async def get_products(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_products(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -733,12 +734,12 @@ async def get_products(data: GetData, session: AsyncSession = Depends(get_async_
     return {"products": serialized_data}
 # get school data
 @admin_router.get("/get-schooldata")
-async def get_schooldata(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_schooldata(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -764,12 +765,12 @@ async def get_schooldata(data: GetData, session: AsyncSession = Depends(get_asyn
 
 # get pckundalikcom data
 @admin_router.get("/get-pckundalikcom")
-async def get_pckundalikcom(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)   
+async def get_pckundalikcom(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)   
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -795,12 +796,12 @@ async def get_pckundalikcom(data: GetData, session: AsyncSession = Depends(get_a
 
 # get mobilekundalikcom data
 @admin_router.get("/get-mobilekundalikcom")
-async def get_mobilekundalikcom(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_mobilekundalikcom(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -826,12 +827,12 @@ async def get_mobilekundalikcom(data: GetData, session: AsyncSession = Depends(g
 
 # get majburiyobuna data
 @admin_router.get("/get-majburiyobuna")
-async def get_majburiyobuna(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_majburiyobuna(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -857,12 +858,12 @@ async def get_majburiyobuna(data: GetData, session: AsyncSession = Depends(get_a
 
 # get admins data
 @admin_router.get("/get-admins")
-async def get_admins(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_admins(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -889,12 +890,12 @@ async def get_admins(data: GetData, session: AsyncSession = Depends(get_async_se
 
 # get all Telegram IDs from users table
 @admin_router.get("/get_all_telegram_ids")
-async def get_all_telegram_ids(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_all_telegram_ids(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -922,12 +923,12 @@ async def get_all_telegram_ids(data: GetData, session: AsyncSession = Depends(ge
 
 # Get all phone numbers and full names from users table
 @admin_router.get("/get_all_phone_numbers")
-async def get_all_phone_numbers(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+async def get_all_phone_numbers(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
 
     # cheack premessions in admin table
@@ -954,13 +955,13 @@ async def get_all_phone_numbers(data: GetData, session: AsyncSession = Depends(g
 
 # GET DATA FUNCTIONS FROM DATABASES END
 
-@admin_router.post("/about_admin")
-async def about_admin(data: GetData, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == data.admin_token)
+@admin_router.get("/about_admin")
+async def about_admin(token: str, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
 
-    if admin is None or not verify_jwt_token(data.admin_token):
+    if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
     return {
         "full_name": admin.full_name,
@@ -971,6 +972,8 @@ async def about_admin(data: GetData, session: AsyncSession = Depends(get_async_s
     }
 
 
+
+# Mos 10 ta userni username va full name orqali qidirish
 @admin_router.post("/find_user")
 async def find_user(data: FindData, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == data.admin_token)
@@ -979,19 +982,87 @@ async def find_user(data: FindData, session: AsyncSession = Depends(get_async_se
 
     if admin is None or not verify_jwt_token(data.admin_token):
         raise HTTPException(status_code=401, detail="admin not found or token expired")
-    
-    # cheack premessions in admin table
-    required_permissions = {
-        "permessions": {
-        'admin': {
-            'find_user_data': 'True'
+
+    MyModel = select(users).where(
+        or_(
+            users.c.full_name.like(f"%{data.text}%"),
+            users.c.username.like(f"%{data.text}%")
+        )
+    )
+    try:
+        results = await session.execute(MyModel.offset(10 * (data.page - 1)).limit(10))
+        results = results.fetchall()
+
+        return {
+            result.tg_id: {
+                "username": result.username,
+                "full_name": result.full_name
+            }
+            for result in results
         }
-    }
-    }
+    except Exception as e:
+        print(f"Xato: {e}")
+        return {}
 
-    if not has_permission(admin.premessions, required_permissions):
-        raise HTTPException(status_code=403, detail="siz find_user datalarni ololmaysiz!")
 
-    MyModel = select(users).where(data.text in admins.c.full_name or data.text in admins.c.username)
-    results = session.query(MyModel).offset(10).limit(10).all()
-    return {"users_id": list(results)}
+
+
+
+
+
+# userni o'chirish
+@admin_router.post("/delete_user")
+async def delete_user(data: DeleteUserData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(data.admin_token):
+        raise HTTPException(status_code=401, detail="Admin not found or token expired")
+    
+    query = select(users).where(users.c.tg_id == data.tg_id)
+    result = await session.execute(query)
+    user = result.fetchone()
+
+    if user is None:
+        raise HTTPException(status_code=401, detail="Bunday user mavjud emas")
+    
+    query = delete(users).where(users.c.id == user.id)
+    await session.execute(query)
+
+    query = select(pckundalikcom).where(pckundalikcom.c.user_id == user.id)
+    result = await session.execute(query)
+    kundalikcom_user = result.fetchone()
+
+    if kundalikcom_user is not None:
+        query = delete(pckundalikcom).where(pckundalikcom.c.id == kundalikcom_user.id)
+        await session.execute(query)
+    await session.commit()
+    return {"message":"User muvaffaqiyali o'chirildi"}
+
+# userni kundalikcomdan o'chirish
+@admin_router.post("/delete_kundalikcom_user")
+async def delete_kundalikcom_user(data: DeleteUserData, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == data.admin_token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(data.admin_token):
+        raise HTTPException(status_code=401, detail="Admin not found or token expired")
+    
+    query = select(users).where(users.c.tg_id == data.tg_id)
+    result = await session.execute(query)
+    user = result.fetchone()
+    if user is None:
+        raise HTTPException(status_code=401, detail="Bunday user mavjud emas!")
+    query = select(pckundalikcom).where(pckundalikcom.c.user_id == user.id)
+    result = await session.execute(query)
+    kundalikcom_user = result.fetchone()
+
+    if kundalikcom_user is None:
+        raise HTTPException(status_code=401, detail="Ushbu user kundalik comdan foydalanmagan!")
+    
+    query = delete(pckundalikcom).where(pckundalikcom.c.id == kundalikcom_user.id)
+    await session.execute(query)
+    await session.commit()    
+    return {"message":"User KundalikCOM dan muvaffaqiyatli o'chirildi!"}

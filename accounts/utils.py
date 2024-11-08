@@ -14,6 +14,7 @@ import binascii
 from requests import post, get
 
 from settings import BOT_TOKEN, SECRET_KEY, ALGORITHM
+import re
 
 
 # password hashing
@@ -99,7 +100,7 @@ def send_login_code(tg_id: int, code: int) -> str:
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     data = {
         "chat_id": tg_id,
-        "text": f"Your login code is: {code}",
+        "text": f"Sizning tasdiqlash kodingiz: {code}",
     }
     post(url, data)
 
@@ -112,8 +113,23 @@ def send_reset_password_code(tg_id: int, reset_code: int) -> str:
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     data = {
         "chat_id": tg_id,
-        "text": f"Your reset password code is: {reset_code}",
+        "text": f"Sizning tasdiqlash kodingiz: {reset_code}",
     }
     post(url, data)
 
     return f"parolni tiklovchi code yuborildi!"
+
+
+# usernameni tekshirish
+# Foydalanuvchi nomini tekshirish uchun funksiya
+def validate_username(username: str) -> bool:
+    """Username faqat harflar, raqamlar, va pasti chiziqcha (_) dan iborat bo'lishi kerak.
+    Uzunligi 25 belgidan oshmasligi kerak."""
+    if len(username) > 25:
+        raise HTTPException(status_code=400, detail="Usernameingiz juda uzun 25ta belgidan oshmasligi kerak!")
+    
+    # Regex orqali validatsiya qilamiz
+    if not re.match(r'^[a-zA-Z0-9_]+$', username):
+        raise HTTPException(status_code=400, detail="Foydalanuvchi nomi faqat harflar, raqamlar va pastki chiziqdan iborat bo'lishi mumkin!")
+    
+    return True
