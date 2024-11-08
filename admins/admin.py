@@ -287,7 +287,7 @@ async def create_admin(data: CreateAdmin, session: AsyncSession = Depends(get_as
 
 # update admin
 @admin_router.put("/update-admin")
-async def update_admin(data: UpdateAdmin, session: AsyncSession = Depends(get_async_session)):
+async def update_admin(token: str, data: UpdateAdmin, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
@@ -336,7 +336,7 @@ async def update_admin(data: UpdateAdmin, session: AsyncSession = Depends(get_as
 
 # delete admin
 @admin_router.delete("/delete-admin")
-async def delete_admin(data: DeleteAdmin, session: AsyncSession = Depends(get_async_session)):
+async def delete_admin(token: str, data: DeleteAdmin, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
@@ -364,7 +364,7 @@ async def delete_admin(data: DeleteAdmin, session: AsyncSession = Depends(get_as
 
 # Add products
 @admin_router.post("/add-products")
-async def add_products(data: AddProducts, session: AsyncSession = Depends(get_async_session)):
+async def add_products(token: str, data: AddProducts, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
@@ -396,7 +396,7 @@ async def add_products(data: AddProducts, session: AsyncSession = Depends(get_as
 
 # update products
 @admin_router.put("/update-products")
-async def update_products(data: UpdateProducts, session: AsyncSession = Depends(get_async_session)):
+async def update_products(token: str, data: UpdateProducts, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
@@ -427,7 +427,7 @@ async def update_products(data: UpdateProducts, session: AsyncSession = Depends(
 
 # delete products
 @admin_router.delete("/delete-products")
-async def delete_products(data: DeleteProducts, session: AsyncSession = Depends(get_async_session)):
+async def delete_products(token: str, data: DeleteProducts, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
