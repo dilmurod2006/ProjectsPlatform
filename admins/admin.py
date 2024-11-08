@@ -233,7 +233,7 @@ async def reset_password_admin(data: ResetPassword, session: AsyncSession = Depe
 
 # create admin
 @admin_router.post("/add-admin")
-async def create_admin(data: CreateAdmin, session: AsyncSession = Depends(get_async_session)):
+async def create_admin(token: str, data: CreateAdmin, session: AsyncSession = Depends(get_async_session)):
     # cheack admin token in admin table
     query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
