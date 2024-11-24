@@ -53,7 +53,7 @@ payment_admin = Table(
     Column("admin_id", Integer, ForeignKey('admins.id'), index=True),
     Column("user_id", Integer, ForeignKey('users.id'), index=True),
     Column("tulov_summasi", BigInteger),
-    Column("payment_chek_img", LargeBinary, nullable=True),
+    Column("payment_chek_img", String(length=700), nullable=True),
     Column("bio", Text, nullable=True),
     Column("created_at", TIMESTAMP, default=datetime.utcnow),
 )

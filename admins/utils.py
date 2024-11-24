@@ -109,9 +109,45 @@ def bank_web_site_control():
 def check_payment():
     return True
 
+
+
+
+
 # send about payment data
-def send_payment_data(tg_id: int, username: str, tulov_summasi: int, payment_chek_img: bytes, bio: str) -> str:
-    """Foydalanuvchiga to'lov o'tkazilganligi haqida ma'lumot yuborish"""
+# def send_payment_data(tg_id: int, username: str, tulov_summasi: int, payment_chek_img: bytes, bio: str) -> str:
+#     """Foydalanuvchiga to'lov o'tkazilganligi haqida ma'lumot yuborish"""
+#     try:
+#         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
+        
+#         # Faylni yuborish uchun files parametrlardan foydalanamiz
+#         files = {
+#             "photo": payment_chek_img
+#         }
+        
+#         data = {
+#             "chat_id": tg_id,
+#             "caption": (
+#                 f"✅ *To'lov o'tkazildi* \n\n"
+#                 f"👤 Username: *{username}*\n"
+#                 f"💵 To'lov summasi: *{tulov_summasi:,} so'm*\n"
+#                 f"💬 Izoh: *{bio}*"
+#             ),
+#             "parse_mode": "markdown"
+#         }
+        
+#         response = post(url, data=data, files=files)
+        
+#         if response.status_code == 200:
+#             return "To'lov haqidagi ma'lumotlar yuborildi foydalanuvchiga!"
+#         else:
+#             return f"Xato: {response.text}"
+#     except Exception as e:
+#         return f"Xato: {e}"
+
+
+
+def send_payment_data(tg_id: int, username: str, tulov_summasi: int, payment_chek_img: bytes, bio: str) -> dict:
+    """Foydalanuvchiga to'lov o'tkazilganligi haqida ma'lumot yuborish va file_id ni qaytarish."""
     try:
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
         
@@ -131,14 +167,29 @@ def send_payment_data(tg_id: int, username: str, tulov_summasi: int, payment_che
             "parse_mode": "markdown"
         }
         
+        # So'rov yuborish
         response = post(url, data=data, files=files)
+        response_data = response.json()
         
-        if response.status_code == 200:
-            return "To'lov haqidagi ma'lumotlar yuborildi foydalanuvchiga!"
+        if response.status_code == 200 and response_data.get("ok"):
+            # Yuborilgan rasmning file_id ni olish
+            file_id = response_data["result"]["photo"][-1]["file_id"]
+            return {
+                "status": "success",
+                "message": "To'lov haqidagi ma'lumotlar yuborildi foydalanuvchiga!",
+                "file_id": file_id
+            }
         else:
-            return f"Xato: {response.text}"
+            return {
+                "status": "error",
+                "message": f"Xato: {response_data.get('description', 'Noma’lum xato')}"
+            }
     except Exception as e:
-        return f"Xato: {e}"
+        return {
+            "status": "error",
+            "message": f"Xato: {str(e)}"
+        }
+
 
 
 # check user payment function end
