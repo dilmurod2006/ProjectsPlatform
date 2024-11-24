@@ -115,31 +115,31 @@ from settings import *
 # payment api
 # api: http://127.0.0.1:8000/accounts/payment
 
-admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvZnR3ZXJlX2VuZ2luZWVyMDA2IiwicGFzc3dvcmQiOiJQcm9qZWN0c1BsYXRmb3JtQWRtaW5ARGlsbXVyb2QxOTQ1JjE5NTciLCJ0Z19pZCI6NTQyMDA3MTgyNCwiZXhwIjoxNzk1NjIzNDQ5fQ.gwI5k8u1pWtiAnv3xr2Uzr7ztV-RfsYQFpXfE46gd5A"
+# admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvZnR3ZXJlX2VuZ2luZWVyMDA2IiwicGFzc3dvcmQiOiJQcm9qZWN0c1BsYXRmb3JtQWRtaW5ARGlsbXVyb2QxOTQ1JjE5NTciLCJ0Z19pZCI6NTQyMDA3MTgyNCwiZXhwIjoxNzk1NjIzNDQ5fQ.gwI5k8u1pWtiAnv3xr2Uzr7ztV-RfsYQFpXfE46gd5A"
 
-import requests
+# import requests
 
-url = "http://127.0.0.1:8000/admin/payment"
+# url = "http://127.0.0.1:8000/admin/payment"
 
-admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvZnR3ZXJlX2VuZ2luZWVyMDA2IiwicGFzc3dvcmQiOiJQcm9qZWN0c1BsYXRmb3JtQWRtaW5ARGlsbXVyb2QxOTQ1JjE5NTciLCJ0Z19pZCI6NTQyMDA3MTgyNCwiZXhwIjoxNzk1NjIzNDQ5fQ.gwI5k8u1pWtiAnv3xr2Uzr7ztV-RfsYQFpXfE46gd5A"
+# admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvZnR3ZXJlX2VuZ2luZWVyMDA2IiwicGFzc3dvcmQiOiJQcm9qZWN0c1BsYXRmb3JtQWRtaW5ARGlsbXVyb2QxOTQ1JjE5NTciLCJ0Z19pZCI6NTQyMDA3MTgyNCwiZXhwIjoxNzk1NjIzNDQ5fQ.gwI5k8u1pWtiAnv3xr2Uzr7ztV-RfsYQFpXfE46gd5A"
 
-# Form ma'lumotlari
-form_data = {
-    "admin_token": admin_token,
-    "tg_id": 5420071824,
-    "tulov_summasi": 100000,
-    "bio": "test"
-}
+# # Form ma'lumotlari
+# form_data = {
+#     "admin_token": admin_token,
+#     "tg_id": 5420071824,
+#     "tulov_summasi": 100000,
+#     "bio": "test"
+# }
 
-# Faylni qo'shish
-files = {
-    "payment_chek_img": open("Logo.jpg", "rb")  # Faylni binar rejimda ochish
-}
+# # Faylni qo'shish
+# files = {
+#     "payment_chek_img": open("Logo.jpg", "rb")  # Faylni binar rejimda ochish
+# }
 
-# Form-data va faylni yuborish
-response = requests.post(url, data=form_data, files=files)
+# # Form-data va faylni yuborish
+# response = requests.post(url, data=form_data, files=files)
 
-# Javobni tekshirish
-print(response.status_code)
-print(response.json())
+# # Javobni tekshirish
+# print(response.status_code)
+# print(response.json())
 
