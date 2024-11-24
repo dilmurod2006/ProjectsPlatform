@@ -42,14 +42,23 @@ kundalik_router = APIRouter()
 
 @kundalik_router.post("/buy")
 async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_session)):
+    # Userni qidirish
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
+
+    # User mavjud bulmasa
     if user is None:
         raise HTTPException(status_code=400, detail="User mavjud emas!")
+    
+    # Product narxalarini olish
     res = await session.execute(select(products).filter_by(id = int(PRODUCT_ID)))
     prices = res.fetchone().settings
+    
+    # Barcha narxlar olindi
     all_months_price = months_size_price(month_chegirma=prices["pc_chegirma_price"], month_price=prices["price_pc"], months_count=int(data.months_count))
-    if user.balance >= all_months_price:
+    # Narxlar olib bulingandan keyin har 9 oylik haridi uchun 3 oydan qo'shish
+    data.months_count += 3*(data.months_count//9)
+    if user.balance >= all_months_price > 0:
         now = datetime.utcnow()
         res = await session.execute(
             select(pckundalikcom).filter_by(user_id = user.id)
@@ -64,26 +73,51 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
                     end_active_date = now + timedelta(days=30*data.months_count)
                 )
             )
+            if data.months_count > 0:
+                res = await session.execute(
+                    select(users).filter_by(id = user.ref_id)
+                )
+                ref_user = res.fetchone()
+                if ref_user is not None:
+                    
+                    res = await session.execute(
+                        select(pckundalikcom).filter_by(user_id = user.ref_id)
+                    )
+                    ref_kundalik_user = res.fetchone()
+                    if ref_kundalik_user is not None:
+                        await session.execute(
+                            update(pckundalikcom).filter_by(id=ref_kundalik_user.id).values(
+                                user_id = ref_kundalik_user.id,
+                                start_active_date = now,
+                                end_use_date = now,
+                                end_active_date = max(ref_kundalik_user.end_active_date, now) + timedelta(days=30)
+                            )
+                        )
         else:
             await session.execute(
                 update(pckundalikcom).filter_by(id=user_check.id).values(
                     user_id = user.id,
                     start_active_date = now,
                     end_use_date = now,
-                    end_active_date = user_check.end_active_date + timedelta(days=30*data.months_count)
+                    end_active_date = max(user_check.end_active_date, now) + timedelta(days=30*data.months_count)
                 )
             )
         await session.execute(update(users).where(users.c.token == data.token).values(balance = user.balance-all_months_price))
         await session.execute(insert(reportsbalance).values(
             user_id=user.id,
             balance=user.balance-all_months_price,
-            tulov_summasi=all_months_price,
+            tulov_summasi=-all_months_price,
             bio="For product: Kundalikcom"
         ))
         await session.commit()
         return {
             "how": True,
             "message": "To‘lov muvaffaqiyatli amalga oshirildi"
+        }
+    elif all_months_price <= 0:
+        return {
+            "how": False,
+            "message": "Noto'g'ri qiymat kiritildi"
         }
     else:
         return {
@@ -275,14 +309,23 @@ async def about_kundalikpc_api(data: AboutKundalikpcSerializer, session: AsyncSe
 
 @kundalik_router.post("/buy_api_mobile")
 async def buy_api_mobile_api(data: BuySerializer,session: AsyncSession = Depends(get_async_session)):
+    # Userni qidirish
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
+
+    # User mavjud bulmasa
     if user is None:
-        raise HTTPException(status_code=400, detail="User not found")
+        raise HTTPException(status_code=400, detail="User mavjud emas")
+    
+    # Product narxalarini olish
     res = await session.execute(select(products).filter_by(id = int(PRODUCT_ID)))
     prices = res.fetchone().settings
-    all_months_price = months_size_price(month_chegirma=prices["mobile_chegirma_price"], month_price=prices["price_mobile"], months_count=int(data.months_count))
-    if user.balance >= all_months_price:
+    
+    # Barcha narxlar olindi
+    all_months_price = months_size_price_mobile(month_chegirma=prices["mobile_chegirma_price"], month_price=prices["price_mobile"], months_count=int(data.months_count))
+    # Narxlar olib bulingandan keyin har 9 oylik haridi uchun 3 oydan qo'shish
+    data.months_count += 3*(data.months_count//9)
+    if user.balance >= all_months_price > 0:
         now = datetime.utcnow()
         res = await session.execute(
             select(mobilekundalikcom).filter_by(user_id = user.id)
@@ -297,26 +340,51 @@ async def buy_api_mobile_api(data: BuySerializer,session: AsyncSession = Depends
                     end_active_date = now + timedelta(days=30*data.months_count)
                 )
             )
+            if data.months_count > 0:
+                res = await session.execute(
+                    select(users).filter_by(id = user.ref_id)
+                )
+                ref_user = res.fetchone()
+                if ref_user is not None:
+                    
+                    res = await session.execute(
+                        select(mobilekundalikcom).filter_by(user_id = user.ref_id)
+                    )
+                    ref_kundalik_user = res.fetchone()
+                    if ref_kundalik_user is not None:
+                        await session.execute(
+                            update(mobilekundalikcom).filter_by(id=ref_kundalik_user.id).values(
+                                user_id = ref_kundalik_user.id,
+                                start_active_date = now,
+                                end_use_date = now,
+                                end_active_date = max(ref_kundalik_user.end_active_date, now) + timedelta(days=30)
+                            )
+                        )
         else:
             await session.execute(
                 update(mobilekundalikcom).filter_by(id=user_check.id).values(
                     user_id = user.id,
                     start_active_date = now,
                     end_use_date = now,
-                    end_active_date = now + timedelta(days=30*data.months_count)
+                    end_active_date = max(user_check.end_active_date, now) + timedelta(days=30*data.months_count)
                 )
             )
         await session.execute(update(users).where(users.c.token == data.token).values(balance = user.balance-all_months_price))
         await session.execute(insert(reportsbalance).values(
             user_id=user.id,
             balance=user.balance-all_months_price,
-            tulov_summasi=all_months_price,
+            tulov_summasi=-all_months_price,
             bio="For product: Kundalikcom Mobile"
         ))
         await session.commit()
         return {
             "how": True,
             "message": "To‘lov muvaffaqiyatli amalga oshirildi"
+        }
+    elif all_months_price <= 0:
+        return {
+            "how": False,
+            "message": "Noto'g'ri qiymat kiritildi"
         }
     else:
         return {
@@ -334,7 +402,7 @@ async def price_months_mobile_api(data: PriceSerializer, session: AsyncSession =
     prices = res.fetchone().settings
 
     # jami summani hisoblab qaytarish
-    all_months_price = months_size_price(month_chegirma=prices["mobile_chegirma_price"], month_price=prices["price_mobile"], months_count=int(data.months_count))
+    all_months_price = months_size_price_mobile(month_chegirma=prices["mobile_chegirma_price"], month_price=prices["price_mobile"], months_count=int(data.months_count))
     return all_months_price
 
 @kundalik_router.post("/check_mobile")
@@ -395,3 +463,8 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
     }
 
 
+# integratsiya flutter
+@kundalik_router.post("/login_kundalikcom")
+async def register_logins(data: RegisterLoginsSerializer):
+    how, data_login = await login_user_check(data)
+    return data_login

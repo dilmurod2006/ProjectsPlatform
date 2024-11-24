@@ -9,7 +9,6 @@ from accounts.auth import accounts_routers
 from kundalikcom.kundalikcom import kundalik_router
 from admins.admin import admin_router
 from database import get_async_session
-from bot.bot import bot
 from settings import (
     API_URL,
     API_DOCS_URL,
@@ -62,7 +61,7 @@ app.add_middleware(
     allow_origins=["*"],
     # allow_origins=["https://api.prjectsplatform.uz","https://projectsplatform.uz","www.projectsplatform.uz","www.api.prjectsplatform.uz"],  # Faol domenlar ro'yxati
     allow_credentials=True,
-    allow_methods=["GET", "POST"],  # Kerakli metodlarni belgilash
+    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Kerakli metodlarni belgilash
     allow_headers=["*"],  # Barcha headerlarga ruxsat beradi
 )
 

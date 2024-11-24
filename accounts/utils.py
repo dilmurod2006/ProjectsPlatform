@@ -15,7 +15,7 @@ from requests import post, get
 
 from settings import BOT_TOKEN, SECRET_KEY, ALGORITHM
 import re
-
+import uuid
 
 # password hashing
 def hash_password(password: str) -> str:
@@ -30,16 +30,15 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     pwdhash = hashlib.pbkdf2_hmac('sha256', plain_password.encode(), salt.encode(), 100000)
     return binascii.hexlify(pwdhash).decode() == stored_password
 
-# generate token for forregister
-def generate_token_for_forregister(data: Dict[str, str], expires_delta: timedelta = timedelta(minutes=15)) -> str:
-    to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+# generate token for activation account
+def generate_token_for_activation_account(username) -> str:
+    token = str(uuid.uuid4())
+    token = token[:5]+username+token[5:]
+    return token
 
 
 # jwt token for users
-def generate_token_for_users(data: Dict[str, str], expires_delta: timedelta = timedelta(days=183)) -> str:
+def generate_token_for_users(data: Dict[str, str], expires_delta: timedelta = timedelta(days=360)) -> str:
     """
     JWT token yaratish.
 
@@ -120,7 +119,6 @@ def send_reset_password_code(tg_id: int, reset_code: int) -> str:
     return f"parolni tiklovchi code yuborildi!"
 
 
-# usernameni tekshirish
 # Foydalanuvchi nomini tekshirish uchun funksiya
 def validate_username(username: str) -> bool:
     """Username faqat harflar, raqamlar, va pasti chiziqcha (_) dan iborat bo'lishi kerak.
@@ -131,5 +129,26 @@ def validate_username(username: str) -> bool:
     # Regex orqali validatsiya qilamiz
     if not re.match(r'^[a-zA-Z0-9_]+$', username):
         raise HTTPException(status_code=400, detail="Foydalanuvchi nomi faqat harflar, raqamlar va pastki chiziqdan iborat bo'lishi mumkin!")
+    
+    return True
+
+# Foydalanuvchi emaili tekshirish uchun funksiyasi
+def validate_email(email: str) -> bool:
+    """Email faqat harflar, raqamlar, nuqta (.), va pastki chiziqcha (_) dan iborat bo'lishi kerak.
+    Uzunligi 40 belgidan oshmasligi kerak va faqat @gmail.com domeniga ega bo'lishi lozim."""
+    
+    email = email.lower().strip()  # Kichik harflarga o'tkazish va bo'sh joylarni olib tashlash
+    
+    # Email uzunligini tekshiramiz
+    if len(email) > 40:
+        raise HTTPException(status_code=400, detail="Emailingiz juda uzun. 40ta belgidan oshmasligi kerak!")
+    
+    # Domenni tekshirish
+    if not email.endswith("@gmail.com"):
+        raise HTTPException(status_code=400, detail="Email faqat @gmail.com domeni bilan tugashi kerak!")
+
+    # Regex orqali validatsiya qilamiz
+    if not re.match(r'^[a-zA-Z0-9._]+@gmail\.com$', email):
+        raise HTTPException(status_code=400, detail="Email faqat harflar, raqamlar, nuqta (.), va pastki chiziqdan iborat bo'lishi mumkin!")
     
     return True

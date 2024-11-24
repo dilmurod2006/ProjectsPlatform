@@ -56,7 +56,6 @@ class DeleteAdmin(BaseModel):
 
 # Add products class
 class AddProducts(BaseModel):
-    admin_token: str
     name: str
     bio: str
     settings: Dict[str, Any]

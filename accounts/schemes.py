@@ -1,26 +1,30 @@
 from pydantic import BaseModel
+from typing import Optional
 
-class TokenRequest(BaseModel):
-    secret_key: str
-    tg_id: int
-    phone: str
-    ref_id: str
 
-# Create user class
+# Create user
 class CreateUser(BaseModel):
-    token: str
+    secret_key: str
     full_name: str
-    sex: bool
+    sex : Optional[bool]
     email: str
     username: str
     password: str
+    ref: int
+# Activation account
+class ActivationAccount(BaseModel):
+    secret_key: str
+    token: str
+    tg_id: int
+    phone: str
 
-# Login user class
+
+# Login
 class LoginUser(BaseModel):
     username: str
     password: str
 
-# Check Login data and code class
+# cheack login code
 class CheckLogin(BaseModel):
     username: str
     password: str
@@ -44,3 +48,6 @@ class ResetPassword(BaseModel):
 class AboutAccount(BaseModel):
     token: str
 
+# ReportsAccount
+class GetUserReports(BaseModel):
+    token: str

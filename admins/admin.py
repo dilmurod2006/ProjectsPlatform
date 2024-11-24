@@ -20,7 +20,6 @@ from sqlalchemy import (
 from database import get_async_session
 from models.models import (
     admins,
-    forregister,
     users,
     majburiyobuna,
     loginsdata,
@@ -55,7 +54,6 @@ from .utils import (
     has_permission,
     is_valid_phone_number,
     send_payment_data,
-    serialize_forregister,
     serialize_users,
     serialize_reports_balance,
     serialize_payment,
@@ -524,38 +522,6 @@ async def add_payment(
 
 
 # GET DATA FUNCTIONS FROM DATABASES START
-
-# get forregister data
-@admin_router.get("/get-forregister")
-async def get_forregister(token: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(admins).where(admins.c.token == token)
-    result = await session.execute(query)
-    admin = result.fetchone()
-
-    if admin is None or not verify_jwt_token(token):
-        raise HTTPException(status_code=401, detail="admin not found or token expired")
-
-    # cheack premessions in admin table
-    required_permissions = {
-        "permessions": {
-        'admin': {
-            'get_forregister_data': 'True'
-        }
-    }
-    }
-
-    if not has_permission(admin.premessions, required_permissions):
-        raise HTTPException(status_code=403, detail="siz forregister datalarni ololmaysiz!")
-
-    # Forregisterlarni olish
-    query = select(forregister)
-    result = await session.execute(query)
-    data = result.fetchall()
-    
-    # Ma'lumotlarni JSON formatiga aylantirish
-    serialized_data = [serialize_forregister(row) for row in data]
-
-    return {"forregister": serialized_data}
 
 
 # get users data

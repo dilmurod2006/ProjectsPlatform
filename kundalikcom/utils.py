@@ -10,8 +10,17 @@ from urllib.parse import unquote
 from fastapi import Depends, HTTPException
 from typing import Dict
 from models.models import loginsdata
+
+
 def months_size_price(months_count: int, month_price: int, month_chegirma: int) -> int:
-    months_count = months_count - (months_count//12)*3
+    months_count = months_count
+    months_count -= 3*(months_count//12)
+    if months_count < 3:
+        return month_price*months_count
+    return month_chegirma*months_count
+
+def months_size_price_mobile(months_count: int, month_price: int, month_chegirma: int) -> int:
+    months_count = months_count
     if months_count < 3:
         return month_price*months_count
     return month_chegirma*months_count
@@ -42,6 +51,8 @@ async def login_user_check(login_data):
             soup = BeautifulSoup(r.content, "html.parser")
             if "Chiqish" in soup.get_text():
                 return True, {"how": True}
+            elif soup.find_all(class_="message")[0].get_text().strip() == "Parol yoki login notoʻgʻri koʻrsatilgan. Qaytadan urinib koʻring.":
+                return False, {"how": False, "capcha": False, "message": "Login yoki parol xato"}
             else:
                 try:
                     capcha_id = unquote(r.cookies.get('sst')).split("|")[0]
@@ -51,7 +62,7 @@ async def login_user_check(login_data):
                     return False, {"how": False, "capcha": False, "message": "Ayni paytda eMaktab.uz sayti profilaktikada keyinroq urinib ko'ring"}
         r = requests.post(
             "https://login.emaktab.uz/",
-            {"exceededAttempts": "False", "login": login, "password": parol},
+            {"exceededAttempts": "True", "login": login, "password": parol},
         )
         soup = BeautifulSoup(r.content, "html.parser")
         if "Chiqish" in soup.get_text():

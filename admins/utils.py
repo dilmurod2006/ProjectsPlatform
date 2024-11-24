@@ -144,14 +144,6 @@ def send_payment_data(tg_id: int, username: str, tulov_summasi: int, payment_che
 # check user payment function end
 
 # get data serializer functions start
-def serialize_forregister(row):
-    return {
-        "id": row.id,
-        "tg_id": row.tg_id,
-        "phone": row.phone,
-        "token": row.token,
-        "created_at": row.created_at
-    }
 def serialize_users(row):
     return {
         "full_name": row.full_name,
