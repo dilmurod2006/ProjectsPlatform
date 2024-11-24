@@ -14,6 +14,7 @@ from datetime import datetime
 from requests import post
 import json
 import os
+import time
 
 def create_database_connection():
     try:
@@ -58,24 +59,28 @@ def send_admins_data(admin_id: int, file: str):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
     
     # Faylni ochish va "document" sifatida yuborish
-    with open(file, "rb") as file:
+    file_path = file  # O'zgaruvchining nomini o'zgartirish
+    with open(file_path, "rb") as f:  # Fayl obyektini boshqasiga o'zgartirish
         files = {
-            'document': file
+            'document': f
         }
         data = {
             'chat_id': admin_id,
             'caption': 'Admin ma\'lumotlari'
         }
         response = post(url, data=data, files=files)
-        if os.path.exists(file):
-            os.remove(file)
-        else:
-            print(f"File {file} not found!")
+        
+        # # Faylni o'chirishdan oldin mavjudligini tekshirish
+        # if os.path.exists(file_path):
+        #     os.remove(file_path)
+        # else:
+        #     print(f"File {file_path} not found!")
     
     return {
         "status": response.status_code,
-        "message": f"{file} admin ma'lumotlari yuborildi!"
+        "message": f"{file_path} admin ma'lumotlari yuborildi!"
     }
+
 
 
 if __name__ == "__main__":
@@ -127,6 +132,8 @@ if __name__ == "__main__":
             }
         }
     )
+
+    time.sleep(5)
     
     # 2-admin uchun ma'lumotlar
     admin2_data = create_admin(
@@ -181,9 +188,12 @@ if __name__ == "__main__":
     with open("dilmurod_admin_malumotlaringiz.json", "w") as f:
         json.dump(admin1_data, f)
     
+    time.sleep(5)
+    
     with open("bexruz_admin_malumotlaringiz.json", "w") as f:
         json.dump(admin2_data, f)
     
+    time.sleep(5)
 
     res1 = send_admins_data(admin_id=5420071824, file="dilmurod_admin_malumotlaringiz.json")
     res2 = send_admins_data(admin_id=5139310978, file="bexruz_admin_malumotlaringiz.json")

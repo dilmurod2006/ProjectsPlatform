@@ -23,9 +23,9 @@ from settings import *
 # import requests
 # from settings import API_ACTIVATION_ACCOUNT_SECRET_KEY
 
-# api: http://127.0.0.1:8000/accounts/activation_account
+# # api: http://127.0.0.1:8000/accounts/activation_account
 
-# token = "203beb3e7-8c3a-4f81-b264-ea7fac8a2043"
+# token = "50631b342-5167-414b-95eb-6f0b9183b460"
 
 # data = {
 #   "secret_key": API_ACTIVATION_ACCOUNT_SECRET_KEY,
@@ -107,4 +107,39 @@ from settings import *
 # }
 
 # shunday bo'ladi shunga post sifatida datalarni yubor qaytgan ma'lumotlarni foydalanuvchiga yuborsin
+
+
+
+
+
+# payment api
+# api: http://127.0.0.1:8000/accounts/payment
+
+admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvZnR3ZXJlX2VuZ2luZWVyMDA2IiwicGFzc3dvcmQiOiJQcm9qZWN0c1BsYXRmb3JtQWRtaW5ARGlsbXVyb2QxOTQ1JjE5NTciLCJ0Z19pZCI6NTQyMDA3MTgyNCwiZXhwIjoxNzk1NjIzNDQ5fQ.gwI5k8u1pWtiAnv3xr2Uzr7ztV-RfsYQFpXfE46gd5A"
+
+import requests
+
+url = "http://127.0.0.1:8000/admin/payment"
+
+admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvZnR3ZXJlX2VuZ2luZWVyMDA2IiwicGFzc3dvcmQiOiJQcm9qZWN0c1BsYXRmb3JtQWRtaW5ARGlsbXVyb2QxOTQ1JjE5NTciLCJ0Z19pZCI6NTQyMDA3MTgyNCwiZXhwIjoxNzk1NjIzNDQ5fQ.gwI5k8u1pWtiAnv3xr2Uzr7ztV-RfsYQFpXfE46gd5A"
+
+# Form ma'lumotlari
+form_data = {
+    "admin_token": admin_token,
+    "tg_id": 5420071824,
+    "tulov_summasi": 100000,
+    "bio": "test"
+}
+
+# Faylni qo'shish
+files = {
+    "payment_chek_img": open("Logo.jpg", "rb")  # Faylni binar rejimda ochish
+}
+
+# Form-data va faylni yuborish
+response = requests.post(url, data=form_data, files=files)
+
+# Javobni tekshirish
+print(response.status_code)
+print(response.json())
 

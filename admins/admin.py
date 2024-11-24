@@ -451,14 +451,7 @@ async def delete_products(token: str, data: DeleteProducts, session: AsyncSessio
     return {"message": "Product deleted successfully"}
 
 
-# ADD PAYYMENT FUNCTIONS START
-from fastapi import APIRouter, Form, File, UploadFile, HTTPException, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from sqlalchemy import insert, update
-from datetime import datetime
-
-# Router
+# ADD PAYYMENT FUNCTIONS START# Router
 admin_router = APIRouter()
 
 # Payment qo'shish endpointi
@@ -516,6 +509,7 @@ async def add_payment(
         raise HTTPException(status_code=500, detail="Rasm yuborishda xato yuz berdi")
 
     file_id = send_about_payment_data.get("file_id")
+    print(file_id)
     
     # Payment qo'shish
     payment_query = insert(payment_admin).values(
