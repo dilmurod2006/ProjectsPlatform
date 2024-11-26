@@ -452,7 +452,6 @@ async def delete_products(token: str, data: DeleteProducts, session: AsyncSessio
 
 
 # ADD PAYYMENT FUNCTIONS START# Router
-admin_router = APIRouter()
 
 # Payment qo'shish endpointi
 @admin_router.post("/payment")
