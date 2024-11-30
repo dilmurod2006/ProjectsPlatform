@@ -31,6 +31,33 @@ Barcha foydalanuvchilarni tizimga avtomatik kiritish va reytingni oshirish uchun
 
 
 
+def forwardMessageAllUsers(sender_id, message_id):
+    response = requests.get(f"https://api.projectsplatform.uz/admin/get-users?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvZnR3ZXJlX2VuZ2luZWVyMDA2IiwicGFzc3dvcmQiOiJQcm9qZWN0c1BsYXRmb3JtQWRtaW5ARGlsbXVyb2QxOTQ1JjE5NTciLCJ0Z19pZCI6NTQyMDA3MTgyNCwiZXhwIjoxNzk1Njc0MjI5fQ.unTov7Eh7Wb8Pxth91M6NjbCigWX3KT3xOCXkUaiit4")
+    users = response.json()["users"]
+
+    for user in users:
+        try:
+            bot.forward_message(
+                chat_id=user["tg_id"],  # Xabarni yuborish kerak bo'lgan foydalanuvchi ID si
+                from_chat_id=sender_id,  # Xabar kelgan chatning ID si
+                message_id=message_id,
+                # hide sender name
+                disable_notification=True
+            )
+
+        except:
+            pass
+
+def sendKundalikMessageAllUsers(file_id, text):
+    response = requests.get(f"https://api.projectsplatform.uz/admin/get-users?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvZnR3ZXJlX2VuZ2luZWVyMDA2IiwicGFzc3dvcmQiOiJQcm9qZWN0c1BsYXRmb3JtQWRtaW5ARGlsbXVyb2QxOTQ1JjE5NTciLCJ0Z19pZCI6NTQyMDA3MTgyNCwiZXhwIjoxNzk1Njc0MjI5fQ.unTov7Eh7Wb8Pxth91M6NjbCigWX3KT3xOCXkUaiit4")
+    users = response.json()["users"]
+
+    for user in users:
+        try:
+            bot.send_document(user["tg_id"], file_id, caption=text)
+        except:
+            pass
+
 
 # Telegram bot tokenini kiritish
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -120,6 +147,87 @@ def handle_contact(message):
         else:
             bot.send_message(chat_id, "Telefon raqamingiz O'zbekiston raqami (+998) bilan boshlanishi kerak.")
 
+
+
+
+@bot.message_handler(content_types=['document'])
+def handle_document(message):
+    chat_id = message.chat.id
+    if str(chat_id) in [ADMIN_DILMUROD, ADMIN_BEXRUZDEVELOPER]:
+        if message.document.file_name[-4:] == ".apk":
+            file_id = message.document.file_id
+            bot.send_document(chat_id, file_id, caption=f"Izoh: {message.caption if message.caption != None else ''}\nJanob KundalikCOM Mobile ni yangilaysizmi?", reply_markup=types.InlineKeyboardMarkup().add(
+                types.InlineKeyboardButton(text="♻️ Ha", callback_data=f"update_kundalikcom_mobile"),
+                types.InlineKeyboardButton(text="💬 Xabar", callback_data=f"message|{message.message_id}"),
+                types.InlineKeyboardButton(text="❌ Yo'q", callback_data=f"close_message"))
+            )
+        elif message.document.file_name[-4:] == ".exe":
+            file_id = message.document.file_id
+            bot.send_document(chat_id, file_id, caption=f"Izoh: {message.caption if message.caption != None else ''}\nJanob KundalikCOM Desktop ni yangilaysizmi?", reply_markup=types.InlineKeyboardMarkup().add(
+                types.InlineKeyboardButton(text="♻️ Ha", callback_data=f"update_kundalikcom_desktop"),
+                types.InlineKeyboardButton(text="💬 Xabar", callback_data=f"message|{message.message_id}"),
+                types.InlineKeyboardButton(text="❌ Yo'q", callback_data=f"close_message")),
+            )
+
+@bot.message_handler()
+def handle_text(message):
+    chat_id = message.chat.id
+    if str(chat_id) in [ADMIN_DILMUROD, ADMIN_BEXRUZDEVELOPER]:
+        if message.text == "🛠 Productni Sozlash":
+            pass
+        else:
+            # Barcha foydalanuvchilarga habarni yuborish
+            bot.reply_to(message, "💬 Ushbu xabar barchaga yuborilsinmi?", reply_markup=types.InlineKeyboardMarkup([
+                [
+                    types.InlineKeyboardButton(text="✅ Yuborish", callback_data=f"send_message_to_all"),
+                    types.InlineKeyboardButton(text="❌ Yo'q", callback_data=f"close_message")
+                ]
+            ]))
+
+@bot.callback_query_handler(func=lambda call: True)
+def handle_callback_query(call):    
+    if call.data == "close_message":
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+    elif call.data == "update_kundalikcom_desktop":
+        print(call.message.document.file_id)
+        versions = len(open("kundalikcom.txt", "r").readlines())
+        version = f"{versions//10+1}.{versions%10}"
+        text = f"\n{version}|{call.message.document.file_id}"
+        with open("kundalikcom.txt", "a") as f:
+            f.write(text)
+        file_id = call.message.document.file_id
+        izoh = call.message.caption.split("Izoh:")[1].split("Janob KundalikCOM 💻 Desktop ni yangilaysizmi?")[0].strip()
+        sendKundalikMessageAllUsers(file_id, f"♻️ KundalikCOM Kompyuter ilovasida yangilanish\n\n{izoh}")
+        bot.send_message(call.message.chat.id, "💻 KundalikCOM Desktop yangilandi ✅", reply_markup=types.InlineKeyboardMarkup([[
+            types.InlineKeyboardButton(text="Ko'rish", url="https://t.me/projectsplatformbot?start=download")
+        ]]))
+    elif call.data == "update_kundalikcom_mobile":
+        versions = len(open("kundalikcom_mobile.txt", "r").readlines())
+        version = f"{versions//10}.{versions%10+1}"
+        text = f"\n{version}|{call.message.document.file_id}"
+        with open("kundalikcom_mobile.txt", "a") as f:
+            f.write(text)
+        file_id = call.message.document.file_id
+        izoh = call.message.caption.split("Izoh:")[1].split("Janob KundalikCOM Mobile ni yangilaysizmi?")[0].strip()
+        sendKundalikMessageAllUsers(file_id, f"♻️ KundalikCOM 📱 Mobile ilovasida yangilanish\n\n{izoh}")
+        bot.send_message(call.message.chat.id, "📱 KundalikCOM Mobile yangilandi ✅", reply_markup=types.InlineKeyboardMarkup([[
+            types.InlineKeyboardButton(text="Ko'rish", url="https://t.me/projectsplatformbot?start=download_mobile")
+        ]]))
+    elif call.data == "send_message_to_all":
+        # Barcha foydalanuvchilarga reply message ni yuborish
+        forwardMessageAllUsers(call.message.chat.id, call.message.reply_to_message.message_id)
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+    elif call.data.split("|")[0] == "message":
+        forwardMessageAllUsers(call.message.chat.id, call.data.split("|")[1])
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+
+
+
+
+
+
+
+# bot.polling()
 while __name__ == "__main__":
     # bot.polling()
     try:
