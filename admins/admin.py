@@ -979,4 +979,4 @@ async def find_user(data: FindData, session: AsyncSession = Depends(get_async_se
     results = await session.execute(users_query)
     users_list = results.fetchall()
 
-    return {"users": [{"id": user.id, "username": user.username, "full_name": user.full_name} for user in users_list]}
+    return {"users": [{"id": user.id, "username": user.username, "full_name": user.full_name, "tg_id": user.tg_id, "email": user.email, "phone": user.phone} for user in users_list]}
