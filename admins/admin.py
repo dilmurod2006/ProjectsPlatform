@@ -961,20 +961,33 @@ async def find_user(data: FindData, session: AsyncSession = Depends(get_async_se
     admin = result.fetchone()
 
     if admin is None or not verify_jwt_token(data.admin_token):
-        raise HTTPException(status_code=401, detail="admin not found or token expired")
+        raise HTTPException(status_code=401, detail="Admin not found or token expired")
     
-    # cheack premessions in admin table
+    # Check permissions
     required_permissions = {
         "permessions": {
-        'admin': {
-            'find_user_data': 'True'
+            'admin': {
+                'find_user_data': 'True'
+            }
         }
     }
-    }
-
     if not has_permission(admin.premessions, required_permissions):
-        raise HTTPException(status_code=403, detail="siz find_user datalarni ololmaysiz!")
+        raise HTTPException(status_code=403, detail="Siz find_user datalarni ololmaysiz!")
 
-    MyModel = select(users).where(data.text in admins.c.full_name or data.text in admins.c.username)
-    results = session.query(MyModel).offset(10).limit(10).all()
-    return {"users_id": list(results)}
+    # Query users
+    search_query = f"%{data.text}%"
+    users_query = (
+        select(users)
+        .where(
+            or_(
+                users.c.full_name.like(search_query),
+                users.c.username.like(search_query)
+            )
+        )
+        .offset(0)
+        .limit(10)
+    )
+    results = await session.execute(users_query)
+    users_list = results.fetchall()
+
+    return {"users": [{"id": user.id, "username": user.username, "full_name": user.full_name} for user in users_list]}
