@@ -6,8 +6,9 @@ from sqlalchemy import insert, select, update
 import uvicorn
 
 from accounts.auth import accounts_routers
-from kundalikcom.kundalikcom import kundalik_router
 from admins.admin import admin_router
+from kundalikcom.kundalikcom import kundalik_router
+from iqromindtest.iqromindtest import iqromind_router
 from database import get_async_session
 from settings import (
     API_URL,
@@ -15,7 +16,7 @@ from settings import (
     API_REDOC_URL
 )
 from starlette.middleware.cors import CORSMiddleware
-
+# API_URL = "http://localhost:8000"
 # Loyiha haqida
 loyiha_haqida = """
 Projects Platform 
@@ -34,16 +35,20 @@ app = FastAPI(
             
         },
         {
+            "name": "admin",
+            "description": "admin api lar foydalanish",
+        },
+        {
             "name": "kundalikcom",
             "description": "kundalikcom api lar foydalanish",
         },
         {
-            "name": "admin",
-            "description": "admin api lar foydalanish",
+            "name": "iqromindtest",
+            "description": "iqromindtest api lar foydalanish",
         }
 
     ],
-    servers= [{"url": f"{API_URL}"}],
+    servers= [{"url": f"{API_URL}"}, {"url": f"http://localhost:8000"}],
     openapi_url = "/projectsplatform/openapi.json",
     docs_url = API_DOCS_URL,
     redoc_url = API_REDOC_URL,
@@ -69,8 +74,9 @@ app.add_middleware(
 
 # include routers
 app.include_router(accounts_routers, prefix="/accounts", tags=["accounts"])
-app.include_router(kundalik_router, prefix="/kundalikcom", tags=["kundalikcom"])
 app.include_router(admin_router, prefix="/admin", tags=["admin"])
+app.include_router(kundalik_router, prefix="/kundalikcom", tags=["kundalikcom"])
+app.include_router(iqromind_router, prefix="/iqromindtest", tags=["iqromindtest"])
 
 
 # run project

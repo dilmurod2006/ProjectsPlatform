@@ -144,6 +144,35 @@ majburiyobuna = Table(
 
 # KUNDALIKCOM MODELS END
 
+# IQRO MIND TEST MODELS START
+
+# iqromindtest model
+iqromindtest = Table(
+    'iqromindtest',
+    metadata,
+    Column('id', Integer, primary_key=True, index=True,autoincrement=True),
+    Column('user_id', Integer, ForeignKey('users.id'), index=True),
+    Column('device_id', String, nullable=True),
+    Column('testlar', JSONB, default={}),
+    Column('edu_name', String, nullable=True),
+    Column('edu_log', String, nullable=True),
+    Column('edu_bot_token', String, nullable=True),
+    Column('end_premium_date', TIMESTAMP),
+    Column('end_use_date', TIMESTAMP),
+    Column('created_at', TIMESTAMP, default=datetime.utcnow),
+)
+
+# iqrominddevices model
+iqrominddevices = Table(
+    'iqrominddevices',
+    metadata,
+    Column('user_id', Integer, ForeignKey('users.id'), index=True, unique=True),
+    Column('device_id', String, nullable=True),
+)
+
+# IQRO MIND TEST MODELS END
+
+
 # ADMIN PANEL MODELS START
 
 # admins model
