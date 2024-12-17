@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from settings import IQROMINDTEST_ID
-import telebot
+from telebot import TeleBot
 from sqlalchemy import(
     select,
     update,
@@ -447,7 +447,7 @@ async def set_edu_bot_token(data: SetEduBotTokenSerializer, session: AsyncSessio
     await session.commit()
     # Telegram bot nomini token orqali aniqlash
     try:
-        bot = telebot.TeleBot(data.edu_bot_token)
+        bot = TeleBot(data.edu_bot_token)
         bot_name = bot.get_me().first_name
         return f"Botingiz nomi {bot_name} ekan\nEslab qoldim 😊"
     except:
