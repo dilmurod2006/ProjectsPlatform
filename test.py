@@ -143,3 +143,23 @@ from settings import *
 # print(response.status_code)
 # print(response.json())
 
+import psycopg2
+
+# PostgreSQL ulanish parametrlari
+conn = psycopg2.connect(
+    dbname="PROJECTSPLATFORM",
+    user="postgres",
+    password="admin1957",
+    host="localhost"  # yoki server manzili
+)
+
+cursor = conn.cursor()
+
+# Ma'lumotlar bazasining hajmini olish uchun SQL so'rov
+cursor.execute("SELECT pg_size_pretty(pg_database_size('PROJECTSPLATFORM')) AS database_size;")
+size = cursor.fetchone()[0]
+
+print(f"Ma'lumotlar bazasining hajmi: {size}")
+
+cursor.close()
+conn.close()

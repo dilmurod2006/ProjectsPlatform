@@ -13,8 +13,25 @@ from sqlalchemy import (
     DateTime,
     LargeBinary
 )
+import random
+import string
+
 
 from sqlalchemy.dialects.postgresql import JSONB
+
+
+
+def generate_token(length=8):
+    # Token uchun raqamlar, harflar va maxsus belgilarni tanlash
+    characters = string.ascii_letters + string.digits  # harflar va raqamlar
+    token = ''.join(random.choice(characters) for _ in range(length))
+    return token
+
+
+
+
+
+
 
 metadata = MetaData()
 
@@ -154,6 +171,7 @@ iqromindtest = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('device_id', String, nullable=True),
     Column('testlar', JSONB, default={}),
+    Column('edit_token', JSONB, default=generate_token),
     Column('edu_name', String, nullable=True),
     Column('edu_log', String, nullable=True),
     Column('edu_bot_token', String, nullable=True),
