@@ -1,0 +1,49 @@
+.Settings {
+    padding: 20px;
+    /* text-align: center; */
+  }
+  
+  .user-info {
+    margin-bottom: 30px;
+    font-size: 16px;
+  }
+  
+  .user-info p {
+    margin: 10px 0;
+  }
+  
+  .change-password {
+    margin-top: 40px;
+  }
+  
+  .change-password div {
+    margin-bottom: 15px;
+  }
+  
+  .change-password input {
+    padding: 8px;
+    width: 250px;
+    margin-top: 5px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  button:hover {
+    background-color: #218838;
+  }
+  
+  p {
+    font-size: 14px;
+    color: rgb(0, 17, 255);
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  

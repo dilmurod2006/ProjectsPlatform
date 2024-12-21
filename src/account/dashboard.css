@@ -1,0 +1,257 @@
+/* src/Dashboard.css */
+
+.dashboard {
+    display: flex;
+    height: 100vh;
+    background-color: #f0f8ff; /* Oq fon */
+  }
+  
+  /* Menu Bar */
+  #menu-bar {
+    width: 200px;
+    background-color: #00000044;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    backdrop-filter: blur(3px);
+  }
+  #menu-bar-content {
+    width: 200px;
+    background-color: #0a3d62; /* To‘q ko‘k fon */
+    color: #ffffff;
+    padding: 20px 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 1s;
+  }
+  #menyu-close-button {
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    z-index: -1;
+    top: 5%;
+    left: 5%;
+    background-color: #ffffff00;
+    cursor: default;
+  }
+  #menu-bar h2 {
+    margin-top: 0;
+    padding: 0 20px;
+  }
+  
+  #menu-bar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #menu-bar li {
+    transition: 0;
+    cursor: pointer;
+  }
+  #menu-bar li:hover {
+    color: #ffffff; /* Hoverda oq rang */
+  }
+  
+  #menu-bar a {
+    padding: 10px 20px;
+    display: block;
+    color: #84bef8; /* Yorqin ko‘k matn rangi */
+    text-decoration: none;
+  }
+  
+  
+  #menu-bar li:hover{
+    color: #001020;
+    background-color: #84bef8;
+  }
+
+  #menu-bar a:hover{
+    color: #001020;
+    background-color: #84bef8;
+  }
+  
+  
+  #logout {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: #fa93796c;
+    font-size: 20px;
+    margin: 10px;
+    color: black;
+    transition: 0.2s;
+  }
+  #logout:hover{
+    background-color: #ff4040f8;
+    transform: translateY(-2px);
+    box-shadow: 2px 1px 5px #0000006c;
+  }
+  #logout .icon-logout {
+    margin-left: 8px;
+  }
+  
+  /* Dashboard content */
+  .dashboard-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Header */
+  .dashboard-header {
+    background-color: #1e90ff; /* Yorqin ko‘k fon */
+    color: #ffffff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    transition: 0.5s;
+    height: 40px;
+  }
+  
+  .welcome {
+    font-size: 18px;
+    color: #ffffff;
+  }
+  
+  .notifications .icon-notification,
+  .account .icon-account {
+    font-size: 24px;
+    margin-left: 15px;
+    color: #ffffff;
+  }
+  
+  .account {
+    display: flex;
+    align-items: center;
+  }
+  
+
+
+
+
+
+
+
+
+
+
+/* Kontener uchun */
+.dashboard-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 15px;
+}
+
+/* Kartalar */
+.dashboard-buttons > .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  width: 120px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Ikonalar */
+.icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+/* Matn */
+.text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* Main content */
+  .main-content {
+    overflow-y: scroll;
+    padding: 20px;
+    background-color: #ffffff;
+    color: #333333;
+  }
+  #menyu-toggle-button {
+    display: none;
+    background-color: #001020;
+    box-sizing: border-box;
+    padding: 10px 15px;
+  }
+  .account span{
+    max-width: 100px;
+    overflow: hidden;
+    margin-right: 0;
+  }
+@media (max-width: 800px) {
+  #menu-bar {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: none;
+  }
+  #menu-bar-content {
+    box-shadow: 2px 0 10px #00000050;
+  }
+  #menyu-toggle-button {
+    display: flex;
+  }
+}
+@media (min-width: 801px) {
+  #menu-bar {
+    display: inline-flex;
+  }
+  #menu-bar-content {
+    box-shadow: none;
+  }
+  #menyu-toggle-button {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .dashboard-buttons {
+    flex-direction: column;
+    padding: 0 5%;
+  }
+  .dashboard-buttons > .card {
+    width: 90%;
+  }
+}
+
+
+

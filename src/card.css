@@ -1,0 +1,205 @@
+/* General Container */
+.home-container {
+  /* margin-top: 50px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  overflow: auto;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  gap: 100px;
+}
+
+/* Product Card Styles */
+.product-card {
+  padding: 40px;
+  display: flex;
+  flex-direction: row;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  border-radius: 12px;
+  max-width: 100%;
+}
+
+.product-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  text-align: center;
+}
+
+.product-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #0a3d62;
+  margin-bottom: 10px;
+}
+
+.product-description {
+  font-size: 1.2rem;
+  color: #576574;
+  line-height: 1.6;
+}
+
+.product-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.product-button {
+  padding: 15px 30px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #1e90ff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(30, 144, 255, 0.3);
+}
+
+.product-button:hover {
+  background-color: #005cbf;
+  transform: translateY(-2px);
+}
+
+/* Style for Secondary Button */
+.more-info-button {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.more-info-button:hover {
+  background-color: #b3b3b3;
+}
+
+.product-image {
+  background-color: #bff2ff;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .product-card {
+    flex-direction: column; /* Stack content vertically on smaller screens */
+    height: auto;
+    padding: 20px;
+  }
+
+  .product-content {
+    width: 100%;
+  }
+
+  .product-title {
+    font-size: 2rem; /* Smaller font size for mobile */
+  }
+
+  .product-description {
+    font-size: 1rem; /* Adjust font size for readability on mobile */
+  }
+
+  .product-button {
+    font-size: 0.9rem;
+    padding: 12px 25px; /* Adjust button padding for smaller screens */
+  }
+
+  .product-image {
+    width: 100%;
+    padding: 10px;
+    box-shadow: none; /* Remove shadow on mobile for a cleaner look */
+  }
+}
+
+/* Video Card Styles */
+.video-card {
+  margin-top: 40px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-radius: 12px;
+  background-color: transparent;
+  max-width: 100%;
+}
+
+.video-left, .video-right {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+}
+
+.video-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 50%;
+}
+
+.video-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #0a3d62;
+  text-align: center;
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* Aspect ratio for video */
+  height: 0;
+  overflow: hidden;
+  width: 100%;
+  border-radius: 12px;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+/* Responsive Styles for Video Card */
+@media (max-width: 768px) {
+  .video-card {
+    flex-direction: column; /* Stack content vertically on smaller screens */
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+
+  .video-left, .video-right, .video-content {
+    width: 100%;
+  }
+
+  .video-title {
+    font-size: 1.4rem;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .video-container {
+    padding-bottom: 60%; /* Adjust aspect ratio for smaller screens */
+    box-shadow: none; /* Simplify shadow for mobile */
+  }
+}

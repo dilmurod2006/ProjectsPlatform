@@ -1,0 +1,79 @@
+/* Page container styling */
+#activation_page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+}
+
+/* Card styling */
+.activation_card {
+    background-color: rgba(255, 255, 255, 0.8); /* White with transparency */
+    border-radius: 10px;
+    padding: 40px 20px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+}
+
+/* Icon container styling */
+.icon_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Telegram icon styling */
+.telegram_icon {
+    width: 124px;
+    height: 124;
+    border-radius: 50%;
+    /* background-color: #0a3d62; */
+    padding: 10px;
+}
+
+/* Heading and paragraph styling */
+.activation_card h2 {
+    color: #0a3d62;
+    font-size: 22px;
+    margin-bottom: 16px;
+}
+
+.activation_card p {
+    color: #0a3d62;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+/* Button styling */
+.activation_card button {
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 5px;
+    width: 100%;
+}
+
+.activation_card button:hover {
+    background-color: #1c7ed6;
+}
+
+.activation_card button:focus {
+    outline: none;
+    box-shadow: 0 0 4px #1e90ff;
+}
+
+/* Styling for secondary button (back button) */
+.activation_card button + button {
+    background-color: #0a3d62;
+}

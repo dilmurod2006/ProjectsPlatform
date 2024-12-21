@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.0585649e.css",
+    "main.js": "/static/js/main.e0896231.js",
+    "static/js/488.8345f390.chunk.js": "/static/js/488.8345f390.chunk.js",
+    "static/media/testmax.png": "/static/media/testmax.6dcdc2012274a8d56eea.png",
+    "static/media/dilmurod.png": "/static/media/dilmurod.5051b4c7e795cc568073.png",
+    "static/media/mandat_bot.png": "/static/media/mandat_bot.b6756164c8e0ef605f5b.png",
+    "static/media/bexruz.png": "/static/media/bexruz.5b2af68e011162ac0a99.png",
+    "static/media/kundalikcom_icon.png": "/static/media/kundalikcom_icon.36ab26c5d4afecdf9553.png",
+    "static/media/products.png": "/static/media/products.aa1cf76304288d153a59.png",
+    "static/media/bot_icon.jpg": "/static/media/bot_icon.c194eb47d7a324789df7.jpg",
+    "static/media/main.png": "/static/media/main.9d5eccc23bff1292c7dd.png",
+    "static/media/telegram.png": "/static/media/telegram.b76beae5b2e76931bec1.png",
+    "index.html": "/index.html",
+    "main.0585649e.css.map": "/static/css/main.0585649e.css.map",
+    "main.e0896231.js.map": "/static/js/main.e0896231.js.map",
+    "488.8345f390.chunk.js.map": "/static/js/488.8345f390.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0585649e.css",
+    "static/js/main.e0896231.js"
+  ]
+}

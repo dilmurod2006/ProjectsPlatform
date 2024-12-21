@@ -1,0 +1,55 @@
+.KundalikCOM {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .download-cards {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+  }
+  
+  .download-card {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 8px;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .download-card h2 {
+    font-size: 20px;
+    color: #333;
+  }
+  
+  .download-card p {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .download-button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .download-button:hover {
+    background-color: #218838;
+  }
+  
+
+
+  @media (max-width: 768px) {
+    .download-cards {
+      flex-direction: column;
+    }
+  }
+  

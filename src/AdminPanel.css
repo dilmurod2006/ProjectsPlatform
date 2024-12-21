@@ -1,0 +1,192 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+.container {
+    width: 800px;
+    margin: 10px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 95%;
+    box-sizing: border-box;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.hide {
+    display: none;
+}
+
+
+
+
+.stats {
+    padding: auto;
+    justify-items: center;
+}
+
+.stat-item {
+    background: #f4f4f4;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    width: 120px;
+    margin: 10px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #777;
+}
+#stats-container {
+    margin: 0 auto;
+    display: flex;
+    width: 100%;
+}
+
+.stat-item p{
+    font-size: 20px;
+    color:  blue;
+}
+
+
+
+#stats-container {
+    display: flex;
+    justify-content: center;   /* Yatay markazlash */
+    align-items: center;       /* Vertikal markazlash */
+    gap: 20px;                 /* Kartalar orasidagi bo'shliq */
+    flex-wrap: wrap;           /* Kartalar ekran o'lchamiga qarab yangi qatorda joylashishi */
+}
+
+/* Har bir stat-item kartasining stylingi */
+.stat-item {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 8px;
+    width: 120px;              /* Kartaning kengligi */
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+.payment {
+    margin-top: 40px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input, textarea, button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    grid-template-columns: auto auto;
+    border-radius: 5px;
+    width: 90%;
+}
+
+button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#payment-status {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+#payment-card {
+    /* display: none; */
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    box-shadow: 0px 0px 100px rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#payment-card > .container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f4f4f4;
+}
+
+#tg-id {
+    display: none;
+}
+
+
+
+
+
+
+.search-user {
+    margin-top: 40px;
+}
+
+#search-results {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.result-item {
+    margin-bottom: 10px;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.result-item:hover {
+    background-color: #eee;
+}
+#search-query {
+    flex-grow: 1;
+}
+
+#payment-page-close {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    background-color: #0057b344;
+    cursor: default;
+}
+@media (max-width: 744px) {
+    #stats-container {
+        display: inline;
+    }
+}

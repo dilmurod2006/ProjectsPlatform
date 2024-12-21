@@ -1,0 +1,105 @@
+/* Page container styling */
+#register_page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+}
+
+/* Card styling */
+#register_page form {
+    background-color: white;
+    border-radius: 20px;
+    padding: 40px 80px;
+    /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); */
+    border: 1px solid rgb(226, 226, 226);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Label styling */
+#register_page label {
+    display: block;
+    font-size: 16px;
+    color: #0a3d62;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+/* Input field styling */
+#register_page input,
+#register_page select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #0a3d62;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+}
+
+#register_page input:focus,
+#register_page select:focus {
+    outline: none;
+    border-color: #1e90ff;
+    box-shadow: 0 0 4px #1e90ff;
+}
+
+/* Button styling */
+#register_page button {
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+#register_page button:hover {
+    background-color: #1c7ed6;
+}
+
+#register_page button:focus {
+    outline: none;
+    box-shadow: 0 0 4px #1e90ff;
+}
+
+
+/* Button styling */
+#loginbutton {
+    display: block;
+    background-color: #d7ebff;
+    color: #1e90ff;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    height: 34px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+#loginbutton:hover {
+    background-color: #1c7ed6;
+    color: white;
+}
+
+#loginbutton:focus {
+    outline: none;
+    box-shadow: 0 0 4px #1e90ff;
+}
+.menu-toggle:hover{
+    background-color: #031725;
+}
+.menu-toggle:focus{
+    background-color: #031725;
+}

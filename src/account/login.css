@@ -1,0 +1,121 @@
+/* Page container styling */
+#login_page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+}
+
+/* Form card styling */
+#login_page form {
+    background-color: white;
+    border-radius: 20px;
+    padding: 40px 80px;
+    /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); */
+    border: 1px solid #ddd;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Form header */
+#login_page h2 {
+    font-size: 24px;
+    color: #0a3d62;
+    margin-bottom: 20px;
+}
+
+/* Error message styling */
+.hidden {
+    display: none;
+}
+
+#login_xatoligi, #login_check_xatoligi {
+    font-size: 14px;
+    text-align: center;
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* Label styling */
+#login_page label {
+    display: block;
+    font-size: 16px;
+    color: #0a3d62;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+/* Input field styling */
+#login_page input[type="text"],
+#login_page input[type="password"],
+#login_page input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #0a3d62;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+}
+
+#login_page input:focus {
+    outline: none;
+    border-color: #1e90ff;
+    box-shadow: 0 0 4px rgba(30, 144, 255, 0.5);
+}
+
+/* Button styling */
+#login_page button {
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 15px;
+}
+
+#login_page button:hover {
+    background-color: #1c7ed6;
+}
+
+#login_page button:focus {
+    outline: none;
+    box-shadow: 0 0 4px rgba(30, 144, 255, 0.5);
+}
+
+/* Center-align the link */
+#login_page .parol_esdan_chiqdi,
+#login_page .ruyxatdan_utish {
+    font-size: 14px;
+    color: #1e90ff;
+    text-decoration: none;
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#login_page .parol_esdan_chiqdi:hover,
+#login_page .ruyxatdan_utish:hover {
+    text-decoration: underline;
+}
+
+/* Timer label styling */
+#timer_label {
+    font-weight: bold;
+    color: #0a3d62;
+}
+
+/* Adjust timer color when below 20 seconds */
+#timer_label.red {
+    color: red;
+}

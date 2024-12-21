@@ -1,0 +1,31 @@
+.kundalikcom-container {
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+  .kundalikcom-container h1 {
+    font-size: 2.5rem;
+    color: #0a3d62;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .section {
+    margin-bottom: 30px;
+  }
+  
+  .section h2 {
+    font-size: 1.8rem;
+    color: #0a3d62;
+    margin-bottom: 10px;
+  }
+  
+  .section p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #576574;
+  }
+  
