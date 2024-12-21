@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from settings import IQROMINDTEST_ID
@@ -26,11 +27,15 @@ from .schemes import (
     SetTestEditTokenSerializer,
     GetTestTekshirishlarSerializer,
     SetEduNameSerializer,
+    GetEduNameSerializer,
     SetEduBotTokenSerializer,
     SetEduLogoSerializer,
     GetEduBotTokenSerializer,
+    AddNatijaSerializer,
+    GetNatijaSerializer,
 
 )
+from io import BytesIO
 
 from models.models import (
     users,
@@ -250,11 +255,19 @@ async def add_test(data: AddTestSerializer, session: AsyncSession = Depends(get_
     if month_date not in qmtest_user.testlar:
         qmtest_user.testlar[month_date] = dict()
     
-    # yangi test yaratib olish
-    new_test = create_test(data.test_name, now)
+    # yangi uchun key yaratiib olish
     test_key = now.strftime("%d%H%M")
     if test_key in qmtest_user.testlar[month_date]:
         return {"how": False,"message":"Hoy-hoy shoshmang...\nTestni saqlab olishim uchun 1 min vaqt bering 🙂"}
+    if qmtest_user.end_premium_date < now:
+        n = 0
+        for i in qmtest_user.testlar.keys():
+            n += len(qmtest_user.testlar[i])
+        if n >= 5:
+            return {"how": False,"message":"Afsus 😔 sizda faqat 5 ta test boshqarish imkoni bor \nyoki, Premiumga obuna olib xohlaganingizcha testlarni saqlab boring mumkin 🙂"}
+    
+    # yangi test yaratib olish
+    new_test = create_test(data.test_name, now)
     
     # Yangi testni qo'shish
     qmtest_user.testlar[month_date][test_key] = new_test
@@ -284,7 +297,7 @@ async def set_test(data: SetTestSerializer, session: AsyncSession = Depends(get_
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Test user mavjud bo'sa
     try:
-        if len(data.javoblar) != 410:
+        if len(data.javoblar) != 420:
             return "Testni javoblarini to'liq kiriting 🙂"
         qmtest_user.testlar[data.month_date][data.test_key]["javoblar"] = data.javoblar
         await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
@@ -425,10 +438,25 @@ async def set_edu_name(data: SetEduNameSerializer, session: AsyncSession = Depen
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
-        edu_name = data.edu_name
+        edu_name = data.edu_name,
+        edu_slogan = data.edu_slogan
     ))
     await session.commit()
     return "Edu name muvaffaqiyatli kiritildi"
+
+# User get edu name
+@iqromind_router.post("/get_edu_name/{user_id}")
+async def get_edu_name(user_id: int, session: AsyncSession = Depends(get_async_session)):
+    res = await session.execute(select(iqromindtest).filter_by(user_id=user_id))
+    qmtest_user = res.fetchone()
+    if qmtest_user is None:
+        return {"name": "Iqro Mind Test", "slogan": "powered by Projects Platform"}
+    if qmtest_user.end_premium_date < datetime.utcnow():
+        return {"name": "Iqro Mind Test", "slogan": "powered by Projects Platform"}
+    if qmtest_user.edu_name == None or qmtest_user.edu_slogan == None:
+        return {"name": "Iqro Mind Test", "slogan": "powered by Projects Platform"}
+    return {"name": qmtest_user.edu_name, "slogan": qmtest_user.edu_slogan}
+
 
 # User set edu bot token
 @iqromind_router.post("/set_edu_bot_token")
@@ -483,4 +511,98 @@ async def set_edu_logo(data: SetEduLogoSerializer, session: AsyncSession = Depen
     ))
     await session.commit()
     return "Edu logo muvaffaqiyatli kiritildi"
+
+
+# User get edu logo
+@iqromind_router.get("/get_edu_logo/{user_id}")
+async def get_edu_logo(user_id: int, session: AsyncSession = Depends(get_async_session)):
+    # User ID bo'yicha qidirish
+    res = await session.execute(select(iqromindtest).filter_by(user_id=user_id))
+    qmtest_user = res.fetchone()
+
+    # Default fayl yo'li
+    default_logo_path = "iqromindtest/logo.svg"
+
+    # Agar foydalanuvchi topilmasa, default logoni yuborish
+    if qmtest_user is None:
+        return FileResponse(default_logo_path, media_type="image/svg+xml")
+    now = datetime.now()
+    # Agar user premium bo'lmasa edu logoni o'rnga IqroMind logoni qaytarish
+    if qmtest_user.end_premium_date < now:
+        return FileResponse(default_logo_path, media_type="image/svg+xml")
+    try:
+        # Botdan fayl yuklab olish
+        bot = TeleBot(qmtest_user.edu_bot_token)
+        file_id = qmtest_user.edu_logo
+        file_info = bot.get_file(file_id)
+        file_path = file_info.file_path
+        file = bot.download_file(file_path)
+
+        
+        return StreamingResponse(BytesIO(file), media_type="image/png")
+
+    except Exception as e:
+        # Xatolik yuz berganda default logoni yuborish
+        print(f"Xatolik: {e}")
+        return FileResponse(default_logo_path, media_type="image/svg+xml")
+
+# Natija qo'shish
+@iqromind_router.post("/add_natija")
+async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
+    res = await session.execute(select(users).where(users.c.token == data.token))
+    user = res.fetchone()
+    if user is None:
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
+    res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
+    qmtest_user = res.fetchone()
+    # Mavjud yoki yo'qligini tekshirsh
+    if qmtest_user is None:
+        raise HTTPException(status_code=401, detail="User mavjud emas!")
+    # Mavjud bo'lsa
+    qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}"
+    await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
+        testlar = qmtest_user.testlar
+    ))
+    await session.commit()
+    return "Natija muvaffaqiyatli kiritildi"
+
+# Natijani id_raqam bo'yicha olish
+@iqromind_router.post("/get_natija")
+async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
+    res = await session.execute(select(users).where(users.c.token == data.token))
+    user = res.fetchone()
+    if user is None:
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
+    res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
+    qmtest_user = res.fetchone()
+    # Mavjud yoki yo'qligini tekshirsh
+    if qmtest_user is None:
+        raise HTTPException(status_code=401, detail="User mavjud emas!")
+    # Mavjud bo'lsa
+    natija = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam]
+    return {
+        "maj": natija.split("|")[0].split(".")[0],
+        "b1": natija.split("|")[0].split(".")[1],
+        "b2": natija.split("|")[0].split(".")[2],
+        "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{user.id}/{natija.split('|')[1]}"
+    }
+
+# Natijani id_raqam bo'yicha olish
+@iqromind_router.get("/get_natija_file/{user_id}/{file_id}")
+async def get_natija_file(user_id: int, file_id: str, session: AsyncSession = Depends(get_async_session)):
+    res = await session.execute(select(iqromindtest).filter_by(user_id=user_id))
+    qmtest_user = res.fetchone()
+    # Mavjud yoki yo'qligini tekshirsh
+    default_logo_path = "iqromindtest/not-found.png"
+    if qmtest_user is None:
+        return FileResponse(default_logo_path, media_type="image/png")
+    # Mavjud bo'lsa
+    try:
+        bot = TeleBot(qmtest_user.edu_bot_token)
+        file_info = bot.get_file(file_id)
+        file_path = file_info.file_path
+        file = bot.download_file(file_path)
+        return StreamingResponse(BytesIO(file), media_type="image/png")
+    except:
+        return FileResponse(default_logo_path, media_type="image/png")
 

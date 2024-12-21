@@ -143,23 +143,31 @@ from settings import *
 # print(response.status_code)
 # print(response.json())
 
-import psycopg2
+# import psycopg2
 
-# PostgreSQL ulanish parametrlari
-conn = psycopg2.connect(
-    dbname="PROJECTSPLATFORM",
-    user="postgres",
-    password="admin1957",
-    host="localhost"  # yoki server manzili
-)
+# # PostgreSQL ulanish parametrlari
+# conn = psycopg2.connect(
+#     dbname="PROJECTSPLATFORM",
+#     user="postgres",
+#     password="admin1957",
+#     host="localhost"  # yoki server manzili
+# )
 
-cursor = conn.cursor()
+# cursor = conn.cursor()
 
-# Ma'lumotlar bazasining hajmini olish uchun SQL so'rov
-cursor.execute("SELECT pg_size_pretty(pg_database_size('PROJECTSPLATFORM')) AS database_size;")
-size = cursor.fetchone()[0]
+# # Ma'lumotlar bazasining hajmini olish uchun SQL so'rov
+# cursor.execute("SELECT pg_size_pretty(pg_database_size('PROJECTSPLATFORM')) AS database_size;")
+# size = cursor.fetchone()[0]
 
-print(f"Ma'lumotlar bazasining hajmi: {size}")
+# print(f"Ma'lumotlar bazasining hajmi: {size}")
 
-cursor.close()
-conn.close()
+# cursor.close()
+# conn.close()
+
+
+
+# bot orqali image yuborib yuborilgan xabardan resultan file_id ni print qilish
+import telebot
+bot = telebot.TeleBot("7486708710:AAFDApDU5kvV9M7bDaXjO4zd5icIgkNHH3s")
+print(bot.send_document(5420071824, open("/home/alone/Desktop/Projects/IqroMindTest/icons/home.png", "rb").read()).document.file_id)
+

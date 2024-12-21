@@ -13,6 +13,11 @@ from fastapi import Depends, HTTPException
 from typing import Dict
 from models.models import loginsdata
 fanlar = [
+    "O'zbekcha",
+    "Ruscha",
+
+    "Ingilizcha",
+    "Qozoqcha"
     "matematika",
     "fizika",
 
@@ -38,7 +43,7 @@ def create_test(name, date):
         "name": name,
         "bio": "",
         "date": date_str,
-        "javoblar": " "*410,
+        "javoblar": " "*420,
         "tekshirishlar": {}
     }
     return data

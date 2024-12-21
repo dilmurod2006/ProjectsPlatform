@@ -79,6 +79,7 @@ async def create_user(data: CreateUser, session: AsyncSession = Depends(get_asyn
             full_name=data.full_name,
             email=data.email,
             username=data.username,
+            sex=data.sex,
             password=password,
             activation_token=activation_token,
             token=token,

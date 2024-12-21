@@ -84,6 +84,10 @@ class SetTestEditTokenSerializer(BaseModel):
 class SetEduNameSerializer(BaseModel):
     token: str
     edu_name: str
+    edu_slogan: str
+# User edu name get
+class GetEduNameSerializer(BaseModel):
+    token: str
 
 # User edu bot set
 class SetEduBotTokenSerializer(BaseModel):
@@ -98,3 +102,21 @@ class SetEduLogoSerializer(BaseModel):
 # Bot tokinni olish
 class GetEduBotTokenSerializer(BaseModel):
     token: str
+
+# natija qo'shish uchun
+class AddNatijaSerializer(BaseModel):
+    token: str
+    month_date: str
+    test_key: str
+    id_raqam: int
+    maj: int
+    b1: int
+    b2: int
+    file_id: str
+
+# natija olish uchun
+class GetNatijaSerializer(BaseModel):
+    token: str
+    month_date: str
+    test_key: str
+    id_raqam: int
