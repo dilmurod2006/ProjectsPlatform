@@ -33,7 +33,6 @@ from models.models import (
     payment_admin
 )
 
-
 from sqlalchemy.sql import or_
 
 
@@ -459,7 +458,9 @@ async def delete_products(token: str, data: DeleteProducts, session: AsyncSessio
     return {"message": "Product deleted successfully"}
 
 
-# ADD PAYYMENT FUNCTIONS START
+# ADD PAYYMENT FUNCTIONS START# Router
+
+# Payment qo'shish endpointi
 @admin_router.post("/payment")
 async def add_payment(
     admin_token: str = Form(...),
@@ -499,22 +500,8 @@ async def add_payment(
     
     # Tasvir ma'lumotlarini o'qish
     image_data = await payment_chek_img.read()  # Faylni `bytes` ga o'qish
-
-    # Payment qo'shish
-    payment_query = insert(payment_admin).values(
-        admin_id=admin.id,
-        user_id=user.id,
-        tulov_summasi=tulov_summasi,
-        payment_chek_img=image_data,  # Tasvir ma'lumotlarini bazaga yozish
-        bio=bio,
-        created_at=datetime.utcnow()
-    )
-
-    # Foydalanuvchi balansini yangilash
-    update_balance_query = update(users).where(users.c.id == user.id).values(balance=user.balance + tulov_summasi)
-    await session.execute(update_balance_query)
-    await session.execute(payment_query)
-
+    
+    # To'lov ma'lumotlarini yuborish va file_id olish
     send_about_payment_data = send_payment_data(
         tg_id=tg_id,
         username=user.username,
@@ -522,12 +509,37 @@ async def add_payment(
         payment_chek_img=image_data,
         bio=bio
     )
+    
+    # Send about payment data'dan file_id olish
+    if send_about_payment_data.get("status") != "success":
+        raise HTTPException(status_code=500, detail="Rasm yuborishda xato yuz berdi")
 
+    file_id = send_about_payment_data.get("file_id")
+    print(file_id)
+    
+    # Payment qo'shish
+    payment_query = insert(payment_admin).values(
+        admin_id=admin.id,
+        user_id=user.id,
+        tulov_summasi=tulov_summasi,
+        payment_chek_img=file_id,  # Tasvir ma'lumotlarini bazaga yozish
+        bio=bio,
+        created_at=datetime.utcnow()
+    )
+
+    # Foydalanuvchi balansini yangilash
+    update_balance_query = update(users).where(users.c.id == user.id).values(balance=user.balance + tulov_summasi)
+    
+    # Barcha operatsiyalarni bajarish
+    await session.execute(update_balance_query)
+    await session.execute(payment_query)
     await session.commit()
-    return {"message": f"{user.username} foydalanuvchiga {tulov_summasi} so'm to'lov o'tkazildi. {send_about_payment_data}"}
+
+    return {
+        "message": f"{user.username} foydalanuvchiga {tulov_summasi} so'm to'lov o'tkazildi."
+    }
 
 # ADD PAYMENT FUNCTIONS END
-
 
 # GET DATA FUNCTIONS FROM DATABASES START
 
@@ -983,4 +995,6 @@ async def find_user(data: FindData, session: AsyncSession = Depends(get_async_se
     results = await session.execute(users_query)
     users_list = results.fetchall()
 
-    return {"users": [{"id": user.id, "username": user.username, "full_name": user.full_name, "tg_id": user.tg_id, "email": user.email, "phone": user.phone} for user in users_list]}
+
+    return {"users": [{"id": user.id, "username": user.username, "full_name": user.full_name, "tg_id": user.tg_id, "email": user.email, "phone": user.phone, "balance": user.balance} for user in users_list]}
+    # Datalarni qaytarish
