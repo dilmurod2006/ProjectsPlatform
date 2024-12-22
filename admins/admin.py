@@ -18,7 +18,6 @@ from sqlalchemy import (
     delete
 )
 
-from sqlalchemy.sql import or_
 
 from database import get_async_session
 from models.models import (
@@ -33,6 +32,11 @@ from models.models import (
     products,
     payment_admin
 )
+
+
+from sqlalchemy.sql import or_
+
+
 from .schemes import (
     LoginAdmin,
     CheckLoginAdmin,
