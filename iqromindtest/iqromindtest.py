@@ -74,7 +74,7 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
     all_months_price = months_size_price(month=prices["month"], year=prices["year"], months_count=int(data.months_count))
 
     if user.balance >= all_months_price > 0:
-        now = datetime.utcnow()
+        now = datetime.now()
         res = await session.execute(
             select(iqromindtest).filter_by(user_id = user.id)
         )
@@ -143,7 +143,7 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
         raise HTTPException(status_code=400, detail="User mavjud emas!")
 
     # hozirgi vaqtni aniqlash
-    now = datetime.utcnow()
+    now = datetime.now()
 
     # kundalikcomdan userni qidirish
     res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
@@ -250,7 +250,7 @@ async def add_test(data: AddTestSerializer, session: AsyncSession = Depends(get_
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     
     # Test user mavjud bo'sa
-    now = datetime.utcnow()
+    now = datetime.now()
     month_date = now.strftime("%Y%m")
     if month_date not in qmtest_user.testlar:
         qmtest_user.testlar[month_date] = dict()
@@ -451,7 +451,7 @@ async def get_edu_name(user_id: int, session: AsyncSession = Depends(get_async_s
     qmtest_user = res.fetchone()
     if qmtest_user is None:
         return {"name": "Iqro Mind Test", "slogan": "powered by Projects Platform"}
-    if qmtest_user.end_premium_date < datetime.utcnow():
+    if qmtest_user.end_premium_date < datetime.now():
         return {"name": "Iqro Mind Test", "slogan": "powered by Projects Platform"}
     if qmtest_user.edu_name == None or qmtest_user.edu_slogan == None:
         return {"name": "Iqro Mind Test", "slogan": "powered by Projects Platform"}
