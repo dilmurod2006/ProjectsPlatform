@@ -620,9 +620,12 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
     # Mavjud bo'lsa
     try:
         result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
-        # Sort qilish
-        sorted_result = dict(sorted(result.items(), key=lambda x: string_to_number(x[1]), reverse=True)[:10])
-        return sorted_result
+        # Tartiblash: kattadan kichikka qarab
+        sorted_items = sorted(result.items(), key=lambda x: string_to_number(x[1]), reverse=True)
+
+        # Faqat birinchi 10 elementni olish
+        top_10_items = dict(sorted_items[:10])
+        return top_10_items
     except:
         return dict()
 
