@@ -33,7 +33,7 @@ from .schemes import (
     GetEduBotTokenSerializer,
     AddNatijaSerializer,
     GetNatijaSerializer,
-
+    GetAllNatijalarSerializer
 )
 from io import BytesIO
 
@@ -612,11 +612,7 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
 # Barcha natijalarni ulashish
 @iqromind_router.post("/get_all_natijalar")
 async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSession = Depends(get_async_session)):
-    res = await session.execute(select(users).where(users.c.token == data.token))
-    user = res.fetchone()
-    if user is None:
-        raise HTTPException(status_code=400, detail="User mavjud emas!")
-    res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
+    res = await session.execute(select(iqromindtest).filter_by(user_id=data.user_id))
     qmtest_user = res.fetchone()
     # Mavjud yoki yo'qligini tekshirsh
     if qmtest_user is None:
@@ -627,8 +623,12 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
         # Sort qilish
         sorted_result = sorted(result.items(), key=lambda x: int(x.split("|")[0].replace(".","")))
         natija = dict()
+        o = 0
         for i in sorted_result.keys():
+            o += 1
             natija[i] = sorted_result[i]
+            if o >= 10:
+                break
         return natija
     except:
         return {}
