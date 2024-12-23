@@ -56,6 +56,7 @@ def generate_token(length=8):
     return token
 
 def string_to_number(data):
-    res = data.split("|")[0]
+    res = data.split(".")[0]
     # umumiy balni hixoblash
-    return int(res.split(".")[0])*11 + int(res.split(".")[1])*21 + int(res.split(".")[2])*31
+    print(int(res[0])*11 + int(res[1])*21 + int(res[2])*31)
+    return int(res[0])*11 + int(res[1])*21 + int(res[2])*31
