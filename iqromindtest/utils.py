@@ -55,3 +55,7 @@ def generate_token(length=8):
     token = ''.join(random.choice(characters) for _ in range(length))
     return token
 
+def string_to_number(data):
+    res = data.split("|")[0]
+    # umumiy balni hixoblash
+    return int(res.split(".")[0])*11 + int(res.split(".")[1])*21 + int(res.split(".")[2])*31

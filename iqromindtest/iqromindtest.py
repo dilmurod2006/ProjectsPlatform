@@ -618,12 +618,13 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
-    if True:
+    try:
         result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
         # Sort qilish
-        sorted_result = sorted(result, key=lambda x: int(x.split("|")[0].replace(".","")))
+        sorted_result = dict(sorted(result.items(), key=lambda x: string_to_number(x[1]), reverse=True))
+
         return sorted_result[:10]
-    else:
+    except:
         return []
 
 
