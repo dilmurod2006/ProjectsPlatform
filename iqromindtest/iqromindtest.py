@@ -33,7 +33,7 @@ from .schemes import (
     GetEduBotTokenSerializer,
     AddNatijaSerializer,
     GetNatijaSerializer,
-    GetAllNatijalarSerializer,
+    GetAllNatijalarSerializer
 )
 from io import BytesIO
 
@@ -618,7 +618,7 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
-    try:
+    if True:
         result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
         # Sort qilish
         sorted_result = sorted(result.items(), key=lambda x: int(x.split("|")[0].replace(".","")))
@@ -630,7 +630,7 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
             if o >= 10:
                 break
         return natija
-    except:
+    else:
         return {}
 
 
