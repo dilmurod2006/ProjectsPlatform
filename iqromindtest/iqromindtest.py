@@ -605,7 +605,7 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
             "maj": natija.split("|")[0].split(".")[0],
             "b1": natija.split("|")[0].split(".")[1],
             "b2": natija.split("|")[0].split(".")[2],
-            "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{user.id}/{natija.split('|')[1]}"
+            "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{data.user_id}/{natija.split('|')[1]}"
         }
     except:
         raise HTTPException(status_code=408, detail="Natijalar topilmadi")
