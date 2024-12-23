@@ -624,7 +624,7 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
         sorted_items = sorted(result.items(), key=string_to_number, reverse=True)
         # print(sorted_items)
         # Faqat birinchi 10 elementni olish
-        top_10_items = dict(sorted_items[:10])
+        top_10_items = dict(sorted_items)
         return dict(sorted_items)
     except:
         return dict()
