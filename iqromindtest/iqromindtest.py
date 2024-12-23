@@ -621,17 +621,10 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
     if True:
         result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
         # Sort qilish
-        sorted_result = sorted(result.items(), key=lambda x: int(x.split("|")[0].replace(".","")))
-        natija = dict()
-        o = 0
-        for i in sorted_result.keys():
-            o += 1
-            natija[i] = sorted_result[i]
-            if o >= 10:
-                break
-        return natija
+        sorted_result = sorted(result, key=lambda x: int(x.split("|")[0].replace(".","")))
+        return sorted_result[:10]
     else:
-        return {}
+        return []
 
 
 # Natijani id_raqam bo'yicha olish
