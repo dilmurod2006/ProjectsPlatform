@@ -600,7 +600,7 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
     if True:
-        natija = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][str(data.aid_rqam)]
+        natija = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][str(data.id_rqam)]
         return {
             "maj": natija.split("|")[0].split(".")[0],
             "b1": natija.split("|")[0].split(".")[1],
