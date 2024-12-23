@@ -599,15 +599,15 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
-    try:
-        natija = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][str(data.id_raqam)]
+    if True:
+        natija = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][str(data.aid_rqam)]
         return {
             "maj": natija.split("|")[0].split(".")[0],
             "b1": natija.split("|")[0].split(".")[1],
             "b2": natija.split("|")[0].split(".")[2],
             "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{user.id}/{natija.split('|')[1]}"
         }
-    except:
+    else:
         raise HTTPException(status_code=408, detail="Natijalar topilmadi")
 # Barcha natijalarni ulashish
 @iqromind_router.post("/get_all_natijalar")
