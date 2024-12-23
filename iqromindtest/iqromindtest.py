@@ -618,16 +618,8 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
-    try:
-        result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
-        # Tartiblash: kattadan kichikka qarab
-        sorted_items = sorted(result.items(), key=string_to_number, reverse=True)
-        # print(sorted_items)
-        # Faqat birinchi 10 elementni olish
-        top_10_items = dict(sorted_items)
-        return dict(sorted_items)
-    except:
-        return dict()
+    result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
+    return sort_dict(result)
 
 
 # Natijani id_raqam bo'yicha olish

@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote
 from fastapi import Depends, HTTPException
 from typing import Dict
-from models.models import loginsdata
+# from models.models import loginsdata
 fanlar = [
     "O'zbekcha",
     "Ruscha",
@@ -61,3 +61,24 @@ def string_to_number(data):
     # umumiy balni hixoblash
     print()
     return int(res[0])*11 + int(res[1])*21 + int(res[2])*31
+def sort_dict(d: dict):
+    try:
+        # Tartiblash: kattadan kichikka qarab
+        sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
+        return sorted_items[:4]
+    except:
+        return []
+if __name__ == "__main__":
+    print(sort_dict({
+    "0": "0.0.0|aseawdawdawd",
+    "1001": "4.0.0|aseawdawdawd",
+    "1002": "2.0.0|aseawdawdawd",
+    "1004": "4.0.0|aseawdawdawd",
+    "1005": "4.0.0|aseawdawdawd",
+    "1006": "9.0.0|aseawdawdawd",
+    "1007": "10.0.0|aseawdawdawd",
+    "1008": "0.10.0|aseawdawdawd",
+    "1009": "0.0.0|aseawdawdawd",
+    "1010": "0.0.0|aseawdawdawd",
+    "1011": "0.0.0|aseawdawdawd",
+    }))
