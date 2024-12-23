@@ -33,7 +33,7 @@ from .schemes import (
     GetEduBotTokenSerializer,
     AddNatijaSerializer,
     GetNatijaSerializer,
-    GetAllNatijalarSerializer
+    GetAllNatijalarSerializer,
 )
 from io import BytesIO
 
