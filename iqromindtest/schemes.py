@@ -116,7 +116,7 @@ class AddNatijaSerializer(BaseModel):
 
 # natija olish uchun
 class GetNatijaSerializer(BaseModel):
-    token: str
+    user_id: int
     month_date: str
     test_key: str
     id_raqam: int

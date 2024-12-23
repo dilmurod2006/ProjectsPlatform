@@ -592,11 +592,8 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
 # Natijani id_raqam bo'yicha olish
 @iqromind_router.post("/get_natija")
 async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
-    res = await session.execute(select(users).where(users.c.token == data.token))
-    user = res.fetchone()
-    if user is None:
-        raise HTTPException(status_code=400, detail="User mavjud emas!")
-    res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
+
+    res = await session.execute(select(iqromindtest).filter_by(user_id=data.user_id))
     qmtest_user = res.fetchone()
     # Mavjud yoki yo'qligini tekshirsh
     if qmtest_user is None:
