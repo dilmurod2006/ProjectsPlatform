@@ -586,6 +586,30 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
         "b2": natija.split("|")[0].split(".")[2],
         "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{user.id}/{natija.split('|')[1]}"
     }
+# Barcha natijalarni ulashish
+@iqromind_router.post("/get_all_natijalar")
+async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSession = Depends(get_async_session)):
+    res = await session.execute(select(users).where(users.c.token == data.token))
+    user = res.fetchone()
+    if user is None:
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
+    res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
+    qmtest_user = res.fetchone()
+    # Mavjud yoki yo'qligini tekshirsh
+    if qmtest_user is None:
+        raise HTTPException(status_code=401, detail="User mavjud emas!")
+    # Mavjud bo'lsa
+    try:
+        result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
+        # Sort qilish
+        sorted_result = sorted(result.items(), key=lambda x: int(x.split("|")[0].replace(".","")))
+        natija = dict()
+        for i in sorted_result.keys():
+            natija[i] = sorted_result[i]
+        return natija
+    except:
+        return {}
+
 
 # Natijani id_raqam bo'yicha olish
 @iqromind_router.get("/get_natija_file/{user_id}/{file_id}")
