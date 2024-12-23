@@ -65,7 +65,7 @@ def sort_dict(d: dict):
     try:
         # Tartiblash: kattadan kichikka qarab
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
-        return sorted_items[:4]
+        return sorted_items[:10]
     except:
         return []
 if __name__ == "__main__":
