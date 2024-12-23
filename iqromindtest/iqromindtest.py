@@ -201,8 +201,10 @@ async def get_tests_api(data: GetHaveTestMonthsSerializer, session: AsyncSession
     qmtest_user = res.fetchone()
     if qmtest_user is None:
         raise HTTPException(status_code=400, detail="User mavjud emas!")
-    
-    return list(qmtest_user.testlar.keys())
+    result = dict()
+    for i in qmtest_user.testlar.keys():
+        result[i] = len(qmtest_user.testlar[i])
+    return result
 
 # 1 oylik testlarni qaytaradi
 @iqromind_router.post("/get_test_datas_in_month")
