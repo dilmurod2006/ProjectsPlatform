@@ -50,7 +50,29 @@ from database import get_async_session
 
 iqromind_router = APIRouter()
 
+tillar = [
 
+    "O'zbekcha",
+    "Ruscha",
+
+    "Ingilizcha",
+    "Qozoqcha"
+]
+fanlar = [
+
+    "Matematika",
+    "Fizika",
+
+    "Ona tili",
+    "Kimyo",
+    "Biologiya",
+    "Tarix",
+
+    "Geografiya",
+    "Ingliz tili",
+    "Fizika",
+    "Kimyo"
+]
 
 
 
@@ -590,7 +612,7 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
         if len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]) >= 100:
             return {"how": False,"message":"Afsus 😔 sizda faqat 100 xil ID ni tekshirish imkoni bor \nyoki, Premiumga obuna olib xohlaganingizcha natijalarni saqlab borishingiz mumkin 🙂"}
     
-    qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}|{data.f1}.{data.f2}"
+    qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}|{data.f1}.{data.f2}|{data.lang}"
     await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
         testlar = qmtest_user.testlar
     ))
@@ -614,8 +636,9 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
             "b1": natija.split("|")[0].split(".")[1],
             "b2": natija.split("|")[0].split(".")[2],
             "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{data.user_id}/{natija.split('|')[1]}",
-            "f1": natija.split("|")[2].split(".")[0],
-            "f2": natija.split("|")[2].split(".")[1]
+            "f1": fanlar[natija.split("|")[2].split(".")[0]],
+            "f2": fanlar[natija.split("|")[2].split(".")[1]],
+            "lang": tillar[natija.split("|")[3]]
         }
     except:
         raise HTTPException(status_code=408, detail="Natijalar topilmadi")

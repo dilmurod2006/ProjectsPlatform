@@ -115,6 +115,7 @@ class AddNatijaSerializer(BaseModel):
     file_id: str
     f1: int
     f2: int
+    lang: int
 
 # natija olish uchun
 class GetNatijaSerializer(BaseModel):
