@@ -608,7 +608,7 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
     if qmtest_user.end_premium_date < datetime.now():
         if len(qmtest_user.testlar[data.month_date]) > 5:
             return {"how": False, "message": f"Sizda premium muddati tugagan. Premiumga obunasini uzaytiring yoki {len(qmtest_user.testlar[data.month_date])-5} ta testingizni o'chirib tashlashingiz kerak"}
-        if len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]) >= 100:
+        if len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]) >= 100 and data.id_raqam not in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]:
             return {"how": False,"message":"Afsus 😔 sizda faqat 100 xil ID ni tekshirish imkoni bor \nyoki, Premiumga obuna olib xohlaganingizcha natijalarni saqlab borishingiz mumkin 🙂"}
     
     qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}|{data.f1}.{data.f2}|{data.lang}"
