@@ -67,7 +67,7 @@ def sort_dict(d: dict, page: int):
         ballar = set()
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
         for i in sorted_items:
-            ballar.add(string_to_number(i[1]))
+            ballar.add(string_to_number(i))
         birxillar_soni = page*10 - len(ballar)
         return sorted_items[page*10:10+page*10], birxillar_soni
     else:
