@@ -61,11 +61,11 @@ def string_to_number(data):
     # umumiy balni hixoblash
     print()
     return int(res[0])*11 + int(res[1])*21 + int(res[2])*31
-def sort_dict(d: dict):
+def sort_dict(d: dict, page: int):
     try:
         # Tartiblash: kattadan kichikka qarab
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
-        return sorted_items[:10]
+        return sorted_items[page*10:10+page*10]
     except:
         return []
 if __name__ == "__main__":

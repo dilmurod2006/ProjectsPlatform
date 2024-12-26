@@ -129,5 +129,6 @@ class GetAllNatijalarSerializer(BaseModel):
     user_id: int
     month_date: str
     test_key: str
+    page: int
 
 
