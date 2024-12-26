@@ -50,29 +50,28 @@ from database import get_async_session
 
 iqromind_router = APIRouter()
 
-tillar = [
+tillar = {
+    "0": "O'zbekcha",
+    "1": "Ruscha",
 
-    "O'zbekcha",
-    "Ruscha",
+    "2": "Ingilizcha",
+    "3": "Qozoqcha"
+}
+fanlar = {
 
-    "Ingilizcha",
-    "Qozoqcha"
-]
-fanlar = [
+    "0": "Matematika",
+    "1": "Fizika",
 
-    "Matematika",
-    "Fizika",
+    "2": "Ona tili",
+    "3": "Kimyo",
+    "4": "Biologiya",
+    "5": "Tarix",
 
-    "Ona tili",
-    "Kimyo",
-    "Biologiya",
-    "Tarix",
-
-    "Geografiya",
-    "Ingliz tili",
-    "Fizika",
-    "Kimyo"
-]
+    "6": "Geografiya",
+    "7": "Ingliz tili",
+    "8": "Fizika",
+    "9": "Kimyo"
+}
 
 
 
@@ -638,7 +637,7 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
             "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{data.user_id}/{natija.split('|')[1]}",
             "f1": fanlar[natija.split("|")[2].split(".")[0]],
             "f2": fanlar[natija.split("|")[2].split(".")[1]],
-            "lang": tillar[natija.split("|")[2]]
+            "lang": tillar[natija.split("|")[3]]
         }
     except:
         raise HTTPException(status_code=408, detail="Natijalar topilmadi")
