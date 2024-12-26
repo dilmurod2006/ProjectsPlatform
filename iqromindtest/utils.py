@@ -61,15 +61,15 @@ def string_to_number(data):
     ball =  int(res[0])*11 + int(res[1])*21 + int(res[2])*31
     return ball
 def sort_dict(d: dict, page: int):
-    try:
+    if True:
         # Tartiblash: kattadan kichikka qarab
         ballar = set()
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
-        for i in d.keys():
-            ballar.add(string_to_number(d[i]))
+        for i in sorted_items:
+            ballar.add(string_to_number(i[1]))
         birxillar_soni = page*10 - len(ballar)
         return sorted_items[page*10:10+page*10], birxillar_soni
-    except:
+    else:
         return [], 0
 if __name__ == "__main__":
     print(sort_dict({
