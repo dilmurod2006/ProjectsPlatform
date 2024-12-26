@@ -289,7 +289,7 @@ async def add_test(data: AddTestSerializer, session: AsyncSession = Depends(get_
         for i in qmtest_user.testlar.keys():
             n += len(qmtest_user.testlar[i])
         if n >= 5:
-            return {"how": False,"message":"Afsus 😔 sizda faqat 5 ta test boshqarish imkoni bor \nyoki, Premiumga obuna olib xohlaganingizcha testlarni saqlab boring mumkin 🙂"}
+            return {"how": False,"message":"Afsus 😔 sizda faqat 5 ta test boshqarish imkoni bor \nyoki, Premiumga obuna olib xohlaganingizcha testlarni saqlab borishingiz mumkin 🙂"}
     
     # yangi test yaratib olish
     new_test = create_test(data.test_name, now)
@@ -584,12 +584,18 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
+    if qmtest_user.end_premium_date < datetime.now():
+        if len(qmtest_user.testlar[data.month_date]) > 5:
+            return {"how": False, "message": f"Sizda premium muddati tugagan. Premiumga obunasini uzaytiring yoki {len(qmtest_user.testlar[data.month_date])-5} ta testingizni o'chirib tashlashingiz kerak"}
+        if len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]) >= 100:
+            return {"how": False,"message":"Afsus 😔 sizda faqat 100 xil ID ni tekshirish imkoni bor \nyoki, Premiumga obuna olib xohlaganingizcha natijalarni saqlab borishingiz mumkin 🙂"}
+    
     qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}|{data.f1}.{data.f2}"
     await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
         testlar = qmtest_user.testlar
     ))
     await session.commit()
-    return "Natija muvaffaqiyatli kiritildi"
+    return {"how": True,"message": "Natija muvaffaqiyatli kiritildi"}
 
 # Natijani id_raqam bo'yicha olish
 @iqromind_router.post("/get_natija")
