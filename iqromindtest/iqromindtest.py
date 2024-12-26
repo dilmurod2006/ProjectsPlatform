@@ -584,7 +584,7 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
-    qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}"
+    qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}|{data.f1}.{data.f2}"
     await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
         testlar = qmtest_user.testlar
     ))
@@ -607,7 +607,9 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
             "maj": natija.split("|")[0].split(".")[0],
             "b1": natija.split("|")[0].split(".")[1],
             "b2": natija.split("|")[0].split(".")[2],
-            "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{data.user_id}/{natija.split('|')[1]}"
+            "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{data.user_id}/{natija.split('|')[1]}",
+            "f1": natija.split("|")[2].split(".")[0],
+            "f2": natija.split("|")[2].split(".")[1]
         }
     except:
         raise HTTPException(status_code=408, detail="Natijalar topilmadi")

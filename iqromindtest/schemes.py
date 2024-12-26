@@ -113,6 +113,8 @@ class AddNatijaSerializer(BaseModel):
     b1: int
     b2: int
     file_id: str
+    f1: int
+    f2: int
 
 # natija olish uchun
 class GetNatijaSerializer(BaseModel):
