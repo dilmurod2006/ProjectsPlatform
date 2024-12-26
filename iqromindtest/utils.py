@@ -55,16 +55,20 @@ def generate_token(length=8):
     token = ''.join(random.choice(characters) for _ in range(length))
     return token
 
-def string_to_number(data):
+def string_to_number(data, ballar):
     data = data[1].split("|")[0]
     res = data.split(".")
     # umumiy balni hixoblash
-    print()
-    return int(res[0])*11 + int(res[1])*21 + int(res[2])*31
+    ball =  int(res[0])*11 + int(res[1])*21 + int(res[2])*31
+    ballar.add(ball)
+    return ball
 def sort_dict(d: dict, page: int):
     try:
         # Tartiblash: kattadan kichikka qarab
-        sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
+        ballar = {}
+        sorted_items = sorted(d.items(), key=lambda x: string_to_number(x, ballar); return sort, reverse=True)
+        for i in range(page*10):
+
         return sorted_items[page*10:10+page*10]
     except:
         return []
