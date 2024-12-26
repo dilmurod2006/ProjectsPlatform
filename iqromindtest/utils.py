@@ -62,16 +62,24 @@ def string_to_number(data):
     ball =  int(res[0])*11 + int(res[1])*21 + int(res[2])*31
     return ball
 def sort_dict(d: dict, page: int):
-    if True:
+    try:
         # Tartiblash: kattadan kichikka qarab
-        ballar = set()
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
+        max_ball = -1
+        add_qiymat = 0
         for i in sorted_items[:page*10]:
-            ballar.add(string_to_number(i))
-        birxillar_soni = page*10 - len(ballar)
-        return sorted_items[page*10:10+page*10], birxillar_soni
-    else:
-        return [], 0
+            ball = string_to_number(i)
+            if ball == max_ball:
+                add_qiymat += 1
+            else:
+                max_ball = string_to_number(i)
+                add_qiymat = 0
+        return sorted_items[page*10:10+page*10], {
+            "max_ball": max_ball,
+            "add_qiymat": add_qiymat
+        }
+    except:
+        return {"max_ball": -1, "add_qiymat": 0}
 if __name__ == "__main__":
     print(sort_dict({
     "0": "0.0.0|aseawdawdawd",
