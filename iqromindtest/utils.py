@@ -55,22 +55,22 @@ def generate_token(length=8):
     token = ''.join(random.choice(characters) for _ in range(length))
     return token
 
-def string_to_number(data, ballar):
-    data = data[1].split("|")[0]
+def string_to_number(data):
     res = data.split(".")
     # umumiy balni hixoblash
     ball =  int(res[0])*11 + int(res[1])*21 + int(res[2])*31
-    ballar.add(ball)
     return ball
 def sort_dict(d: dict, page: int):
     try:
         # Tartiblash: kattadan kichikka qarab
-        ballar = {}
-        sorted_items = sorted(d.items(), key=lambda x: string_to_number(x, ballar), reverse=True)
-        birxillar_soni =page*10 - len(ballar)
+        ballar = set()
+        sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
+        for i in d.keys():
+            ballar.add(string_to_number(d[i]))
+        birxillar_soni = page*10 - len(ballar)
         return sorted_items[page*10:10+page*10], birxillar_soni
     except:
-        return []
+        return [], 0
 if __name__ == "__main__":
     print(sort_dict({
     "0": "0.0.0|aseawdawdawd",
