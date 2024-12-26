@@ -75,7 +75,7 @@ def sort_dict(d: dict, page: int):
                 max_ball = string_to_number(i)
                 add_qiymat = 0
         return sorted_items[page*10:10+page*10], {
-            "max_ball": max_ball,
+            "max_ball": f"{max_ball/10:02}",
             "add_qiymat": add_qiymat
         }
     except:
