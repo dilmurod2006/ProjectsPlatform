@@ -651,7 +651,11 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
     result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
-    return sort_dict(result, data.page)
+    result, birxillar = sort_dict(result, data.page)
+    return {
+        "natijalar": result,
+        "birxillar": birxillar
+    }
 
 
 # Natijani id_raqam bo'yicha olish

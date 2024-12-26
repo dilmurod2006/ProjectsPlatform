@@ -67,9 +67,8 @@ def sort_dict(d: dict, page: int):
         # Tartiblash: kattadan kichikka qarab
         ballar = {}
         sorted_items = sorted(d.items(), key=lambda x: string_to_number(x, ballar); return sort, reverse=True)
-        for i in range(page*10):
-
-        return sorted_items[page*10:10+page*10]
+        birxillar_soni =page*10 - len(ballar)
+        return sorted_items[page*10:10+page*10], birxillar_soni
     except:
         return []
 if __name__ == "__main__":
