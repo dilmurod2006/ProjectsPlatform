@@ -97,4 +97,3 @@ class KirishBallari(BaseModel):
     otm: str
     yil: str
     data: dict
-
