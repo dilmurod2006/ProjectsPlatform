@@ -1,6 +1,6 @@
 # create schemes
 from pydantic import BaseModel
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from fastapi import UploadFile
 
 
@@ -25,6 +25,7 @@ class ResetPassword(BaseModel):
 
 # Create admin class
 class CreateAdmin(BaseModel):
+    admin_token: str
     full_name: str
     phone: str
     email: str
@@ -36,6 +37,7 @@ class CreateAdmin(BaseModel):
 
 # Update admin class
 class UpdateAdmin(BaseModel):
+    admin_token: str
     full_name: str
     phone: str
     email: str
@@ -48,6 +50,7 @@ class UpdateAdmin(BaseModel):
 
 # Delete admin class
 class DeleteAdmin(BaseModel):
+    admin_token: str
     username: str
 
 
@@ -59,41 +62,38 @@ class AddProducts(BaseModel):
 
 # Update products class
 class UpdateProducts(BaseModel):
+    admin_token: str
     name: str
     bio: str
     settings: Dict[str, Any]
 
 # Delete products class
 class DeleteProducts(BaseModel):
+    admin_token: str
     name: str
 
-# AddPayment class
-class AddPayment(BaseModel):
-    token: str
+# Get Data class
+class GetData(BaseModel):
+    admin_token: str
+
+# Get Data User class
+class GetDataUser(BaseModel):
+    admin_token: str
+    user_id: int
+
+# Find Data class
+class FindData(BaseModel):
+    admin_token: str
+    text: str
+
+# Delete User Data class
+class DeleteUserData(BaseModel):
+    admin_token: str
     tg_id: int
-    payment_number: int
-    tulov_summasi: int
-    bio: str
 
-# CreateProjectsData class
-class CreateProjectsData(BaseModel):
-    name: str
-    email: str
-    domen: str
-    telegram_channel: str
-    youtube_channel: str
-    telegram_group: str
-    telegram_bot: str
-    about: str
-
-
-# UpdateProjectsData class
-class UpdateProjectsData(BaseModel):
-    name: str
-    email: str
-    domen: str
-    telegram_channel: str
-    youtube_channel: str
-    telegram_group: str
-    telegram_bot: str
-    about: str
+# Set kirish ballari
+class KirishBallari(BaseModel):
+    viloyat: str
+    otm: str
+    yil: str
+    data: dict
