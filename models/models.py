@@ -181,12 +181,14 @@ iqromindtest = Table(
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
 )
 
-# iqrominddevices model
-iqrominddevices = Table(
-    'iqrominddevices',
+# Kirish ballari model
+kirishballari = Table(
+    'kirishballari',
     metadata,
-    Column('user_id', Integer, ForeignKey('users.id'), index=True, unique=True),
-    Column('device_id', String, nullable=True),
+    Column('viloyat', String),
+    Column('otm', String, unique=True),
+    Column('yil', String),
+    Column('data', JSONB)
 )
 
 # IQRO MIND TEST MODELS END

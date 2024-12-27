@@ -41,7 +41,8 @@ from models.models import (
     users,
     products,
     reportsbalance,
-    iqromindtest
+    iqromindtest,
+    kirishballari
 )
 
 from .utils import *
@@ -676,4 +677,32 @@ async def get_natija_file(user_id: int, file_id: str, session: AsyncSession = De
         return StreamingResponse(BytesIO(file), media_type="image/png")
     except:
         return FileResponse(default_logo_path, media_type="image/png")
+
+# Otm qidirish
+@iqromind_router.post("/search_otm")
+async def search_otm(data: SearchOtmSerializer, session: AsyncSession = Depends(get_async_session)):
+    # data.text bo'yicha kirishballarini ichidan qidirish
+    query = select(kirishballari.c.otm).filter(
+        kirishballari.c.viloyat == data.viloyat,
+        kirishballari.c.otm.like(f"%{data.text}%")
+    )
+
+    # Asinxron tarzda so'rovni bajarish
+    res = await session.execute(query)
+    
+    # Faqat `otm` ustunining qiymatlarini olish
+    otm_values = res.scalars().all()
+    return otm_values
+
+
+# Kirish ballari
+@iqromind_router.post("/get_kirishballari")
+async def get_kirishballari(data: GetKirishballariSerializer, session: AsyncSession = Depends(get_async_session)):
+    # data.text bo'yicha kirishballari qidirish
+    query = select(kirishballari.c.data).filter_by(viloyat = data.viloyat, otm = data.otm)
+    # Asinxron tarzda so'rovni bajarish
+    if query is None:
+        raise HTTPException(status_code=404, detail="Kirish ballari mavjud emas!")
+    res = await session.execute(query)
+    return res.fetchone()
 

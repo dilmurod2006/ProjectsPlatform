@@ -93,5 +93,5 @@ if __name__ == "__main__":
     "1009": "0.0.0|aseawdawdawd",
     "1010": "0.0.0|aseawdawdawd",
     "1011": "0.0.0|aseawdawdawd",
-    }))
+}))
     
