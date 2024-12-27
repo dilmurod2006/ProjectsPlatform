@@ -30,7 +30,8 @@ from models.models import (
     mobilekundalikcom,
     school_data,
     products,
-    payment_admin
+    payment_admin,
+    kirishballari
 )
 
 from sqlalchemy.sql import or_
@@ -1008,13 +1009,13 @@ async def set_kirish_ballari(token: str, data: KirishBallari, session: AsyncSess
     # if not has_permission(admin.premessions, required_permissions):
     #     raise HTTPException(status_code=403, detail="siz kirish ballarini o'zgartirish mumkin emas!")
     # Mavjudligini tekshirish
-    query = select(kirish_ballari).where(kirish_ballari.c.viloyat == data.viloyat, kirish_ballari.c.otm == data.otm)
+    query = select(kirishballari).where(kirishballari.c.viloyat == data.viloyat, kirishballari.c.otm == data.otm)
     result = await session.execute(query)
     kirish_ballari = result.fetchone()
 
     if kirish_ballari is None:
         await session.execute(
-            insert(kirish_ballari).values(
+            insert(kirishballari).values(
                 viloyat = data.viloyat,
                 otm = data.otm,
                 yil = data.yil,
@@ -1025,7 +1026,7 @@ async def set_kirish_ballari(token: str, data: KirishBallari, session: AsyncSess
         return True
     # Mavjud bo'lsa yangilash
     await session.execute(
-        update(kirish_ballari).where(kirish_ballari.c.viloyat == data.viloyat, kirish_ballari.c.otm == data.otm).values(
+        update(kirishballari).where(kirishballari.c.viloyat == data.viloyat, kirishballari.c.otm == data.otm).values(
             yil = data.yil,
             data = data.data
         )
