@@ -701,10 +701,16 @@ async def search_otm(data: SearchOtmSerializer, session: AsyncSession = Depends(
 @iqromind_router.post("/get_kirishballari")
 async def get_kirishballari(data: GetKirishballariSerializer, session: AsyncSession = Depends(get_async_session)):
     # data.text bo'yicha kirishballari qidirish
-    query = select(kirishballari.c.data).filter_by(viloyat = data.viloyat, otm = data.otm)
+    query = select(kirishballari.c.data).filter_by(viloyat=data.viloyat, otm=data.otm)
+    
     # Asinxron tarzda so'rovni bajarish
-    if query is None:
-        raise HTTPException(status_code=404, detail="Kirish ballari mavjud emas!")
     res = await session.execute(query)
-    return res.fetchone()
+    result = res.fetchone()
+    
+    # Natijani tekshirish
+    if result is None:
+        raise HTTPException(status_code=404, detail="Kirish ballari mavjud emas!")
+    
+    # Ma'lumotlarni qaytarish
+    return {"data": result[0]}
 
