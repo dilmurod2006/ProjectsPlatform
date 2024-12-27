@@ -33,7 +33,9 @@ from .schemes import (
     GetEduBotTokenSerializer,
     AddNatijaSerializer,
     GetNatijaSerializer,
-    GetAllNatijalarSerializer
+    GetAllNatijalarSerializer,
+    SearchOtmSerializer,
+    GetKirishballariSerializer
 )
 from io import BytesIO
 

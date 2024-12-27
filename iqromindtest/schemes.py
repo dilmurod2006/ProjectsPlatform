@@ -131,4 +131,12 @@ class GetAllNatijalarSerializer(BaseModel):
     test_key: str
     page: int
 
+# Search serializer
+class SearchOtmSerializer(BaseModel):
+    viloyat: str
+    text: str
 
+# Get Kirish ballari
+class GetKirishballariSerializer(BaseModel):
+    viloyat: str
+    otm: str
