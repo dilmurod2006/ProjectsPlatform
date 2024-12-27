@@ -50,7 +50,8 @@ from .schemes import (
     GetData,
     GetDataUser,
     FindData,
-    DeleteUserData
+    DeleteUserData,
+    KirishBallari
 )
 
 from .utils import (
@@ -985,3 +986,48 @@ async def find_user(data: FindData, session: AsyncSession = Depends(get_async_se
 
     return {"users": [{"id": user.id, "username": user.username, "full_name": user.full_name, "tg_id": user.tg_id, "email": user.email, "phone": user.phone, "balance": user.balance} for user in users_list]}
     # Datalarni qaytarish
+# set kirish ballari
+@admin_router.post("/set_kirish_ballari")
+async def set_kirish_ballari(token: str, data: KirishBallari, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+
+    # cheack premessions in admin table
+    # required_permissions = {
+    #     "permessions": {
+    #     'admin': {
+    #         'set_kirish_ballari': 'True'
+    #     }
+    # }
+    # }
+
+    # if not has_permission(admin.premessions, required_permissions):
+    #     raise HTTPException(status_code=403, detail="siz kirish ballarini o'zgartirish mumkin emas!")
+    # Mavjudligini tekshirish
+    query = select(kirish_ballari).where(kirish_ballari.c.viloyat == data.viloyat, kirish_ballari.c.otm == data.otm)
+    result = await session.execute(query)
+    kirish_ballari = result.fetchone()
+
+    if kirish_ballari is None:
+        await session.execute(
+            insert(kirish_ballari).values(
+                viloyat = data.viloyat,
+                otm = data.otm,
+                yil = data.yil,
+                data = data.data
+            )
+        )
+        await session.commit()
+        return True
+    # Mavjud bo'lsa yangilash
+    await session.execute(
+        update(kirish_ballari).where(kirish_ballari.c.viloyat == data.viloyat, kirish_ballari.c.otm == data.otm).values(
+            yil = data.yil,
+            data = data.data
+        )
+    )
+    return True
