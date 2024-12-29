@@ -54,11 +54,11 @@ from database import get_async_session
 iqromind_router = APIRouter()
 
 tillar = {
-    "0": "O'zbekcha",
-    "1": "Ruscha",
+    "0": "O`zbek",
+    "1": "Rus",
 
-    "2": "Ingilizcha",
-    "3": "Qozoqcha"
+    "2": "Qoraqalpoq",
+    "3": "Tadjik"
 }
 fanlar = {
 
