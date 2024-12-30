@@ -60,8 +60,8 @@ tillar = {
     "2": "Qoraqalpoq",
     "3": "Tadjik"
 }
-fanlar = {
 
+fanlar = {
     "0": "Matematika",
     "1": "Fizika",
 
@@ -72,8 +72,8 @@ fanlar = {
 
     "6": "Geografiya",
     "7": "Ingliz tili",
-    "8": "Fizika",
-    "9": "Kimyo"
+    "8": "Rus tili",
+    "9": "Huquq"
 }
 
 
