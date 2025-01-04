@@ -468,7 +468,7 @@ async def set_test_edit_token(data: SetTestEditTokenSerializer, session: AsyncSe
         return "Bu link eskirgan"
     if len(data.kalitlar) != 30:
         return "Testni javoblarini to'liq kiriting 🙂"
-    qmtest_user.testlar[data.month_date][data.test_key]["javoblar"][30*f_id:30*(f_id+1)] = data.kalitlar
+    qmtest_user.testlar[data.month_date][data.test_key]["javoblar"] = qmtest_user.testlar[data.month_date][data.test_key]["javoblar"][:30*f_id] + data.kalitlar + qmtest_user.testlar[data.month_date][data.test_key]["javoblar"][30*(f_id+1)+1:]
     await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
         testlar = qmtest_user.testlar
     ))
