@@ -455,7 +455,7 @@ async def get_test_edit_token(data: GetTestEditTokenSerializer, session: AsyncSe
 @iqromind_router.post("/set_test_edit_token")
 async def set_test_edit_token(data: SetTestEditTokenSerializer, session: AsyncSession = Depends(get_async_session)):
     try:
-        edit_token = data.edit_token[:4]+data.edit_token[:-4]
+        edit_token = data.edit_token[:4]+data.edit_token[-4:]
         f_id = int(data.edit_token[4:-4])
     except:
         return "Bu link eskirgan"
