@@ -670,7 +670,8 @@ async def get_natija_file(user_id: int, file_id: str, session: AsyncSession = De
 
     if qmtest_user is None:
         return JSONResponse({"file_url": default_logo_url})
-
+    if qmtest_user.end_premium_date < datetime.now():
+        return JSONResponse({"file_url": default_logo_url})
     try:
         bot = TeleBot(qmtest_user.edu_bot_token)
         file_info = bot.get_file(file_id)
