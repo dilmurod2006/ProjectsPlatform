@@ -168,6 +168,28 @@ from settings import *
 
 # bot orqali image yuborib yuborilgan xabardan resultan file_id ni print qilish
 import telebot
-bot = telebot.TeleBot("7486708710:AAFDApDU5kvV9M7bDaXjO4zd5icIgkNHH3s")
-print(bot.send_document(5420071824, open("/home/alone/Desktop/Projects/IqroMindTest/icons/home.png", "rb").read()).document.file_id)
 
+TOKEN = "7269177881:AAG6CcaFHNqjDAudRup9r8NzRtDJM13UYvY"
+bot = telebot.TeleBot(TOKEN)
+# print(bot.send_document(5420071824, open("not-found.png", "rb").read()).document.file_id)
+@bot.message_handler(content_types=['photo', 'document'])
+def handle_file(message):
+    if message.photo:
+        file_id = message.photo[-1].file_id
+    else:
+        file_id = message.document.file_id
+
+    file_info = bot.get_file(file_id)
+    
+    print("✅ File info:", file_info)  # Debug uchun
+
+    file_url = f"https://api.telegram.org/file/bot{TOKEN}/{file_info.file_path}"
+    bot.reply_to(message, f"📂 Fayl URL: {file_url}")
+
+bot.polling(non_stop=True)
+
+url = "https://api.telegram.org/file/bot7269177881:AAG6CcaFHNqjDAudRup9r8NzRtDJM13UYvY/document/BQACAgIAAxkDAAMLZ6ZtKxmET6DrTLLEEXTDV52tePkAAv5oAAKoEDBJ7x0CFkVOAbw2BA.not-found.png"
+
+url = "https://api.telegram.org/file/bot7269177881:AAG6CcaFHNqjDAudRup9r8NzRtDJM13UYvY/document/BQACAgIAAxkDAAMLZ6ZtKxmET6DrTLLEEXTDV52tePkAAv5oAAKoEDBJ7x0CFkVOAbw2BA"
+
+url = "https://api.telegram.org/file/bot7269177881:AAG6CcaFHNqjDAudRup9r8NzRtDJM13UYvY/photos/file_0.jpg"

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
+from fastapi.responses import JSONResponse
 from settings import IQROMINDTEST_ID
 from telebot import TeleBot
 from sqlalchemy import(
@@ -664,20 +665,20 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
 async def get_natija_file(user_id: int, file_id: str, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(iqromindtest).filter_by(user_id=user_id))
     qmtest_user = res.fetchone()
-    # Mavjud yoki yo'qligini tekshirsh
-    default_logo_path = "iqromindtest/not-found.png"
+
+    default_logo_url = "https://iqromind.uz/static/not-found.png"
+
     if qmtest_user is None:
-        return FileResponse(default_logo_path, media_type="image/png")
-    # Mavjud bo'lsa
+        return JSONResponse({"file_url": default_logo_url})
+
     try:
         bot = TeleBot(qmtest_user.edu_bot_token)
         file_info = bot.get_file(file_id)
         file_path = file_info.file_path
-        file = bot.download_file(file_path)
-        return StreamingResponse(BytesIO(file), media_type="image/png")
+        file_url = f"https://api.telegram.org/file/bot{qmtest_user.edu_bot_token}/{file_path}"
+        return JSONResponse({"file_url": file_url})
     except:
-        return FileResponse(default_logo_path, media_type="image/png")
-
+        return JSONResponse({"file_url": default_logo_url})
 # Otm qidirish
 @iqromind_router.post("/search_otm")
 async def search_otm(data: SearchOtmSerializer, session: AsyncSession = Depends(get_async_session)):
