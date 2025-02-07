@@ -13,8 +13,25 @@ from sqlalchemy import (
     DateTime,
     LargeBinary
 )
+import random
+import string
+
 
 from sqlalchemy.dialects.postgresql import JSONB
+
+
+
+def generate_token(length=8):
+    # Token uchun raqamlar, harflar va maxsus belgilarni tanlash
+    characters = string.ascii_letters + string.digits  # harflar va raqamlar
+    token = ''.join(random.choice(characters) for _ in range(length))
+    return token
+
+
+
+
+
+
 
 metadata = MetaData()
 
@@ -154,20 +171,24 @@ iqromindtest = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('device_id', String, nullable=True),
     Column('testlar', JSONB, default={}),
+    Column('edit_token', String, default=generate_token),
     Column('edu_name', String, nullable=True),
-    Column('edu_log', String, nullable=True),
+    Column('edu_logo', String, nullable=True),
+    Column('edu_slogan', String, nullable=True),
     Column('edu_bot_token', String, nullable=True),
     Column('end_premium_date', TIMESTAMP),
     Column('end_use_date', TIMESTAMP),
     Column('created_at', TIMESTAMP, default=datetime.utcnow),
 )
 
-# iqrominddevices model
-iqrominddevices = Table(
-    'iqrominddevices',
+# Kirish ballari model
+kirishballari = Table(
+    'kirishballari',
     metadata,
-    Column('user_id', Integer, ForeignKey('users.id'), index=True, unique=True),
-    Column('device_id', String, nullable=True),
+    Column('viloyat', String),
+    Column('otm', String, unique=True),
+    Column('yil', String),
+    Column('data', JSONB)
 )
 
 # IQRO MIND TEST MODELS END

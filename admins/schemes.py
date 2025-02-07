@@ -90,3 +90,10 @@ class FindData(BaseModel):
 class DeleteUserData(BaseModel):
     admin_token: str
     tg_id: int
+
+# Set kirish ballari
+class KirishBallari(BaseModel):
+    viloyat: str
+    otm: str
+    yil: str
+    data: dict

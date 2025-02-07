@@ -17,6 +17,8 @@ from sqlalchemy import (
     update,
     delete
 )
+
+
 from database import get_async_session
 from models.models import (
     admins,
@@ -28,8 +30,13 @@ from models.models import (
     mobilekundalikcom,
     school_data,
     products,
-    payment_admin
+    payment_admin,
+    kirishballari
 )
+
+from sqlalchemy.sql import or_
+
+
 from .schemes import (
     LoginAdmin,
     CheckLoginAdmin,
@@ -44,8 +51,10 @@ from .schemes import (
     GetData,
     GetDataUser,
     FindData,
-    DeleteUserData
+    DeleteUserData,
+    KirishBallari
 )
+
 from .utils import (
     send_login_code,
     send_reset_password_code,
@@ -404,17 +413,17 @@ async def update_products(token: str, data: UpdateProducts, session: AsyncSessio
     
     # cheack premessions in admin table
     required_permissions = {
-        "permessions": {
-        'admin': {
-            'update_products': 'True'
+            "permessions": {
+            'admin': {
+                'update_products': 'True'
+            }
         }
-    }
     }
 
     if not has_permission(admin.premessions, required_permissions):
         raise HTTPException(status_code=403, detail="siz productlarni o'zgartira olmaysiz!")
 
-    query = update(products).where(products.c.name == data.name).values(
+    query = update(products).where(products.c.id == data.id).values(
         name=data.name,
         bio=data.bio,
         settings=data.settings
@@ -451,9 +460,7 @@ async def delete_products(token: str, data: DeleteProducts, session: AsyncSessio
     return {"message": "Product deleted successfully"}
 
 
-# ADD PAYYMENT FUNCTIONS START# Router
-
-# Payment qo'shish endpointi
+# ADD PAYYMENT FUNCTIONS START
 @admin_router.post("/payment")
 async def add_payment(
     admin_token: str = Form(...),
@@ -493,8 +500,22 @@ async def add_payment(
     
     # Tasvir ma'lumotlarini o'qish
     image_data = await payment_chek_img.read()  # Faylni `bytes` ga o'qish
-    
-    # To'lov ma'lumotlarini yuborish va file_id olish
+
+    # Payment qo'shish
+    payment_query = insert(payment_admin).values(
+        admin_id=admin.id,
+        user_id=user.id,
+        tulov_summasi=tulov_summasi,
+        payment_chek_img=image_data,  # Tasvir ma'lumotlarini bazaga yozish
+        bio=bio,
+        created_at=datetime.utcnow()
+    )
+
+    # Foydalanuvchi balansini yangilash
+    update_balance_query = update(users).where(users.c.id == user.id).values(balance=user.balance + tulov_summasi)
+    await session.execute(update_balance_query)
+    await session.execute(payment_query)
+
     send_about_payment_data = send_payment_data(
         tg_id=tg_id,
         username=user.username,
@@ -502,35 +523,9 @@ async def add_payment(
         payment_chek_img=image_data,
         bio=bio
     )
-    
-    # Send about payment data'dan file_id olish
-    if send_about_payment_data.get("status") != "success":
-        raise HTTPException(status_code=500, detail="Rasm yuborishda xato yuz berdi")
 
-    file_id = send_about_payment_data.get("file_id")
-    print(file_id)
-    
-    # Payment qo'shish
-    payment_query = insert(payment_admin).values(
-        admin_id=admin.id,
-        user_id=user.id,
-        tulov_summasi=tulov_summasi,
-        payment_chek_img=file_id,  # Tasvir ma'lumotlarini bazaga yozish
-        bio=bio,
-        created_at=datetime.utcnow()
-    )
-
-    # Foydalanuvchi balansini yangilash
-    update_balance_query = update(users).where(users.c.id == user.id).values(balance=user.balance + tulov_summasi)
-    
-    # Barcha operatsiyalarni bajarish
-    await session.execute(update_balance_query)
-    await session.execute(payment_query)
     await session.commit()
-
-    return {
-        "message": f"{user.username} foydalanuvchiga {tulov_summasi} so'm to'lov o'tkazildi."
-    }
+    return {"message": f"{user.username} foydalanuvchiga {tulov_summasi} so'm to'lov o'tkazildi. {send_about_payment_data}"}
 
 # ADD PAYMENT FUNCTIONS END
 
@@ -952,7 +947,6 @@ async def about_admin(token: str, session: AsyncSession = Depends(get_async_sess
 
 
 
-# Mos 10 ta userni username va full name orqali qidirish
 @admin_router.post("/find_user")
 async def find_user(data: FindData, session: AsyncSession = Depends(get_async_session)):
     # Check if admin exists and token is valid
@@ -990,4 +984,51 @@ async def find_user(data: FindData, session: AsyncSession = Depends(get_async_se
     results = await session.execute(users_query)
     users_list = results.fetchall()
 
-    return {"users": [{"id": user.id, "username": user.username, "full_name": user.full_name} for user in users_list]}
+
+    return {"users": [{"id": user.id, "username": user.username, "full_name": user.full_name, "tg_id": user.tg_id, "email": user.email, "phone": user.phone, "balance": user.balance} for user in users_list]}
+    # Datalarni qaytarish
+# set kirish ballari
+@admin_router.post("/set_kirish_ballari")
+async def set_kirish_ballari(token: str, data: KirishBallari, session: AsyncSession = Depends(get_async_session)):
+    query = select(admins).where(admins.c.token == token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+
+    # cheack premessions in admin table
+    # required_permissions = {
+    #     "permessions": {
+    #     'admin': {
+    #         'set_kirish_ballari': 'True'
+    #     }
+    # }
+    # }
+
+    # if not has_permission(admin.premessions, required_permissions):
+    #     raise HTTPException(status_code=403, detail="siz kirish ballarini o'zgartirish mumkin emas!")
+    # Mavjudligini tekshirish
+    query = select(kirishballari).where(kirishballari.c.viloyat == data.viloyat, kirishballari.c.otm == data.otm)
+    result = await session.execute(query)
+    kirish_ballari = result.fetchone()
+
+    if kirish_ballari is None:
+        await session.execute(
+            insert(kirishballari).values(
+                viloyat = data.viloyat,
+                otm = data.otm,
+                yil = data.yil,
+                data = data.data
+            )
+        )
+        await session.commit()
+        return True
+    # Mavjud bo'lsa yangilash
+    await session.execute(
+        update(kirishballari).where(kirishballari.c.viloyat == data.viloyat, kirishballari.c.otm == data.otm).values(
+            yil = data.yil,
+            data = data.data
+        )
+    )
+    return True
