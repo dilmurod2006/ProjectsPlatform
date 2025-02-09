@@ -140,3 +140,15 @@ class SearchOtmSerializer(BaseModel):
 class GetKirishballariSerializer(BaseModel):
     viloyat: str
     otm: str
+# Natijalarni elon qilish uchun post textini taxrirlash uchun
+class SetPostTextSerializer(BaseModel):
+    token: str
+    month_date: str
+    test_key: str
+    post_text: str
+
+# Natijalarni elon qilish uchun post textini o'qish uchun
+class GetPostTextSerializer(BaseModel):
+    user_id: int
+    month_date: str
+    test_key: str
