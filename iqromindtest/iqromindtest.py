@@ -747,7 +747,18 @@ async def get_post_text(user_id: int, month_date: str, test_key: str ,session: A
         if "post_text" in qmtest_user.testlar[month_date][test_key]:
             return qmtest_user.testlar[month_date][test_key]["post_text"]
         else:
-            return qmtest_user.testlar[month_date][test_key]
+            test = qmtest_user.testlar[month_date][test_key]
+            qatnashchilar_soni = len(test["tekshirishlar"])
+            date = test["date"] # 08.02.2025 bu kabi
+            post_text = f"""Test natijalari e'lon qilindi
+Test nomi: {test["name"]}
+Jami ishtirokchilar: {qatnashchilar_soni} ta
+Test {date} - sanada o'tkazildi"""
+            qmtest_user.testlar[month_date][test_key]["post_text"] = post_text
+            # update qmtestuser
+            update(iqromindtest).where(iqromindtest.c.user_id == user_id).values(testlar=qmtest_user.testlar)
+            await session.commit()
+            return post_text
     else:
 
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
