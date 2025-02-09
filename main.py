@@ -46,10 +46,10 @@ app = FastAPI(
             "name": "iqromindtest",
             "description": "iqromindtest api lar foydalanish",
         },
-        # {
-        #     "name": "iqromindtestbot",
-        #     "description": "iqromindtestbot api lar foydalanish",
-        # }
+        {
+            "name": "iqromindtestbot",
+            "description": "iqromindtestbot api lar foydalanish",
+        }
 
     ],
     servers= [{"url": f"{API_URL}"}, {"url": f"http://localhost:8000"}],
@@ -80,7 +80,7 @@ app.add_middleware(
 app.include_router(accounts_routers, prefix="/accounts", tags=["accounts"])
 app.include_router(admin_router, prefix="/admin", tags=["admin"])
 app.include_router(kundalik_router, prefix="/kundalikcom", tags=["kundalikcom"])
-app.include_router(iqromind_router, prefix="/iqromindtest", tags=["iqromindtest", "iqromindtestbot"])
+app.include_router(iqromind_router, prefix="/iqromindtest", tags=["iqromindtest"])
 
 
 # run project
