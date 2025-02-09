@@ -55,7 +55,15 @@ from database import get_async_session
 
 from .bot.iqromindtestbot import iqromindtest_bot_router
 
-iqromind_router = APIRouter()
+iqromind_router = APIRouter(
+    openapi_tags=[
+        {
+            "name": "iqromindtestbot",
+            "description": "iqromindtestbot api lar foydalanish",
+        }
+
+    ]
+)
 
 tillar = {
     "0": "O`zbek",

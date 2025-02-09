@@ -46,10 +46,10 @@ app = FastAPI(
             "name": "iqromindtest",
             "description": "iqromindtest api lar foydalanish",
         },
-        {
-            "name": "iqromindtestbot",
-            "description": "iqromindtestbot api lar foydalanish",
-        }
+        # {
+        #     "name": "iqromindtestbot",
+        #     "description": "iqromindtestbot api lar foydalanish",
+        # }
 
     ],
     servers= [{"url": f"{API_URL}"}, {"url": f"http://localhost:8000"}],
