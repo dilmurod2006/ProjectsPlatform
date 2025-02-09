@@ -80,7 +80,7 @@ app.add_middleware(
 app.include_router(accounts_routers, prefix="/accounts", tags=["accounts"])
 app.include_router(admin_router, prefix="/admin", tags=["admin"])
 app.include_router(kundalik_router, prefix="/kundalikcom", tags=["kundalikcom"])
-app.include_router(iqromind_router, prefix="/iqromindtest", tags=["iqromindtest"])
+app.include_router(iqromind_router, prefix="/iqromindtest", tags=["iqromindtest", "iqromindtestbot"])
 
 
 # run project

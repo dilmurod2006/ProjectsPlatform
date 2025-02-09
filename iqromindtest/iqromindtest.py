@@ -56,7 +56,7 @@ from database import get_async_session
 from .bot.iqromindtestbot import iqromindtest_bot_router
 
 iqromind_router = APIRouter(
-    tags=["iqromindtest"]
+    tags=["iqromindtestbot"]
 )
 
 tillar = {
