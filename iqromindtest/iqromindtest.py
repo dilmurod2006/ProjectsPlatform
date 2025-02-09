@@ -743,7 +743,11 @@ async def get_post_text(data: GetPostTextSerializer, session: AsyncSession = Dep
     qmtest_user = res.fetchone()
     if qmtest_user is None:
         raise HTTPException(status_code=400, detail="User mavjud emas!")
-    if data.month_date in qmtest_user.testlar and data.test_key in qmtest_user.testlar[data.month_date] and "post_text" in qmtest_user.testlar[data.month_date][data.test_key]:
-        return qmtest_user.testlar[data.month_date][data.test_key]["post_text"]
+    if data.month_date in qmtest_user.testlar and data.test_key in qmtest_user.testlar[data.month_date]:
+        if "post_text" in qmtest_user.testlar[data.month_date][data.test_key]:
+            return qmtest_user.testlar[data.month_date][data.test_key]["post_text"]
+        else:
+            return qmtest_user.testlar[data.month_date][data.test_key]
     else:
+
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
