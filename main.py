@@ -45,6 +45,10 @@ app = FastAPI(
         {
             "name": "iqromindtest",
             "description": "iqromindtest api lar foydalanish",
+        },
+        {
+            "name": "iqromindtestbot",
+            "description": "iqromindtestbot api lar foydalanish",
         }
 
     ],

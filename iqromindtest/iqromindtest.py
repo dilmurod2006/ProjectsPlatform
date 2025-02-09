@@ -765,4 +765,4 @@ Test {date} - sanada o'tkazildi"""
 
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
 
-iqromind_router.include_router(iqromindtest_bot_router, prefix="/botapis", tags=["IqroMindBot"])
+iqromind_router.include_router(iqromindtest_bot_router, prefix="/botapis", tags=["iqromindtestbot"])
