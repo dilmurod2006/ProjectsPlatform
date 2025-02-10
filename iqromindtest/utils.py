@@ -61,9 +61,13 @@ def string_to_number(data):
     # umumiy balni hixoblash
     ball =  int(res[0])*11 + int(res[1])*21 + int(res[2])*31
     return ball
-def sort_dict(d: dict, page: int):
+def sort_dict(d: dict, page: int, ser: int):
     try:
         # Tartiblash: kattadan kichikka qarab
+        for i in d.keys():
+            if ser != 0 and (ser == -1 or d[i][-3:] == "0.0") and (ser == 1 or d[i][-3:] != "0.0"):
+                d.pop(i)
+
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
         max_ball = -1
         add_qiymat = 0

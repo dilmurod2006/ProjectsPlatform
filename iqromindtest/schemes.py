@@ -113,6 +113,8 @@ class AddNatijaSerializer(BaseModel):
     b1: int
     b2: int
     file_id: str
+    ser1: int # 0 yoki 1
+    ser2: int # 0 yoki 1
     f1: int
     f2: int
     lang: int
@@ -130,6 +132,7 @@ class GetAllNatijalarSerializer(BaseModel):
     month_date: str
     test_key: str
     page: int
+    ser: int # 0 yoki 1
 
 # Search serializer
 class SearchOtmSerializer(BaseModel):

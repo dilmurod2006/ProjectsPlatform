@@ -616,7 +616,7 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
         if (len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]) >= 100) and (str(data.id_raqam) not in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]):
             return {"how": False,"message":"Afsus 😔 sizda faqat 100 xil ID ni tekshirish imkoni bor \nyoki, Premiumga obuna olib xohlaganingizcha natijalarni saqlab borishingiz mumkin 🙂"}
     
-    qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}|{data.f1}.{data.f2}|{data.lang}"
+    qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}|{data.f1}.{data.f2}|{data.lang}|{data.ser1}.{data.ser2}"
     await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
         testlar = qmtest_user.testlar
     ))
@@ -636,13 +636,15 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
     try:
         natija = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][str(data.id_raqam)]
         return {
+            "lang": tillar[natija.split("|")[3]],
             "maj": natija.split("|")[0].split(".")[0],
-            "b1": natija.split("|")[0].split(".")[1],
-            "b2": natija.split("|")[0].split(".")[2],
-            "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{data.user_id}/{natija.split('|')[1]}",
             "f1": fanlar[natija.split("|")[2].split(".")[0]],
             "f2": fanlar[natija.split("|")[2].split(".")[1]],
-            "lang": tillar[natija.split("|")[3]]
+            "b1": natija.split("|")[0].split(".")[1],
+            "b2": natija.split("|")[0].split(".")[2],
+            "ser1": int(natija.split("|")[4].split(".")[0]),
+            "ser2": int(natija.split("|")[4].split(".")[1]),
+            "file_url": f"https://api.projectsplatform.uz/iqromindtest/get_natija_file/{data.user_id}/{natija.split('|')[1]}"
         }
     except:
         raise HTTPException(status_code=408, detail="Natijalar topilmadi")
@@ -656,7 +658,7 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
     result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
-    result, birxillar = sort_dict(result, data.page)
+    result, birxillar = sort_dict(result, data.page, data.ser)
     return {
         "natijalar": result,
         "birxillar": birxillar
