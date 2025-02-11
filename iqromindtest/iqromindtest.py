@@ -432,7 +432,11 @@ async def get_test_tekshirishlar(data: GetTestTekshirishlarSerializer, session: 
     try:
         if data.test_key not in qmtest_user.testlar[data.month_date]:
             raise HTTPException(status_code=402, detail="Test mavjud emas ekan 😕")
-        return qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
+        result = dict()
+        # Oxirgi qo'shilganlarni oxiriga qilib o'zgartirib olish
+        for id_raqam in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"]:
+            result[id_raqam] = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][id_raqam]
+        return result
     except:
         raise HTTPException(status_code=402, detail="Test mavjud emas ekan 😕")
 
@@ -615,7 +619,11 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
             return {"how": False, "message": f"Sizda premium muddati tugagan. Premiumga obunasini uzaytiring yoki {len(qmtest_user.testlar[data.month_date])-5} ta testingizni o'chirib tashlashingiz kerak"}
         if (len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]) >= 100) and (str(data.id_raqam) not in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]):
             return {"how": False,"message":"Afsus 😔 sizda faqat 100 xil ID ni tekshirish imkoni bor \nyoki, Premiumga obuna olib xohlaganingizcha natijalarni saqlab borishingiz mumkin 🙂"}
-    
+    if "tekshirishlar_tartibi" not in qmtest_user.testlar[data.month_date][data.test_key]:
+        qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"] = []
+    if data.id_raqam in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"]:
+        qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"].remove(data.id_raqam)
+    qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"].append(data.id_raqam)
     qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}|{data.f1}.{data.f2}|{data.lang}|{data.ser1}.{data.ser2}"
     await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
         testlar = qmtest_user.testlar
