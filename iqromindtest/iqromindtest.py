@@ -639,6 +639,33 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
         return {"how": False,"message": f"ID {data.id_raqam} natijalari muvaffaqiyatli yangilandi"}
     return {"how": True,"message": "Natija muvaffaqiyatli kiritildi"}
 
+# Natijani o'chirish
+@iqromind_router.post("/add_natija")
+async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
+    res = await session.execute(select(users).where(users.c.token == data.token))
+    user = res.fetchone()
+    if user is None:
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
+    res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
+    qmtest_user = res.fetchone()
+    # Mavjud yoki yo'qligini tekshirsh
+    if qmtest_user is None:
+        raise HTTPException(status_code=401, detail="User mavjud emas!")
+    # Mavjud bo'lsa
+    if qmtest_user.end_premium_date < datetime.now():
+        if len(qmtest_user.testlar[data.month_date]) > 5:
+            return {"how": False, "message": f"Sizda premium muddati tugagan. Premiumga obunasini uzaytiring yoki {len(qmtest_user.testlar[data.month_date])-5} ta testingizni o'chirib tashlashingiz kerak"}
+    if "tekshirishlar_tartibi" not in qmtest_user.testlar[data.month_date][data.test_key]:
+        qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"] = []
+    if data.id_raqam in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"]:
+        qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"].remove(data.id_raqam)
+        del qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam]
+        await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
+            testlar = qmtest_user.testlar
+        ))
+    await session.commit()
+    return {"how": True,"message": "Ushbu natijani o'chirib tashladim"}
+
 # Natijani id_raqam bo'yicha olish
 @iqromind_router.post("/get_natija")
 async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
