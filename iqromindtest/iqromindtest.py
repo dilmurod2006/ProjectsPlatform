@@ -394,6 +394,8 @@ async def delete_test(data: DeleteTestSerializer, session: AsyncSession = Depend
     # Test user mavjud bo'sa
     try:
         del qmtest_user.testlar[data.month_date][data.test_key]
+        if len(qmtest_user.testlar[data.month_date]) == 0:
+            del qmtest_user.testlar[data.month_date]
         await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
             testlar = qmtest_user.testlar
         ))
