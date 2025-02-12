@@ -438,7 +438,7 @@ async def get_test_tekshirishlar(data: GetTestTekshirishlarSerializer, session: 
             result[id_raqam] = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][id_raqam]
         return result
     except:
-        raise HTTPException(status_code=402, detail="Test mavjud emas ekan 😕")
+        raise HTTPException(status_code=403, detail="Test mavjud emas ekan 😕")
 
 # Testni kalitlarini edit token bilan olish
 @iqromind_router.post("/get_test_edit_token")
