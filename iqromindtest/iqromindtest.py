@@ -32,12 +32,12 @@ from .schemes import (
     SetEduLogoSerializer,
     GetEduBotTokenSerializer,
     AddNatijaSerializer,
+    DeleteNatijaSerializer,
     GetNatijaSerializer,
     GetAllNatijalarSerializer,
     SearchOtmSerializer,
     GetKirishballariSerializer,
-    SetPostTextSerializer,
-    GetPostTextSerializer
+    SetPostTextSerializer
 )
 from io import BytesIO
 
@@ -640,8 +640,8 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
     return {"how": True,"message": "Natija muvaffaqiyatli kiritildi"}
 
 # Natijani o'chirish
-@iqromind_router.post("/add_natija")
-async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
+@iqromind_router.post("/delete_natija")
+async def delete_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:

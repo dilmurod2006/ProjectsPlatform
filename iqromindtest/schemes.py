@@ -119,6 +119,13 @@ class AddNatijaSerializer(BaseModel):
     f2: int
     lang: int
 
+# natijani olib tashlash uchun
+class DeleteNatijaSerializer(BaseModel):
+    token: str
+    month_date: str
+    test_key: str
+    id_raqam: int
+
 # natija olish uchun
 class GetNatijaSerializer(BaseModel):
     user_id: int
@@ -149,9 +156,3 @@ class SetPostTextSerializer(BaseModel):
     month_date: str
     test_key: str
     post_text: str
-
-# Natijalarni elon qilish uchun post textini o'qish uchun
-class GetPostTextSerializer(BaseModel):
-    user_id: int
-    month_date: str
-    test_key: str
