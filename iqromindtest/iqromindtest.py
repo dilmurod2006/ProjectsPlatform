@@ -647,7 +647,7 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
         bot = TeleBot(qmtest_user.edu_bot_token)
         # file path ni olish
         file_info = bot.get_file(natija.split('|')[1])
-        file_path = file_info.file_path
+        file_url = f"https://api.telegram.org/file/bot{qmtest_user.edu_bot_token}/{file_info.file_path}"
         return {
             "lang": tillar[natija.split("|")[3]],
             "maj": natija.split("|")[0].split(".")[0],
@@ -657,7 +657,7 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
             "b2": natija.split("|")[0].split(".")[2],
             "ser1": int(natija.split("|")[4].split(".")[0]),
             "ser2": int(natija.split("|")[4].split(".")[1]),
-            "file_url": file_path
+            "file_url": file_url
         }
     except:
         raise HTTPException(status_code=408, detail="Natijalar topilmadi")
