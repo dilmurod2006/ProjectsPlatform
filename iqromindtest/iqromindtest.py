@@ -432,10 +432,10 @@ async def get_test_tekshirishlar(data: GetTestTekshirishlarSerializer, session: 
     try:
         if data.test_key not in qmtest_user.testlar[data.month_date]:
             raise HTTPException(status_code=402, detail="Test mavjud emas ekan 😕")
-        result = dict()
+        result = []
         # Oxirgi qo'shilganlarni oxiriga qilib o'zgartirib olish
         for id_raqam in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"]:
-            result[id_raqam] = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][str(id_raqam)]
+            result.append([id_raqam, qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][str(id_raqam)]])
         return result
     except:
         raise HTTPException(status_code=403, detail="Test mavjud emas ekan 😕")
