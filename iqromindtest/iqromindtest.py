@@ -621,7 +621,9 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
             return {"how": False,"message":"Afsus 😔 sizda faqat 100 xil ID ni tekshirish imkoni bor \nyoki, Premiumga obuna olib xohlaganingizcha natijalarni saqlab borishingiz mumkin 🙂"}
     if "tekshirishlar_tartibi" not in qmtest_user.testlar[data.month_date][data.test_key]:
         qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"] = []
+    id_mavjudligi = False
     if data.id_raqam in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"]:
+        id_mavjudligi = True
         qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"].remove(data.id_raqam)
     qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"].append(data.id_raqam)
     qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam] = f"{data.maj}.{data.b1}.{data.b2}|{data.file_id}|{data.f1}.{data.f2}|{data.lang}|{data.ser1}.{data.ser2}"
@@ -629,6 +631,8 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
         testlar = qmtest_user.testlar
     ))
     await session.commit()
+    if id_mavjudligi:
+        return {"how": False,"message": f"ID {data.id_raqam} natijalari muvaffaqiyatli yangilandi"}
     return {"how": True,"message": "Natija muvaffaqiyatli kiritildi"}
 
 # Natijani id_raqam bo'yicha olish
