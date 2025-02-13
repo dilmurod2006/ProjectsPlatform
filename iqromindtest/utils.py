@@ -98,4 +98,10 @@ if __name__ == "__main__":
     "1010": "0.0.0|aseawdawdawd",
     "1011": "0.0.0|aseawdawdawd",
 }))
-    
+
+# Post formatni textga o'zgartirish
+def post_format_text(format_text, sana, test_name, qatnashchilar_soni):
+    format_text = format_text.replace("$test_name", test_name)
+    format_text = format_text.replace("$sana", sana)
+    format_text = format_text.replace("$qatnashchilar_soni", str(qatnashchilar_soni))
+    return format_text

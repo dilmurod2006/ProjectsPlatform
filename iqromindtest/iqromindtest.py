@@ -796,21 +796,43 @@ async def get_post_text(user_id: int, month_date: str, test_key: str ,session: A
     if qmtest_user is None:
         raise HTTPException(status_code=400, detail="User mavjud emas!")
     if month_date in qmtest_user.testlar and test_key in qmtest_user.testlar[month_date]:
-        if "post_text" in qmtest_user.testlar[month_date][test_key]:
-            return qmtest_user.testlar[month_date][test_key]["post_text"]
-        else:
-            test = qmtest_user.testlar[month_date][test_key]
+        test = qmtest_user.testlar[month_date][test_key]
+        if "tekshirishlar" in test:
             qatnashchilar_soni = len(test["tekshirishlar"])
-            date = test["date"] # 08.02.2025 bu kabi
+        else:
+            qatnashchilar_soni = 0
+        date = test["date"] # 08.02.2025 bu kabi
+        # Test nomi: $test_name
+
+        # Qatnashchilar soni: $qatnashchilar_soni
+
+        # Eng yuqori ball: #max_ball
+
+        # O'rtacha ball: $mid_ball
+
+        # Eng past ball: $min_ball
+        if "post_text" in qmtest_user.testlar[month_date][test_key]:
+            return post_format_text(
+                qmtest_user.testlar[month_date][test_key]["post_text"],
+                date,
+                test["test_name"],
+                qatnashchilar_soni
+            )
+        else:
             post_text = f"""Test natijalari e'lon qilindi
-Test nomi: {test["name"]}
-Jami ishtirokchilar: {qatnashchilar_soni} ta
-Test {date} - sanada o'tkazildi"""
+Test nomi: *$test_name*
+Jami ishtirokchilar: *$qatnashchilar_soni* ta
+Test $sana - sanada o'tkazildi"""
             qmtest_user.testlar[month_date][test_key]["post_text"] = post_text
             # update qmtestuser
             update(iqromindtest).where(iqromindtest.c.user_id == user_id).values(testlar=qmtest_user.testlar)
             await session.commit()
-            return post_text
+            return post_format_text(
+                post_text,
+                date,
+                test["test_name"],
+                qatnashchilar_soni
+            )
     else:
 
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
