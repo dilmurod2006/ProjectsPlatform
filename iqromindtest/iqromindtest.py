@@ -780,11 +780,12 @@ async def set_post_text(data: SetPostTextSerializer, session: AsyncSession = Dep
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     if data.post_text == "":
-        raise HTTPException(status_code=400, detail="Post text bo'lmasligi kerak!")
+        raise HTTPException(status_code=400, detail="Post text bo'sh bo'lmasligi kerak!")
     if data.month_date in qmtest_user.testlar and data.test_key in qmtest_user.testlar[data.month_date] and "post_text" in qmtest_user.testlar[data.month_date][data.test_key]:
         qmtest_user.testlar[data.month_date][data.test_key]["post_text"] = data.post_text
     else:
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
+    update(iqromindtest).where(iqromindtest.c.user_id == data.user_id).values(testlar=qmtest_user.testlar)
     await session.commit()
     return "Post text muvaffaqiyatli saqlandi"
 # Post text ni o'qish
