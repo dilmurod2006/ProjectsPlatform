@@ -262,14 +262,14 @@ async def get_test_api(data: GetTestSerializer, session: AsyncSession = Depends(
     # Eng yuqori bal eng past bal va o'rtacha balni hisoblash
     num=0
     umumiy_ball = 0
-    max = 1890
-    min = 0
+    max = 0
+    min = 1890
     for i in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"].keys():
         test_data = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][i]
         n = test_data.split("|")[0]
         bal = int(n.split(".")[0])*11
-        bal += int(n.split(".")[1])*21
-        bal += int(n.split(".")[2])*31
+        bal += int(n.split(".")[1])*31
+        bal += int(n.split(".")[2])*21
         if max<bal:
             max = bal
         if min>bal:
@@ -282,6 +282,7 @@ async def get_test_api(data: GetTestSerializer, session: AsyncSession = Depends(
         "name": qmtest_user.testlar[data.month_date][data.test_key]["name"],
         "bio": qmtest_user.testlar[data.month_date][data.test_key]["bio"],
         "date": qmtest_user.testlar[data.month_date][data.test_key]["date"],
+        "qatnashchilar_soni": len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]),
         "edit_token": qmtest_user.edit_token,
         "max": max/10,
         "mid": umumiy_ball/num*10 if num != 0 else 0,

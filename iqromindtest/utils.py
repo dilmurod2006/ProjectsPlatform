@@ -59,7 +59,7 @@ def string_to_number(data):
     data = data[1].split("|")[0]
     res = data.split(".")
     # umumiy balni hixoblash
-    ball =  int(res[0])*11 + int(res[1])*21 + int(res[2])*31
+    ball =  int(res[0])*11 + int(res[1])*31 + int(res[2])*21
     return ball
 def sort_dict(d: dict, page: int, ser: int):
     try:
