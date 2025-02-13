@@ -156,3 +156,4 @@ class SetPostTextSerializer(BaseModel):
     month_date: str
     test_key: str
     post_text: str
+

@@ -781,7 +781,7 @@ async def set_post_text(data: SetPostTextSerializer, session: AsyncSession = Dep
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     if data.post_text == "":
         raise HTTPException(status_code=400, detail="Post text bo'sh bo'lmasligi kerak!")
-    if data.month_date in qmtest_user.testlar and data.test_key in qmtest_user.testlar[data.month_date] and "post_text" in qmtest_user.testlar[data.month_date][data.test_key]:
+    if (data.month_date in qmtest_user.testlar) and (data.test_key in qmtest_user.testlar[data.month_date]) and ("post_text" in qmtest_user.testlar[data.month_date][data.test_key]) and qmtest_user.end_premium_date < datetime.now():
         qmtest_user.testlar[data.month_date][data.test_key]["post_text"] = data.post_text
     else:
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
