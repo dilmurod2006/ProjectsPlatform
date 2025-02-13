@@ -785,7 +785,7 @@ async def set_post_text(data: SetPostTextSerializer, session: AsyncSession = Dep
         qmtest_user.testlar[data.month_date][data.test_key]["post_text"] = data.post_text
     else:
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
-    await session.execute(update(iqromindtest).where(iqromindtest.c.user_id == data.user_id).values(testlar=qmtest_user.testlar))
+    await session.execute(update(iqromindtest).where(iqromindtest.c.user_id == user.id).values(testlar=qmtest_user.testlar))
     await session.commit()
     return "Post text muvaffaqiyatli saqlandi"
 # Post text ni o'qish
