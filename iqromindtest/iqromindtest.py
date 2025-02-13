@@ -826,7 +826,7 @@ Jami ishtirokchilar: *$qatnashchilar_soni* ta
 Test $sana - sanada o'tkazildi"""
             qmtest_user.testlar[month_date][test_key]["post_text"] = post_text
             # update qmtestuser
-            await session.execute(update(iqromindtest).where(iqromindtest.c.user_id == data.user_id).values(testlar=qmtest_user.testlar))
+            await session.execute(update(iqromindtest).where(iqromindtest.c.user_id == user_id).values(testlar=qmtest_user.testlar))
             await session.commit()
             return post_format_text(
                 post_text,
