@@ -642,7 +642,7 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
 
 # Natijani o'chirish
 @iqromind_router.post("/delete_natija")
-async def delete_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
+async def delete_natija(data: DeleteNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
