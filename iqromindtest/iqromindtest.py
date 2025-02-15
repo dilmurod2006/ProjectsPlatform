@@ -662,7 +662,7 @@ async def delete_natija(data: DeleteNatijaSerializer, session: AsyncSession = De
         qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"].remove(data.id_raqam)
         if str(data.id_raqam) not in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]:
             return {"how": False,"message": "Ushbu natija allaqachon o'chirib yuborilgan"}
-        del qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][data.id_raqam]
+        del qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][str(data.id_raqam)]
         await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
             testlar = qmtest_user.testlar
         ))
