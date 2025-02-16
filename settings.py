@@ -61,3 +61,6 @@ CHEACK_USER_FOR_BOT=os.environ.get('CHEACK_USER_FOR_BOT')
 #     return redis
 
 
+MONGO_DB_HOST = os.environ.get("MONGO_DB_HOST")
+MONGO_CLIENT = os.environ.get("MONGO_CLIENT")
+IQROMIND_TEST_BOT_SECRET_KEY = os.environ.get("IQROMIND_TEST_BOT_SECRET_KEY")

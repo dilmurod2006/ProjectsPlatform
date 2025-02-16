@@ -15,9 +15,10 @@ from sqlalchemy import (
 )
 import random
 import string
-
-
 from sqlalchemy.dialects.postgresql import JSONB
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
 
 
 
@@ -218,3 +219,18 @@ admins = Table(
 )
 
 # ADMIN PANEL MODELS END
+
+
+# IQROMINDTESTUSERS MODELS START
+
+#  Create User model
+class User(BaseModel):
+    first_name: str = Field(..., max_length=50)
+    tg_id: str = Field(..., max_length=13)
+
+# Test ma'lumotlari uchun model
+class Test(BaseModel):
+    user_id: str
+    titul_id: str = Field(..., max_length=4)
+    qiymat: Optional[List[str]]
+    sana: str = Field(..., max_length=10)
