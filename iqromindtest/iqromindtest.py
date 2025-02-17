@@ -581,30 +581,30 @@ async def get_edu_logo(user_id: int, session: AsyncSession = Depends(get_async_s
     qmtest_user = res.fetchone()
 
     # Default fayl yo'li
-    default_logo_path = "iqromindtest/logo.svg"
+    default_logo_path = "https://iqromind.uz/iqromindtest/logo.svg"
 
     # Agar foydalanuvchi topilmasa, default logoni yuborish
     if qmtest_user is None:
-        return FileResponse(default_logo_path, media_type="image/svg+xml")
+        return JSONResponse({"file_url": default_logo_path})
     now = datetime.now()
     # Agar user premium bo'lmasa edu logoni o'rnga IqroMind logoni qaytarish
     if qmtest_user.end_premium_date < now:
-        return FileResponse(default_logo_path, media_type="image/svg+xml")
+        return JSONResponse({"file_url": default_logo_path})
     try:
         # Botdan fayl yuklab olish
         bot = TeleBot(qmtest_user.edu_bot_token)
         file_id = qmtest_user.edu_logo
         file_info = bot.get_file(file_id)
         file_path = file_info.file_path
-        file = bot.download_file(file_path)
+        file_url = f"https://api.telegram.org/file/bot{qmtest_user.edu_bot_token}/{file_path}"
 
         
-        return StreamingResponse(BytesIO(file), media_type="image/png")
+        return JSONResponse({"file_url": file_url})
 
     except Exception as e:
         # Xatolik yuz berganda default logoni yuborish
         print(f"Xatolik: {e}")
-        return FileResponse(default_logo_path, media_type="image/svg+xml")
+        return JSONResponse({"file_url": default_logo_path})
 
 # Natija qo'shish
 @iqromind_router.post("/add_natija")
