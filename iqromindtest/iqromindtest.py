@@ -581,7 +581,7 @@ async def get_edu_logo(user_id: int, session: AsyncSession = Depends(get_async_s
     qmtest_user = res.fetchone()
 
     # Default fayl yo'li
-    default_logo_path = "https://iqromind.uz/iqromindtest/logo.svg"
+    default_logo_path = "https://iqromind.uz/favicon.png"
 
     # Agar foydalanuvchi topilmasa, default logoni yuborish
     if qmtest_user is None:
