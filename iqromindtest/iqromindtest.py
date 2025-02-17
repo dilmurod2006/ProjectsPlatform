@@ -505,7 +505,7 @@ async def set_edu_name(data: SetEduNameSerializer, session: AsyncSession = Depen
     return "Edu name muvaffaqiyatli kiritildi"
 
 # User get edu name
-@iqromind_router.post("/get_edu_name/{user_id}")
+@iqromind_router.get("/get_edu_name/{user_id}")
 async def get_edu_name(user_id: int, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(iqromindtest).filter_by(user_id=user_id))
     qmtest_user = res.fetchone()
