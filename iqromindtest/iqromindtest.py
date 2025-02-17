@@ -570,7 +570,7 @@ async def set_edu_logo(data: SetEduLogoSerializer, session: AsyncSession = Depen
         edu_logo = data.edu_logo
     ))
     await session.commit()
-    return "Edu logo muvaffaqiyatli kiritildi"
+    return {"how":True, "message":"Edu logo muvaffaqiyatli kiritildi"}
 
 
 # User get edu logo
