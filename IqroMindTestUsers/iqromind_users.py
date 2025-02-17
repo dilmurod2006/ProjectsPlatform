@@ -21,6 +21,13 @@ async def create_user(bot_secret_key: str, user: User):
     db1_collection.insert_one(user.dict())
     return {"message": "Foydalanuvchi qo'shildi", "user_id": str(user.tg_id)}
 
+# check user by tg_id
+@iqromind_users_router.post("/check_user_by_tg_id/{bot_secret_key}")
+async def check_user(bot_secret_key:str,tg_id:int):
+    if db1_collection.find_one({"tg_id":tg_id}):
+        return {"mes":True}
+    else:
+        return {"mes":False}
 
 
 
