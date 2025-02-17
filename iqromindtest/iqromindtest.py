@@ -502,7 +502,7 @@ async def set_edu_name(data: SetEduNameSerializer, session: AsyncSession = Depen
         edu_slogan = data.edu_slogan
     ))
     await session.commit()
-    return "Edu name muvaffaqiyatli kiritildi"
+    return {"how": True, "message": "Edu name muvaffaqiyatli kiritildi"}
 
 # User get edu name
 @iqromind_router.get("/get_edu_name/{user_id}")
