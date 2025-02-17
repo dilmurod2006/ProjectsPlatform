@@ -497,6 +497,8 @@ async def set_edu_name(data: SetEduNameSerializer, session: AsyncSession = Depen
     qmtest_user = res.fetchone()
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
+    if qmtest_user.end_premium_date < datetime.now():
+        return {"how": False, "message": "Edu name ni taxrirlash faqat premium foydalanuvchilar uchun ishlaydi"}
     await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
         edu_name = data.edu_name,
         edu_slogan = data.edu_slogan
@@ -566,6 +568,8 @@ async def set_edu_logo(data: SetEduLogoSerializer, session: AsyncSession = Depen
     qmtest_user = res.fetchone()
     if qmtest_user is None:
         raise HTTPException(status_code=401, detail="User mavjud emas!")
+    if qmtest_user.end_premium_date < datetime.now():
+        return {"how": False, "message": "Edu logotipini taxrirlash faqat premium foydalanuvchilar uchun ishlaydi"}
     await session.execute(update(iqromindtest).where(iqromindtest.c.id == qmtest_user.id).values(
         edu_logo = data.edu_logo
     ))
