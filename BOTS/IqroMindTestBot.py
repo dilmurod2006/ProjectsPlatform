@@ -1,6 +1,8 @@
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 
+from api_functions import create_user
+
 TOKEN = "7536980017:AAGtgsiLdVOU3nCY6dhdbVQguPqysUo4qSY"
 bot = telebot.TeleBot(TOKEN)
 

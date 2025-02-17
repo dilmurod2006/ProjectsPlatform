@@ -226,7 +226,7 @@ admins = Table(
 #  Create User model
 class User(BaseModel):
     first_name: str = Field(..., max_length=50)
-    tg_id: str = Field(..., max_length=13)
+    tg_id: int = Field(..., max_length=13)
 
 # Test ma'lumotlari uchun model
 class Test(BaseModel):
