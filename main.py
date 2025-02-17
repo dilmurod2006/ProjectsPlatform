@@ -9,6 +9,7 @@ from accounts.auth import accounts_routers
 from admins.admin import admin_router
 from kundalikcom.kundalikcom import kundalik_router
 from iqromindtest.iqromindtest import iqromind_router
+from IqroMindTestUsers.iqromind_users import iqromind_users_router
 from database import get_async_session
 from settings import (
     API_URL,
@@ -67,8 +68,8 @@ app = FastAPI(
 # CORS-ni faqat kerakli domenlarga ruxsat berish
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    # allow_origins=["https://api.prjectsplatform.uz","https://projectsplatform.uz","www.projectsplatform.uz","www.api.prjectsplatform.uz"],  # Faol domenlar ro'yxati
+    # allow_origins=["*"],
+    allow_origins=["https://api.prjectsplatform.uz","https://projectsplatform.uz","www.projectsplatform.uz","www.api.prjectsplatform.uz"],  # Faol domenlar ro'yxati
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],  # Kerakli metodlarni belgilash
     allow_headers=["*"],  # Barcha headerlarga ruxsat beradi
@@ -81,6 +82,7 @@ app.include_router(accounts_routers, prefix="/accounts", tags=["accounts"])
 app.include_router(admin_router, prefix="/admin", tags=["admin"])
 app.include_router(kundalik_router, prefix="/kundalikcom", tags=["kundalikcom"])
 app.include_router(iqromind_router, prefix="/iqromindtest", tags=["iqromindtest"])
+app.include_router(iqromind_users_router, prefix="/iqromindtestusers", tags=["IqroMindTestUsers"])
 
 
 # run project
