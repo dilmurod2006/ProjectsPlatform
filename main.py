@@ -53,27 +53,27 @@ app = FastAPI(
         }
 
     ],
-    servers= [{"url": f"{API_URL}"}, {"url": f"http://localhost:8000"}],
-    openapi_url = "/projectsplatform/openapi.json",
-    docs_url = API_DOCS_URL,
-    redoc_url = API_REDOC_URL,
-    redirect_slashes=False,
-    license_info={
-        "name": "ProjectsPlatform Litsenziyasi",
-        "url": "https://projectsplatform.uz"  # Agar litsenziya URL manzilingiz bo'lsa, uni kiritishingiz mumkin
-    },
+    # servers= [{"url": f"{API_URL}"}, {"url": f"http://localhost:8000"}],
+    # openapi_url = "/projectsplatform/openapi.json",
+    # docs_url = API_DOCS_URL,
+    # redoc_url = API_REDOC_URL,
+    # redirect_slashes=False,
+    # license_info={
+    #     "name": "ProjectsPlatform Litsenziyasi",
+    #     "url": "https://projectsplatform.uz"  # Agar litsenziya URL manzilingiz bo'lsa, uni kiritishingiz mumkin
+    # },
     include_in_schema = True
 )
 
 # CORS-ni faqat kerakli domenlarga ruxsat berish
-app.add_middleware(
-    CORSMiddleware,
-    # allow_origins=["*"],
-    allow_origins=["https://api.prjectsplatform.uz","https://projectsplatform.uz","www.projectsplatform.uz","www.api.prjectsplatform.uz"],  # Faol domenlar ro'yxati
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Kerakli metodlarni belgilash
-    allow_headers=["*"],  # Barcha headerlarga ruxsat beradi
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     # allow_origins=["*"],
+#     allow_origins=["https://api.prjectsplatform.uz","https://projectsplatform.uz","www.projectsplatform.uz","www.api.prjectsplatform.uz"],  # Faol domenlar ro'yxati
+#     allow_credentials=True,
+#     allow_methods=["GET", "POST", "PUT", "DELETE"],  # Kerakli metodlarni belgilash
+#     allow_headers=["*"],  # Barcha headerlarga ruxsat beradi
+# )
 
 
 
