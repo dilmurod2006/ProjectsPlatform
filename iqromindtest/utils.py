@@ -107,7 +107,6 @@ def post_format_text(format_text, sana, test_name, qatnashchilar_soni):
     return format_text
 def post_format_text_html(format_text, sana, test_name, qatnashchilar_soni):
     text = post_format_text(format_text, sana, test_name, qatnashchilar_soni)
-    text = text.replace("\n", "<br>")
     html = ""
     ochilishlar = ""
     for v in text:

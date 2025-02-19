@@ -173,11 +173,11 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
     # hozirgi vaqtni aniqlash
     now = datetime.now()
 
-    # kundalikcomdan userni qidirish
+    # Iqromindtestdan userni qidirish
     res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
     qmtest_user = res.fetchone()
 
-    # Kundalik comda user mavjudmi?
+    # Iqromindtest da user mavjudmi?
     if qmtest_user is None:
         # mavjud emas, Qo'shadi
         await session.execute(
