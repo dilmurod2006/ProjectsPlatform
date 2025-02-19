@@ -105,3 +105,47 @@ def post_format_text(format_text, sana, test_name, qatnashchilar_soni):
     format_text = format_text.replace("$sana", sana)
     format_text = format_text.replace("$qatnashchilar_soni", str(qatnashchilar_soni))
     return format_text
+def post_format_text_html(format_text, sana, test_name, qatnashchilar_soni):
+    text = post_format_text(format_text, sana, test_name, qatnashchilar_soni)
+    text = text.replace("\n", "<br>")
+    html = ""
+    ochilishlar = ""
+    for v in text:
+        if v == "*":
+            if ochilishlar == "" or ochilishlar == "i":
+                ochilishlar += "b"
+                html += "<b>"
+            elif ochilishlar == "b":
+                ochilishlar = ""
+                html += "</b>"
+            elif ochilishlar == "ib":
+                ochilishlar = "i"
+                html += "</b>"
+            else:
+                ochilishlar = "i"
+                html += "</i></b><i>"
+        elif v == "~":
+            if ochilishlar == "" or ochilishlar == "b":
+                ochilishlar += "i"
+                html += "<i>"
+            elif ochilishlar == "i":
+                ochilishlar = ""
+                html += "</i>"
+            elif ochilishlar == "bi":
+                ochilishlar = "b"
+                html += "</i>"
+            else:
+                ochilishlar = "b"
+                html += "</b></i><b>"
+        else:
+            html += v
+    if ochilishlar == "i":
+        html += "</i>"
+    elif ochilishlar == "b":
+        html += "</b>"
+    elif ochilishlar == "ib":
+        html += "</b></i>"
+    elif ochilishlar == "bi":
+        html += "</i></b>"
+    return html
+
