@@ -904,10 +904,10 @@ async def get_post_format_text(user_id: int, month_date: str, test_key: str ,ses
         if "post_text" in qmtest_user.testlar[month_date][test_key]:
             return qmtest_user.testlar[month_date][test_key]["post_text"]
         else:
-            post_text = f"""Test natijalari e'lon qilindi
+            post_text = f"""✅ *Test natijalari e'lon qilindi*
 Test nomi: *$test_name*
 Jami ishtirokchilar: *$qatnashchilar_soni* ta
-Test $sana - sanada o'tkazildi"""
+Test 📅 $sana - sanada o'tkazildi"""
             qmtest_user.testlar[month_date][test_key]["post_text"] = post_text
             # update qmtestuser
             await session.execute(update(iqromindtest).where(iqromindtest.c.user_id == user_id).values(testlar=qmtest_user.testlar))
