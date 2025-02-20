@@ -105,7 +105,7 @@ def post_format_text(format_text, sana, test_name, qatnashchilar_soni):
     format_text = format_text.replace("$sana", sana)
     format_text = format_text.replace("$qatnashchilar_soni", str(qatnashchilar_soni))
     return format_text
-def post_format_text_html(format_text, sana, test_name, qatnashchilar_soni):
+def post_format_text_html(format_text, sana, test_name, qatnashchilar_soni, premium):
     text = post_format_text(format_text, sana, test_name, qatnashchilar_soni)
     html = ""
     ochilishlar = ""
@@ -146,5 +146,7 @@ def post_format_text_html(format_text, sana, test_name, qatnashchilar_soni):
         html += "</b></i>"
     elif ochilishlar == "bi":
         html += "</i></b>"
+    if not premium:
+        html += "\n"+open("iqromindtest/iqromindtest_post_text.txt", "r", encoding="utf-8").read()
     return html
 

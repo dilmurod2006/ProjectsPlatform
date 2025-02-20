@@ -797,7 +797,7 @@ async def set_post_text(data: SetPostTextSerializer, session: AsyncSession = Dep
     return "Post text muvaffaqiyatli saqlandi"
 # Post text ni o'qish
 @iqromind_router.get("/get_post_text/{user_id}/{month_date}/{test_key}")
-async def get_post_text(user_id: int, month_date: str, test_key: str ,session: AsyncSession = Depends(get_async_session)):
+async def get_post_text(user_id: int, month_date: str, test_key: str, session: AsyncSession = Depends(get_async_session)):
     # Qmtest user mavjudligini tekshirish
     res = await session.execute(select(iqromindtest).filter_by(user_id=user_id))
     qmtest_user = res.fetchone()
@@ -873,7 +873,8 @@ async def get_post_text_html(user_id: int, month_date: str, test_key: str, sessi
                 qmtest_user.testlar[month_date][test_key]["post_text"],
                 date,
                 test["name"],
-                qatnashchilar_soni
+                qatnashchilar_soni,
+                qmtest_user.end_premium_date > datetime.now()
             )
         else:
             post_text = f"""Test natijalari e'lon qilindi
@@ -888,7 +889,8 @@ Test $sana - sanada o'tkazildi"""
                 post_text,
                 date,
                 test["name"],
-                qatnashchilar_soni
+                qatnashchilar_soni,
+                qmtest_user.end_premium_date > datetime.now()
             )
     else:
 

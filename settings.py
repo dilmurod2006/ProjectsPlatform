@@ -44,7 +44,6 @@ MONGODB_1_USERNAME = os.environ.get('MONGODB_1_USERNAME')
 MONGODB_1_PASSWORD = os.environ.get('MONGODB_1_PASSWORD')
 MONGODB_1_HOST = os.environ.get('MONGODB_1_HOST')
 
-
-
+IQROMINDTEST_POST_TEXT = os.environ.get('IQROMINDTEST_POST_TEXT').replace("\\n", "\n")
 
 
