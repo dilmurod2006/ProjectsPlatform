@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote
 from fastapi import Depends, HTTPException
 from typing import Dict
+from settings import IQROMINDTEST_POST_TEXT
 # from models.models import loginsdata
 fanlar = [
     "O'zbekcha",
@@ -147,6 +148,6 @@ def post_format_text_html(format_text, sana, test_name, qatnashchilar_soni, prem
     elif ochilishlar == "bi":
         html += "</i></b>"
     if not premium:
-        html += "\n"+open("iqromindtest/iqromindtest_post_text.txt", "r", encoding="utf-8").read()
+        html += "\n"+IQROMINDTEST_POST_TEXT
     return html
 
