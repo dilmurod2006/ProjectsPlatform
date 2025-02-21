@@ -19,7 +19,7 @@ Mualliflar: Amonov Dilmurod va Boynazarov Bexruz
 
 app = FastAPI(
     # debug=True,
-    debug=False
+    debug=False,
     title="Projects Platform",
     description=loyiha_haqida,
     version="1.0.0",
