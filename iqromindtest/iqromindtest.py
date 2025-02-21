@@ -246,7 +246,7 @@ async def get_test_data_api(data: GetTestDatasInMonthSerializer, session: AsyncS
     if qmtest_user is None:
         raise HTTPException(status_code=400, detail="User mavjud emas!")
     # Test user mavjud bo'sa
-    return [{"key": i, "name": qmtest_user.testlar[data.month_date][i]["name"]} for i in qmtest_user.testlar[data.month_date].keys()] if data.month_date in qmtest_user.testlar else []
+    return [{"key": i, "name": qmtest_user.testlar[data.month_date][i]["name"], "bio": qmtest_user.testlar[data.month_date][i]["bio"]} for i in qmtest_user.testlar[data.month_date].keys()] if data.month_date in qmtest_user.testlar else []
 
 # Testni o'qish
 @iqromind_router.post("/get_test")
