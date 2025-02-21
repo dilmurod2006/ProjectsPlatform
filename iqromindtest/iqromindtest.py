@@ -264,7 +264,7 @@ async def get_test_api(data: GetTestSerializer, session: AsyncSession = Depends(
     num=0
     umumiy_ball = 0
     max = 0
-    min = 1890
+    min = 1890 if len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]) > 0 else 0
     for i in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"].keys():
         test_data = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][i]
         n = test_data.split("|")[0]
