@@ -1,16 +1,9 @@
-from typing import List
-
-from fastapi import FastAPI, Depends, HTTPException, APIRouter
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert, select, update
-import uvicorn
-
+from fastapi import FastAPI
 from accounts.auth import accounts_routers
 from admins.admin import admin_router
 from kundalikcom.kundalikcom import kundalik_router
 from iqromindtest.iqromindtest import iqromind_router
 from IqroMindTestUsers.iqromind_users import iqromind_users_router
-from database import get_async_session
 from settings import (
     API_URL,
     API_DOCS_URL,
@@ -25,7 +18,8 @@ Mualliflar: Amonov Dilmurod va Boynazarov Bexruz
 """
 
 app = FastAPI(
-    debug=True,
+    # debug=True,
+    debug=False,
     title="Projects Platform",
     description=loyiha_haqida,
     version="1.0.0",
@@ -50,6 +44,10 @@ app = FastAPI(
         {
             "name": "iqromindtestbot",
             "description": "iqromindtestbot api lar foydalanish",
+        },
+        {
+            "name": "IqroMindTestUsers",
+            "description": "IqroMindTestUsers bu IqromindTestBot dan foydlangan abuturentlar bilan ishlash uchun qilingan api!\n\n Bu bilan create_user, check_user_by_tg, add_test, get_test apilaridan foydalanish mumkun!",
         }
 
     ],
@@ -86,5 +84,6 @@ app.include_router(iqromind_users_router, prefix="/iqromindtestusers", tags=["Iq
 
 
 # run project
+# import uvicorn
 # if __name__ == "__main__":
 #     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

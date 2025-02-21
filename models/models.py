@@ -223,14 +223,11 @@ admins = Table(
 
 # IQROMINDTESTUSERS MODELS START
 
-#  Create User model
-class User(BaseModel):
-    first_name: str = Field(..., max_length=50)
-    tg_id: int = Field(..., max_length=13)
-
-# Test ma'lumotlari uchun model
-class Test(BaseModel):
-    user_id: str
-    titul_id: str = Field(..., max_length=4)
-    qiymat: Optional[List[str]]
-    sana: str = Field(..., max_length=10)
+abuturen_users = Table(
+    'abuturent_users',
+    metadata,
+    Column('abuturent_id', String(24),unique=True, index=True),
+    Column('first_name', String(50)),
+    Column('tg_id', BigInteger, unique=True, index=True),
+    Column("testlar", JSONB, default={"testlar":[]}),
+)
