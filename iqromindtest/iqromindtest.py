@@ -878,6 +878,7 @@ async def get_post_text_html(user_id: int, month_date: str, test_key: str, sessi
                 qmtest_user.testlar[month_date][test_key]["post_text"],
                 date,
                 test["name"],
+                test["bio"],
                 qatnashchilar_soni,
                 qmtest_user.end_premium_date > datetime.now()
             )
@@ -897,6 +898,7 @@ Test 📅 $sana - sanada o'tkazildi"""
                 post_text,
                 date,
                 test["name"],
+                test["bio"],
                 qatnashchilar_soni,
                 qmtest_user.end_premium_date > datetime.now()
             )
