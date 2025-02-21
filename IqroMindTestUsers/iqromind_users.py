@@ -4,8 +4,8 @@ from sqlalchemy import select,update,insert
 from models.models import abuturen_users
 from settings import IQROMIND_TEST_BOT_SECRET_KEY
 from database import get_async_session
-from schemas import AbuturentUsers,TestSchema
-from yordamchi import generate_id
+from .schemas import AbuturentUsers,TestSchema
+from .yordamchi import generate_id
 
 iqromind_users_router = APIRouter()
 
