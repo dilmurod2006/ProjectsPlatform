@@ -42,7 +42,7 @@ def create_test(name, date):
     date_str = date.strftime("%d.%m.%Y")
     data = {
         "name": name,
-        "bio": "",
+        "bio": ".",
         "date": date_str,
         "javoblar": " "*420,
         "tekshirishlar": {}
@@ -85,20 +85,6 @@ def sort_dict(d: dict, page: int, ser: int):
         }
     except:
         return {"max_ball": -1, "add_qiymat": 0}
-if __name__ == "__main__":
-    print(sort_dict({
-    "0": "0.0.0|aseawdawdawd",
-    "1001": "4.0.0|aseawdawdawd",
-    "1002": "2.0.0|aseawdawdawd",
-    "1004": "4.0.0|aseawdawdawd",
-    "1005": "4.0.0|aseawdawdawd",
-    "1006": "9.0.0|aseawdawdawd",
-    "1007": "10.0.0|aseawdawdawd",
-    "1008": "0.10.0|aseawdawdawd",
-    "1009": "0.0.0|aseawdawdawd",
-    "1010": "0.0.0|aseawdawdawd",
-    "1011": "0.0.0|aseawdawdawd",
-}))
 
 # Post formatni textga o'zgartirish
 def post_format_text(format_text, sana, test_name, bio, qatnashchilar_soni):
@@ -152,3 +138,17 @@ def post_format_text_html(format_text, sana, test_name, bio, qatnashchilar_soni,
         html += "\n"+IQROMINDTEST_POST_TEXT
     return html
 
+if __name__ == "__main__":
+    print(sort_dict({
+    "0": "0.0.0|aseawdawdawd",
+    "1001": "4.0.0|aseawdawdawd",
+    "1002": "2.0.0|aseawdawdawd",
+    "1004": "4.0.0|aseawdawdawd",
+    "1005": "4.0.0|aseawdawdawd",
+    "1006": "9.0.0|aseawdawdawd",
+    "1007": "10.0.0|aseawdawdawd",
+    "1008": "0.10.0|aseawdawdawd",
+    "1009": "0.0.0|aseawdawdawd",
+    "1010": "0.0.0|aseawdawdawd",
+    "1011": "0.0.0|aseawdawdawd",
+}))

@@ -333,7 +333,7 @@ async def add_test(data: AddTestSerializer, session: AsyncSession = Depends(get_
     result_data.pop("javoblar")
     result_data.pop("tekshirishlar")
     result_data["edit_token"] = edit_token
-    return {"how": True,"message":"✅ Testni qo'shdim 😊", "test": result_data, "key": test_key}
+    return {"how": True,"message":"✅ Testni qo'shdim 😊", "test": result_data, "key": test_key, "bio": new_test["bio"]}
 
 
 # Testni javoblarini taxrirlash
