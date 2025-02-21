@@ -952,7 +952,7 @@ async def send_feedback(data: FeedbackSerializer, session: AsyncSession = Depend
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Muammo va takliflarni qabul qilish
     try:
-        send_muammo_func(data.matn, user.id, user.fullname, qmtest_user.end_premium_date > datetime.now())
+        send_muammo_func(data.matn, user.id, user.full_name, qmtest_user.end_premium_date > datetime.now())
         return True
     except:
         return False
