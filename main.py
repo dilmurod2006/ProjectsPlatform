@@ -10,7 +10,6 @@ from admins.admin import admin_router
 from kundalikcom.kundalikcom import kundalik_router
 from iqromindtest.iqromindtest import iqromind_router
 from IqroMindTestUsers.iqromind_users import iqromind_users_router
-from database import get_async_session
 from settings import (
     API_URL,
     API_DOCS_URL,
