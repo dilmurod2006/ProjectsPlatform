@@ -44,6 +44,14 @@ MONGODB_1_USERNAME = os.environ.get('MONGODB_1_USERNAME')
 MONGODB_1_PASSWORD = os.environ.get('MONGODB_1_PASSWORD')
 MONGODB_1_HOST = os.environ.get('MONGODB_1_HOST')
 
+# Iqro mind test
 IQROMINDTEST_POST_TEXT = os.environ.get('IQROMINDTEST_POST_TEXT').replace("\\n", "\n")
 
+# IqroMindTest muammolar guruhi ID si
+IQROMINDTEST_MUAMMOLAR_GURUH_ID = os.environ.get('IQROMINDTEST_MUAMMOLAR_GURUH_ID')
 
+# IqroMindTest bot token
+IQROMINDTEST_BOT_TOKEN = os.environ.get('IQROMINDTEST_BOT_TOKEN')
+
+# IqroMindTest bot username
+IQROMIND_BOT_USERNAME = os.environ.get('IQROMIND_BOT_USERNAME')

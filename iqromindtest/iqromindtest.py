@@ -37,7 +37,8 @@ from .schemes import (
     GetAllNatijalarSerializer,
     SearchOtmSerializer,
     GetKirishballariSerializer,
-    SetPostTextSerializer
+    SetPostTextSerializer,
+    FeedbackSerializer
 )
 from io import BytesIO
 
@@ -740,6 +741,7 @@ async def get_natija_file(user_id: int, file_id: str, session: AsyncSession = De
         return JSONResponse({"file_url": file_url})
     except:
         return JSONResponse({"file_url": default_logo_url})
+
 # Otm qidirish
 @iqromind_router.post("/search_otm")
 async def search_otm(data: SearchOtmSerializer, session: AsyncSession = Depends(get_async_session)):
@@ -795,6 +797,7 @@ async def set_post_text(data: SetPostTextSerializer, session: AsyncSession = Dep
     await session.execute(update(iqromindtest).where(iqromindtest.c.user_id == user.id).values(testlar=qmtest_user.testlar))
     await session.commit()
     return "Post text muvaffaqiyatli saqlandi"
+
 # Post text ni o'qish
 @iqromind_router.get("/get_post_text/{user_id}/{month_date}/{test_key}")
 async def get_post_text(user_id: int, month_date: str, test_key: str, session: AsyncSession = Depends(get_async_session)):
@@ -849,6 +852,7 @@ Test 📅 $sana - sanada o'tkazildi"""
     else:
 
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
+
 # Post texni html da o'qish
 @iqromind_router.get("/get_post_text_html/{user_id}/{month_date}/{test_key}")
 async def get_post_text_html(user_id: int, month_date: str, test_key: str, session: AsyncSession = Depends(get_async_session)):
@@ -905,6 +909,8 @@ Test 📅 $sana - sanada o'tkazildi"""
     else:
 
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
+
+# Post texni format sifatida o'qish
 @iqromind_router.get("/get_post_format_text/{user_id}/{month_date}/{test_key}")
 async def get_post_format_text(user_id: int, month_date: str, test_key: str ,session: AsyncSession = Depends(get_async_session)):
     # Qmtest user mavjudligini tekshirish
@@ -931,5 +937,24 @@ Test 📅 $sana - sanada o'tkazildi"""
     else:
 
         raise HTTPException(status_code=400, detail="Test mavjud emas!")
+
+# Muammo va takliflarni qabul qilish
+@iqromind_router.post("/send_feedback")
+async def send_feedback(data: FeedbackSerializer, session: AsyncSession = Depends(get_async_session)):
+    # Userni o'qish token bilan tekshirish
+    res = await session.execute(select(users).where(users.c.token == data.token))
+    user = res.fetchone()
+    if user is None:
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
+    res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
+    qmtest_user = res.fetchone()
+    if qmtest_user is None:
+        raise HTTPException(status_code=401, detail="User mavjud emas!")
+    # Muammo va takliflarni qabul qilish
+    try:
+        send_muammo_func(data.matn, user.id, user.fullname, qmtest_user.end_premium_date > datetime.now())
+        return True
+    except:
+        return False
 
 iqromind_router.include_router(iqromindtest_bot_router, prefix="/botapis", tags=["iqromindtestbot"])

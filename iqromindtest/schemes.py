@@ -157,3 +157,7 @@ class SetPostTextSerializer(BaseModel):
     test_key: str
     post_text: str
 
+# Feedback Serializer
+class FeedbackSerializer(BaseModel):
+    token: str
+    matn: str

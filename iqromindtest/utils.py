@@ -1,6 +1,6 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
-import requests
+import requests, telebot
 import random
 import string
 from sqlalchemy import(
@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote
 from fastapi import Depends, HTTPException
 from typing import Dict
-from settings import IQROMINDTEST_POST_TEXT
+from settings import IQROMINDTEST_POST_TEXT, IQROMINDTEST_MUAMMOLAR_GURUH_ID, IQROMINDTEST_BOT_TOKEN, IQROMIND_BOT_USERNAME
 # from models.models import loginsdata
 fanlar = [
     "O'zbekcha",
@@ -137,6 +137,15 @@ def post_format_text_html(format_text, sana, test_name, bio, qatnashchilar_soni,
     if not premium:
         html += "\n"+IQROMINDTEST_POST_TEXT
     return html
+
+def send_muammo_func(matn, user_id, fullname, premium=False):
+    bot = telebot.TeleBot(IQROMINDTEST_BOT_TOKEN)
+    bot.send_message(
+        IQROMINDTEST_MUAMMOLAR_GURUH_ID,
+        f"""{'🔶' if premium else '🔷'}<b><a href="https://t.me/{IQROMIND_BOT_USERNAME}?start=show_user{user_id}">{fullname}</a></b>\n💬Xabar:\n<blockquote>{matn}</blockquote>""",
+        parse_mode="HTML",
+        disable_web_page_preview=True
+    )
 
 if __name__ == "__main__":
     print(sort_dict({
