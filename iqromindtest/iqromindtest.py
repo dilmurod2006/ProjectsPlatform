@@ -831,7 +831,7 @@ async def get_post_text(user_id: int, month_date: str, test_key: str, session: A
             post_text = f"""✅ *Test natijalari e'lon qilindi*
 
 Test nomi: *$test_name*
-~test["bio"]~
+~$izoh~
 
 Jami ishtirokchilar: *$qatnashchilar_soni* ta
 Test 📅 $sana - sanada o'tkazildi"""
@@ -885,7 +885,7 @@ async def get_post_text_html(user_id: int, month_date: str, test_key: str, sessi
             post_text = f"""✅ *Test natijalari e'lon qilindi*
 
 Test nomi: *$test_name*
-~test["bio"]~
+~$izoh~
 
 Jami ishtirokchilar: *$qatnashchilar_soni* ta
 Test 📅 $sana - sanada o'tkazildi"""
@@ -917,7 +917,7 @@ async def get_post_format_text(user_id: int, month_date: str, test_key: str ,ses
             post_text = f"""✅ *Test natijalari e'lon qilindi*
 
 Test nomi: *$test_name*
-~test["bio"]~
+~$izoh~
 
 Jami ishtirokchilar: *$qatnashchilar_soni* ta
 Test 📅 $sana - sanada o'tkazildi"""
