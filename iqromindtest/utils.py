@@ -101,13 +101,14 @@ if __name__ == "__main__":
 }))
 
 # Post formatni textga o'zgartirish
-def post_format_text(format_text, sana, test_name, qatnashchilar_soni):
+def post_format_text(format_text, sana, test_name, bio, qatnashchilar_soni):
     format_text = format_text.replace("$test_name", test_name)
+    format_text = format_text.replace("$izoh", bio)
     format_text = format_text.replace("$sana", sana)
     format_text = format_text.replace("$qatnashchilar_soni", str(qatnashchilar_soni))
     return format_text
-def post_format_text_html(format_text, sana, test_name, qatnashchilar_soni, premium):
-    text = post_format_text(format_text, sana, test_name, qatnashchilar_soni)
+def post_format_text_html(format_text, sana, test_name, bio, qatnashchilar_soni, premium):
+    text = post_format_text(format_text, sana, test_name, bio, qatnashchilar_soni)
     html = ""
     ochilishlar = ""
     for v in text:

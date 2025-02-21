@@ -824,6 +824,7 @@ async def get_post_text(user_id: int, month_date: str, test_key: str, session: A
                 qmtest_user.testlar[month_date][test_key]["post_text"],
                 date,
                 test["name"],
+                test["bio"],
                 qatnashchilar_soni
             )
         else:
@@ -839,6 +840,7 @@ Test $sana - sanada o'tkazildi"""
                 post_text,
                 date,
                 test["name"],
+                test["bio"],
                 qatnashchilar_soni
             )
     else:
