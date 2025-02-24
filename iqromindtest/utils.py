@@ -66,7 +66,7 @@ def sort_dict(d: dict, page: int, ser: int):
     try:
         # Tartiblash: kattadan kichikka qarab
         for i in d.keys():
-            if ser != 0 and (ser == -1 or d[i][1][-3:] == "0.0") and (ser == 1 or d[i][1][-3:] != "0.0"):
+            if ser != 0 and (ser == -1 or d[i][-3:] == "0.0") and (ser == 1 or d[i][-3:] != "0.0"):
                 d.pop(i)
 
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
