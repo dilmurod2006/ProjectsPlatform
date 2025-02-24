@@ -64,18 +64,19 @@ def string_to_number(data):
     return ball
 def sort_dict(d: dict, page: int, ser: int):
     try:
+        data = d.copy()
         if ser == 1:
             for i in d.keys():
-                send_muammo_func(d[i][-3:], 0, "1", True)
-                if d[i][-3:] == "0.0":
-                    d.pop(i)
+                send_muammo_func(data[i][-3:], 0, "1", True)
+                if data[i][-3:] == "0.0":
+                    data.pop(i)
         elif ser == -1:
-            for i in d.keys():
-                send_muammo_func(d[i][-3:], 0, "2", True)
-                if d[i][-3:] != "0.0":
-                    d.pop(i)
+            for i in data.keys():
+                send_muammo_func(data[i][-3:], 0, "2", True)
+                if data[i][-3:] != "0.0":
+                    data.pop(i)
         # Tartiblash: kattadan kichikka qarab
-        sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
+        sorted_items = sorted(data.items(), key=string_to_number, reverse=True)
         all_pages = len(sorted_items) // 10 + int(len(sorted_items) % 10 > 0)
         max_ball = -1
         add_qiymat = 0
