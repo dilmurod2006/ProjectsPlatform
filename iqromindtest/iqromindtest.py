@@ -440,9 +440,9 @@ async def get_test_tekshirishlar(data: GetTestTekshirishlarSerializer, session: 
         if "tekshirishlar_tartibi" not in qmtest_user.testlar[data.month_date][data.test_key]:
             return result
         # Oxirgi qo'shilganlarni oxiriga qilib o'zgartirib olish
-        for id_raqam in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"]:
+        for id_raqam in qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar_tartibi"][data.page*10:(data.page+1)*10]:
             result.append([id_raqam, qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"][str(id_raqam)]])
-        return result
+        return {"natijalar": result, "length": len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"])}
     except:
         raise HTTPException(status_code=403, detail="Test mavjud emas ekan 😕")
 
