@@ -73,14 +73,14 @@ def sort_dict(d: dict, page: int, ser: int):
         max_ball = -1
         add_qiymat = 0
         indexs = []
-        for i in sorted_items[:page*10]:
-            ball = string_to_number(i)
+        for i, natija_str in enumerate(sorted_items[:page*10]):
+            ball = string_to_number(natija_str)
             if ball == max_ball:
                 add_qiymat += 1
             else:
-                max_ball = string_to_number(i)
+                max_ball = string_to_number(natija_str)
                 add_qiymat = 0
-            indexs.append(add_qiymat+i)
+            indexs.append(page*10 + add_qiymat + i)
         return sorted_items[page*10:10+page*10], indexs
     except:
         return [], []
