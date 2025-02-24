@@ -65,9 +65,14 @@ def string_to_number(data):
 def sort_dict(d: dict, page: int, ser: int):
     try:
         # Tartiblash: kattadan kichikka qarab
-        for i in d.keys():
-            if ser != 0 and (ser == -1 or d[i][-3:] == "0.0") and (ser == 1 or d[i][-3:] != "0.0"):
-                d.pop(i)
+        if ser == 1:
+            for i in d.keys():
+                if d[i][-3:] == "0.0":
+                    d.pop(i)
+        elif ser == -1:
+            for i in d.keys():
+                if d[i][-3:] != "0.0":
+                    d.pop(i)
 
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
         all_pages = len(sorted_items) // 10 + int(len(sorted_items) % 10 > 0)
