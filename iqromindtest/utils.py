@@ -72,25 +72,25 @@ def sort_dict(d: dict, page: int, ser: int):
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
         max_ball = -1
         add_qiymat = 0
-        indexs = []
-        for natija_str in sorted_items[:page*10]:
-            ball = string_to_number(natija_str)
+        for natija_data in sorted_items[:page*10]:
+            ball = string_to_number(natija_data)
             if ball == max_ball:
                 add_qiymat += 1
             else:
                 max_ball = ball
                 add_qiymat = 0
-        for i, natija_str in enumerate(sorted_items[page*10: min(len(sorted_items), (page+1)*10)]):
-            ball = string_to_number(natija_str)
+        results = []
+        for i, natija_data in enumerate(sorted_items[page*10: min(len(sorted_items), (page+1)*10)]):
+            ball = string_to_number(natija_data)
             if ball == max_ball:
                 add_qiymat += 1
             else:
                 max_ball = ball
                 add_qiymat = 0
-            indexs.append(page*10 - add_qiymat + i + 1)
-        return sorted_items[page*10:10+page*10], indexs
+            results.append([*natija_data, page*10 - add_qiymat + i + 1])
+        return results
     except:
-        return [], []
+        return []
 
 # Post formatni textga o'zgartirish
 def post_format_text(format_text, sana, test_name, bio, qatnashchilar_soni):
