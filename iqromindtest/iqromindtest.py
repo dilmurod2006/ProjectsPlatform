@@ -714,9 +714,10 @@ async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSessi
         raise HTTPException(status_code=401, detail="User mavjud emas!")
     # Mavjud bo'lsa
     result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
-    result = sort_dict(result, data.page, data.ser)
+    results, all_pages = sort_dict(result, data.page, data.ser)
     return {
-        "natijalar": result,
+        "natijalar": results,
+        "length": all_pages
     }
 
 
