@@ -70,7 +70,7 @@ def sort_dict(d: dict, page: int, ser: int):
                 d.pop(i)
 
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
-        all_pages = len(sorted_items) // 10 + len(sorted_items) % 10 > 0
+        all_pages = len(sorted_items) // 10 + int(len(sorted_items) % 10 > 0)
         max_ball = -1
         add_qiymat = 0
         for natija_data in sorted_items[:page*10]:
