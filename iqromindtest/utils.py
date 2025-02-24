@@ -67,7 +67,7 @@ def sort_dict(d: dict, page: int, ser: int):
         # Tartiblash: kattadan kichikka qarab
         for i in d.keys():
             if ser != 0 and (ser == -1 or d[i][-3:] == "0.0") and (ser == 1 or d[i][-3:] != "0.0"):
-                d.pop(i)
+                del d[i]
 
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
         max_ball = -1
