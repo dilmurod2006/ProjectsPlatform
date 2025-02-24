@@ -73,21 +73,21 @@ def sort_dict(d: dict, page: int, ser: int):
         max_ball = -1
         add_qiymat = 0
         indexs = []
-        for i, natija_str in enumerate(sorted_items[:page*10]):
+        for natija_str in sorted_items[:page*10]:
             ball = string_to_number(natija_str)
             if ball == max_ball:
                 add_qiymat += 1
             else:
-                max_ball = string_to_number(natija_str)
+                max_ball = ball
                 add_qiymat = 0
-        for i, natija_str in enumerate(sorted_items[page*10:max(len(sorted_items), (page+1)*10)]):
+        for i, natija_str in enumerate(sorted_items[page*10: min(len(sorted_items), (page+1)*10)]):
             ball = string_to_number(natija_str)
             if ball == max_ball:
                 add_qiymat += 1
             else:
-                max_ball = string_to_number(natija_str)
+                max_ball = ball
                 add_qiymat = 0
-            indexs.append(page*10 + add_qiymat + i)
+            indexs.append(page*10 - add_qiymat + i + 1)
         return sorted_items[page*10:10+page*10], indexs
     except:
         return [], []
@@ -155,15 +155,15 @@ def send_muammo_func(matn, user_id, fullname, premium=False):
 
 if __name__ == "__main__":
     print(sort_dict({
-    "0": "0.0.0|aseawdawdawd",
-    "1001": "4.0.0|aseawdawdawd",
-    "1002": "2.0.0|aseawdawdawd",
-    "1004": "4.0.0|aseawdawdawd",
-    "1005": "4.0.0|aseawdawdawd",
-    "1006": "9.0.0|aseawdawdawd",
-    "1007": "10.0.0|aseawdawdawd",
-    "1008": "0.10.0|aseawdawdawd",
-    "1009": "0.0.0|aseawdawdawd",
-    "1010": "0.0.0|aseawdawdawd",
-    "1011": "0.0.0|aseawdawdawd",
-}))
+    "0": "0.0.0|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1001": "3.0.0|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1002": "0.2.1|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1004": "2.2.1|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1005": "0.2.1|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1006": "1.0.0|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1007": "0.1.0|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1008": "0.0.1|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1009": "0.0.0|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1010": "0.0.0|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+    "1011": "0.0.0|BQACAgIAAxkDAAIF1We4oMxgRq4SyaD1B0HXOUDgZ86vAAIlYwACPNzBSSPl4wgJczjuNgQ|0.1|1|0.0",
+}, 1, 0))
