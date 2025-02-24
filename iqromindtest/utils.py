@@ -72,6 +72,7 @@ def sort_dict(d: dict, page: int, ser: int):
         sorted_items = sorted(d.items(), key=string_to_number, reverse=True)
         max_ball = -1
         add_qiymat = 0
+        indexs = []
         for i in sorted_items[:page*10]:
             ball = string_to_number(i)
             if ball == max_ball:
@@ -79,12 +80,10 @@ def sort_dict(d: dict, page: int, ser: int):
             else:
                 max_ball = string_to_number(i)
                 add_qiymat = 0
-        return sorted_items[page*10:10+page*10], {
-            "max_ball": max_ball/10,
-            "add_qiymat": add_qiymat
-        }
+            indexs.append(add_qiymat+i)
+        return sorted_items[page*10:10+page*10], indexs
     except:
-        return {"max_ball": -1, "add_qiymat": 0}
+        return [], []
 
 # Post formatni textga o'zgartirish
 def post_format_text(format_text, sana, test_name, bio, qatnashchilar_soni):
