@@ -66,13 +66,11 @@ def sort_dict(d: dict, page: int, ser: int):
     try:
         data = d.copy()
         if ser == 1:
-            for i in d.keys():
-                send_muammo_func(data[i][-3:], 0, "1", True)
+            for i in list(d.keys()):
                 if data[i][-3:] == "0.0":
                     data.pop(i)
         elif ser == -1:
-            for i in data.keys():
-                send_muammo_func(data[i][-3:], 0, "2", True)
+            for i in list(data.keys()):
                 if data[i][-3:] != "0.0":
                     data.pop(i)
         # Tartiblash: kattadan kichikka qarab
@@ -98,7 +96,6 @@ def sort_dict(d: dict, page: int, ser: int):
             results.append([*natija_data, page*10 - add_qiymat + i + 1])
         return results, all_pages
     except Exception as e:
-        send_muammo_func(str(e), 0, "1", True)
         return [], 0
 
 # Post formatni textga o'zgartirish
