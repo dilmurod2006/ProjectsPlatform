@@ -286,7 +286,7 @@ async def get_test_api(data: GetTestSerializer, session: AsyncSession = Depends(
         "qatnashchilar_soni": len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]),
         "edit_token": qmtest_user.edit_token,
         "max": max/10,
-        "mid": umumiy_ball/(num*10) if num != 0 else 0,
+        "mid": round(umumiy_ball/(num*10), 2) if num != 0 else 0,
         "min": min/10
     }
 
