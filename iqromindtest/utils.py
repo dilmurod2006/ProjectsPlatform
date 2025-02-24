@@ -96,7 +96,8 @@ def sort_dict(d: dict, page: int, ser: int):
                 add_qiymat = 0
             results.append([*natija_data, page*10 - add_qiymat + i + 1])
         return results, all_pages
-    except:
+    except Exception as e:
+        send_muammo_func(str(e), 0, "1", True)
         return [], 0
 
 # Post formatni textga o'zgartirish
