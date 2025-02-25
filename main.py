@@ -67,7 +67,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     # allow_origins=["*"],
-    allow_origins=["https://api.prjectsplatform.uz","https://projectsplatform.uz","www.projectsplatform.uz","www.api.prjectsplatform.uz"],  # Faol domenlar ro'yxati
+    allow_origins=["http://localhost:5173","https://api.prjectsplatform.uz","https://projectsplatform.uz","www.projectsplatform.uz","www.api.prjectsplatform.uz"],  # Faol domenlar ro'yxati
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],  # Kerakli metodlarni belgilash
     allow_headers=["*"],  # Barcha headerlarga ruxsat beradi
