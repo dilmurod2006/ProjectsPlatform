@@ -26,7 +26,7 @@ def start(message):
             # check user
             user_check = check_user(message.chat.id)
             if user_check["mes"]==True:
-                btn = InlineKeyboardButton("🔗 Test natijani ko'rish", url=f"{BaseUrl}/{user_id}/{test_key}/{month_date}/{user_check["abuturent_id"]}/BotHome")
+                btn = InlineKeyboardButton("🔗 Test natijani ko'rish", url=f"{BaseUrl}/{user_id}/{test_key}/{month_date}/{user_check['abuturent_id']}/BotHome")
                 markup.add(btn)
                 markup = InlineKeyboardMarkup()
                 bot.send_message(message.chat.id, f"TestNatijangizni Ko'rishingiz mumkin!", reply_markup=markup)
@@ -35,7 +35,7 @@ def start(message):
                 bot.send_message(message.chat.id, text_start)
                 # Yangi foydalanuvchi yaratish
                 abuturent_id = create_user(first_name=message.from_user.first_name, tg_id=message.chat.id)
-                btn = InlineKeyboardButton("🔗 Test natijani ko'rish", url=f"{BaseUrl}{abuturent_id}")
+                btn = InlineKeyboardButton("🔗 Test natijani ko'rish", url=f"{BaseUrl}/{user_id}/{test_key}/{month_date}/{abuturent_id}/BotHome")
                 markup.add(btn)
                 markup = InlineKeyboardMarkup()
                 bot.send_message(message.chat.id, f"TestNatijangizni Ko'rishingiz mumkin!", reply_markup=markup)
