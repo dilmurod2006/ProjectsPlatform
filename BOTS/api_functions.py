@@ -6,6 +6,19 @@ url = "https://api.projectsplatform.uz/iqromindtestusers"
 BOT_Secret_key="asaasbnASAJDSABBHJ22131@87899821mnbc$nbsbzhcsczschj908"
 
 
+
+def check_user(tg_id: int) -> dict:
+    """Foydalanuvchi ro‘yxatdan o‘tganligini tekshiradi."""
+    try:
+      r = requests.get(f"{url}/check-user/{tg_id}", params={"bot_secret_key": BOT_Secret_key})  # params to‘g‘ri
+
+      if r.status_code == 200:
+          return r.json() # To‘g‘ri kalit nomi
+      else:
+          return False  # Xato bo‘lsa, False qaytarish
+    except:
+        pass
+
 # create user api functionsssss
 def create_user(first_name: str, tg_id: int):
     data = {
