@@ -65,11 +65,11 @@ async def create_user(
     await session.commit()
     
     # Foydalanuvchi yaratildi degan xabar va yaratilgan foydalanuvchining unikal ID'sini qaytaramiz
-    return {"message": "Foydalanuvchi qo'shildi", "user_id": unical_id}
+    return {"user_id": unical_id}
 
 # check user api
 @iqromind_users_router.get("/check-user/{tg_id}")
-async def check_user_by_tg_id(bot_secret_key: str,tg_id: int, session: AsyncSession = Depends(get_async_session)):
+async def check_user_by_tg_id(tg_id: int, session: AsyncSession = Depends(get_async_session)):
     """
     Berilgan tg_id asosida foydalanuvchini tekshiruvchi endpoint.
     
@@ -77,8 +77,6 @@ async def check_user_by_tg_id(bot_secret_key: str,tg_id: int, session: AsyncSess
     2. Agar foydalanuvchi topilsa, foydalanuvchi ma'lumotlari va "exists": True qaytariladi.
     3. Agar topilmasa, "exists": False va mos xabar qaytariladi.
     """
-    if bot_secret_key != IQROMIND_TEST_BOT_SECRET_KEY:
-        raise HTTPException(status_code=403, detail="Bot secret key not valid")
     # tg_id bo‘yicha foydalanuvchini qidirish
     result = await session.execute(select(abuturen_users).filter_by(tg_id=tg_id))
     user = result.fetchone()
@@ -92,13 +90,10 @@ async def check_user_by_tg_id(bot_secret_key: str,tg_id: int, session: AsyncSess
 # add test
 @iqromind_users_router.patch("/users/{user_id}/tests")
 async def add_test_to_user(
-    bot_secret_key: str,
     user_id: str,
     new_test: TestSchema,
     session: AsyncSession = Depends(get_async_session)
 ):
-    if bot_secret_key != IQROMIND_TEST_BOT_SECRET_KEY:
-        raise HTTPException(status_code=403, detail="Bot secret key not valid")
     # Foydalanuvchini qidirish (abuturent_id orqali)
     result = await session.execute(select(abuturen_users).filter_by(abuturent_id=user_id))
     user = result.fetchone()
