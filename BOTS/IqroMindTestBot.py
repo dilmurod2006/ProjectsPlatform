@@ -51,7 +51,13 @@ def start(message):
 @bot.message_handler(commands=['asosiy_url'])
 def asosiy_url(message):
     global BaseUrl
-    BaseUrl=message
-    bot.send_message(message.chat.id, "Link muvaffaqiyatli o'zgartirildi")
+    parts = message.text.split()
+    
+    if len(parts) > 1:
+        BaseUrl = parts[1]  # Yangi URL ni o‘rnatish
+        bot.send_message(message.chat.id, f"✅ Link muvaffaqiyatli o‘zgartirildi: {BaseUrl}")
+    else:
+        bot.send_message(message.chat.id, "❌ Iltimos, yangi linkni qo‘shing.\nFoydalanish: `/asosiy_url https://yangi-url.com`")
+
 
 bot.polling()
