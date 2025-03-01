@@ -49,7 +49,7 @@ def show_natija(message):
         abt_id = res["abuturent_id"]
         markup = types.InlineKeyboardMarkup()
         # fontendga user_id query key bilan abituriyent_id ni uzatish
-        markup.row(types.InlineKeyboardButton("📊 Natijalar", web_app = WebAppInfo(url=f"https://iqromind.uz/natija/{user_id}/{month_date}/{test_key}?user_id={abt_id}")))
+        markup.row(types.InlineKeyboardButton("📊 Natijalar", web_app = WebAppInfo(url=f"https://iqromind.uz/BotHome/natija/{user_id}/{month_date}/{test_key}?abt_idcha={abt_id}")))
         markup.row(types.InlineKeyboardButton("Ulashish ⤴️", switch_inline_query=f"{key}u{user_id}"))
         bot.send_message(message.chat.id, str(post), parse_mode="html", disable_web_page_preview=True, reply_markup=markup) 
     except Exception as e:
