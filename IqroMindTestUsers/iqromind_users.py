@@ -65,40 +65,79 @@ async def create_user(
     await session.commit()
     
     # Foydalanuvchi yaratildi degan xabar va yaratilgan foydalanuvchining unikal ID'sini qaytaramiz
-    return {"message": "Foydalanuvchi qo'shildi", "user_id": unical_id}
+    return {"user_id": unical_id}
 
 # check user api
 @iqromind_users_router.get("/check-user/{tg_id}")
-async def check_user_by_tg_id(bot_secret_key: str,tg_id: int, session: AsyncSession = Depends(get_async_session)):
+async def check_user_by_tg_id(bot_secret_key: str, tg_id: int, session: AsyncSession = Depends(get_async_session)):
     """
     Berilgan tg_id asosida foydalanuvchini tekshiruvchi endpoint.
-    
-    1. Abuturent_users jadvalidan tg_id bo‘yicha foydalanuvchi qidiriladi.
-    2. Agar foydalanuvchi topilsa, foydalanuvchi ma'lumotlari va "exists": True qaytariladi.
-    3. Agar topilmasa, "exists": False va mos xabar qaytariladi.
+
+    Params:
+    - bot_secret_key (str): Botdan kelayotgan so‘rovni tekshirish uchun maxfiy kalit.
+    - tg_id (int): Foydalanuvchining Telegram ID'si.
+    - session (AsyncSession): Asinxron sessiya orqali bazaga so‘rov yuborish.
+
+    Returns:
+    - JSON response:
+      { "mes": True, "abuturent_id": "12345" }  -> Agar foydalanuvchi bazada bo‘lsa, uning ID'si qaytariladi.
+      { "mes": False } -> Agar foydalanuvchi bazada bo‘lmasa.
     """
+
+    # Maxfiy kalitni tekshirish, noto‘g‘ri bo‘lsa 403 (Forbidden) xato qaytariladi
     if bot_secret_key != IQROMIND_TEST_BOT_SECRET_KEY:
         raise HTTPException(status_code=403, detail="Bot secret key not valid")
-    # tg_id bo‘yicha foydalanuvchini qidirish
-    result = await session.execute(select(abuturen_users).filter_by(tg_id=tg_id))
+
+    # Bazadan tg_id bo‘yicha foydalanuvchini qidiramiz
+    result = await session.execute(
+        select(abuturen_users).where(abuturen_users.c.tg_id == tg_id)
+    )
+    
+    # Foydalanuvchi ma'lumotlarini olamiz
     user = result.fetchone()
     
+    # Agar foydalanuvchi mavjud bo‘lsa, uning ID'si bilan True qaytariladi
     if user:
-        return {"mes": True,"abuturent_id": user.abuturent_id,}
+        return {"mes": True, "abuturent_id": user[0]}  # user[0] - bu abuturent_id
     else:
-        return {"mes": False, "message": "Foydalanuvchi topilmadi"}
+        return {"mes": False}  # Foydalanuvchi topilmasa False qaytariladi
+
+
   
+@iqromind_users_router.get("/check_abuturent_id/{abuturent_id}")
+async def check_abuturent_id(abuturent_id: str, session: AsyncSession = Depends(get_async_session)):
+    """
+    Ushbu API endpoint abituriyentning ID (abuturent_id) bazada mavjud yoki yo‘qligini tekshiradi.
+
+    Params:
+    - abuturent_id (str): Tekshirilayotgan abituriyent ID'si.
+    - session (AsyncSession): Asinxron sessiya orqali bazaga so‘rov yuborish.
+
+    Returns:
+    - JSON response:
+      { "exists": True }  -> Agar foydalanuvchi bazada bo‘lsa.
+      { "exists": False } -> Agar foydalanuvchi bazada bo‘lmasa.
+    """
+
+    # Baza ichidan berilgan abuturent_id bo‘yicha foydalanuvchini qidiramiz.
+    result = await session.execute(
+        select(abuturen_users).where(abuturen_users.c.abuturent_id == abuturent_id)
+    )
+    
+    # Natijani bitta qator sifatida olamiz
+    user = result.fetchone()
+
+    # Foydalanuvchi mavjud bo‘lsa True, aks holda False qaytariladi
+    return {"exists": user is not None}
+
 
 # add test
 @iqromind_users_router.patch("/users/{user_id}/tests")
 async def add_test_to_user(
-    bot_secret_key: str,
     user_id: str,
     new_test: TestSchema,
     session: AsyncSession = Depends(get_async_session)
 ):
-    if bot_secret_key != IQROMIND_TEST_BOT_SECRET_KEY:
-        raise HTTPException(status_code=403, detail="Bot secret key not valid")
     # Foydalanuvchini qidirish (abuturent_id orqali)
     result = await session.execute(select(abuturen_users).filter_by(abuturent_id=user_id))
     user = result.fetchone()
