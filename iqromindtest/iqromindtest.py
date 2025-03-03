@@ -220,7 +220,7 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
     }
 
 # userning testlari mavjud oylarni qaytaradi
-@iqromind_router.get("/get_have_test_months")
+@iqromind_router.post("/get_have_test_months")
 async def get_tests_api(data: GetHaveTestMonthsSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -236,7 +236,7 @@ async def get_tests_api(data: GetHaveTestMonthsSerializer, session: AsyncSession
     return result
 
 # 1 oylik testlarni qaytaradi
-@iqromind_router.get("/get_test_datas_in_month")
+@iqromind_router.post("/get_test_datas_in_month")
 async def get_test_data_api(data: GetTestDatasInMonthSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -250,7 +250,7 @@ async def get_test_data_api(data: GetTestDatasInMonthSerializer, session: AsyncS
     return [{"key": i, "name": qmtest_user.testlar[data.month_date][i]["name"], "bio": qmtest_user.testlar[data.month_date][i]["bio"]} for i in qmtest_user.testlar[data.month_date].keys()] if data.month_date in qmtest_user.testlar else []
 
 # Testni o'qish
-@iqromind_router.get("/get_test")
+@iqromind_router.post("/get_test")
 async def get_test_api(data: GetTestSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -338,7 +338,7 @@ async def add_test(data: AddTestSerializer, session: AsyncSession = Depends(get_
 
 
 # Testni javoblarini taxrirlash
-@iqromind_router.patch("/set_test")
+@iqromind_router.post("/set_test")
 async def set_test(data: SetTestSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -362,7 +362,7 @@ async def set_test(data: SetTestSerializer, session: AsyncSession = Depends(get_
         raise HTTPException(status_code=402, detail="Test mavjud emas ekan 😕")
 
 # Testni taxrirlash
-@iqromind_router.patch("/edit_test")
+@iqromind_router.post("/edit_test")
 async def set_test(data: EditTestSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -383,7 +383,7 @@ async def set_test(data: EditTestSerializer, session: AsyncSession = Depends(get
         return "Testni nomi va izohini eslab qoldim 😊"
     except:
         raise HTTPException(status_code=402, detail="Test mavjud emas ekan 😕")
-@iqromind_router.delete("/delete_test")
+@iqromind_router.post("/delete_test")
 async def delete_test(data: DeleteTestSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -406,7 +406,7 @@ async def delete_test(data: DeleteTestSerializer, session: AsyncSession = Depend
     except:
         raise HTTPException(status_code=402, detail="Test mavjud emas ekan 😕")
 
-@iqromind_router.get("/get_test_kalitlar")
+@iqromind_router.post("/get_test_kalitlar")
 async def get_test_kalitlar(data: GetTestKalitlarSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -423,7 +423,7 @@ async def get_test_kalitlar(data: GetTestKalitlarSerializer, session: AsyncSessi
     except:
         raise HTTPException(status_code=402, detail="Test mavjud emas ekan 😕")
 
-@iqromind_router.get("/get_test_tekshirishlar")
+@iqromind_router.post("/get_test_tekshirishlar")
 async def get_test_tekshirishlar(data: GetTestTekshirishlarSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -447,7 +447,7 @@ async def get_test_tekshirishlar(data: GetTestTekshirishlarSerializer, session: 
         raise HTTPException(status_code=403, detail="Test mavjud emas ekan 😕")
 
 # Testni kalitlarini edit token bilan olish
-@iqromind_router.patch("/get_test_edit_token")
+@iqromind_router.post("/get_test_edit_token")
 async def get_test_edit_token(data: GetTestEditTokenSerializer, session: AsyncSession = Depends(get_async_session)):
     try:
         edit_token = data.edit_token[:4]+data.edit_token[:-4]
@@ -464,7 +464,7 @@ async def get_test_edit_token(data: GetTestEditTokenSerializer, session: AsyncSe
     return qmtest_user.testlar[data.month_date][data.test_key]["javoblar"][30*f_id:30*(f_id+1)]
 
 # Testni kalitlarini edit token bilan taxrirlash
-@iqromind_router.patch("/set_test_edit_token")
+@iqromind_router.post("/set_test_edit_token")
 async def set_test_edit_token(data: SetTestEditTokenSerializer, session: AsyncSession = Depends(get_async_session)):
     try:
         edit_token = data.edit_token[:4]+data.edit_token[-4:]
@@ -488,7 +488,7 @@ async def set_test_edit_token(data: SetTestEditTokenSerializer, session: AsyncSe
     return "Testni javoblarini eslab qoldim 😊"
 
 # User set edu name
-@iqromind_router.patch("/set_edu_name")
+@iqromind_router.post("/set_edu_name")
 async def set_edu_name(data: SetEduNameSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -522,7 +522,7 @@ async def get_edu_name(user_id: int, session: AsyncSession = Depends(get_async_s
 
 
 # User set edu bot token
-@iqromind_router.patch("/set_edu_bot_token")
+@iqromind_router.post("/set_edu_bot_token")
 async def set_edu_bot_token(data: SetEduBotTokenSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -546,7 +546,7 @@ async def set_edu_bot_token(data: SetEduBotTokenSerializer, session: AsyncSessio
 
 
 # User get edu bot token
-@iqromind_router.get("/get_edu_bot_token")
+@iqromind_router.post("/get_edu_bot_token")
 async def get_edu_bot_token(data: GetEduBotTokenSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -559,7 +559,7 @@ async def get_edu_bot_token(data: GetEduBotTokenSerializer, session: AsyncSessio
     return qmtest_user.edu_bot_token
 
 # User set edu logo
-@iqromind_router.patch("/set_edu_logo")
+@iqromind_router.post("/set_edu_logo")
 async def set_edu_logo(data: SetEduLogoSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -646,7 +646,7 @@ async def add_natija(data: AddNatijaSerializer, session: AsyncSession = Depends(
     return {"how": True,"message": "Natija muvaffaqiyatli kiritildi"}
 
 # Natijani o'chirish
-@iqromind_router.delete("/delete_natija")
+@iqromind_router.post("/delete_natija")
 async def delete_natija(data: DeleteNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -675,7 +675,7 @@ async def delete_natija(data: DeleteNatijaSerializer, session: AsyncSession = De
     return {"how": True,"message": "Ushbu natijani o'chirib tashladim"}
 
 # Natijani id_raqam bo'yicha olish
-@iqromind_router.get("/get_natija")
+@iqromind_router.post("/get_natija")
 async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(get_async_session)):
 
     res = await session.execute(select(iqromindtest).filter_by(user_id=data.user_id))
@@ -705,7 +705,7 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
     except:
         raise HTTPException(status_code=408, detail="Natijalar topilmadi")
 # Barcha natijalarni ulashish
-@iqromind_router.get("/get_all_natijalar")
+@iqromind_router.post("/get_all_natijalar")
 async def get_all_natijalar(data: GetAllNatijalarSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(iqromindtest).filter_by(user_id=data.user_id))
     qmtest_user = res.fetchone()
@@ -743,7 +743,7 @@ async def get_natija_file(user_id: int, file_id: str, session: AsyncSession = De
         return JSONResponse({"file_url": default_logo_url})
 
 # Otm qidirish
-@iqromind_router.get("/search_otm")
+@iqromind_router.post("/search_otm")
 async def search_otm(data: SearchOtmSerializer, session: AsyncSession = Depends(get_async_session)):
     # data.text bo'yicha kirishballarini ichidan qidirish
     query = select(kirishballari.c.otm).filter(
@@ -760,7 +760,7 @@ async def search_otm(data: SearchOtmSerializer, session: AsyncSession = Depends(
 
 
 # Kirish ballari
-@iqromind_router.get("/get_kirishballari")
+@iqromind_router.post("/get_kirishballari")
 async def get_kirishballari(data: GetKirishballariSerializer, session: AsyncSession = Depends(get_async_session)):
     # data.text bo'yicha kirishballari qidirish
     query = select(kirishballari.c.data).filter_by(viloyat=data.viloyat, otm=data.otm)
@@ -777,7 +777,7 @@ async def get_kirishballari(data: GetKirishballariSerializer, session: AsyncSess
     return {"data": result[0]}
 
 # Telegram post uchun textni taxrirlash
-@iqromind_router.patch("/set_post_text")
+@iqromind_router.post("/set_post_text")
 async def set_post_text(data: SetPostTextSerializer, session: AsyncSession = Depends(get_async_session)):
     # Userni o'qish token bilan
     res = await session.execute(select(users).where(users.c.token == data.token))
