@@ -15,17 +15,21 @@ Bu bot orqali siz o‘quv markazdagi offline block test natijalaringizni onlayn 
 @bot.message_handler(commands=['start'])
 def start(message):
     text = message.text  
+    print(f"Received message: {text}")  # Xabarni tekshirish uchun log qo‘shamiz
 
-    if text.startswith("/start=24@"):  # Havola orqali kelgan xabarni tekshiramiz
+    if text.startswith("/start="):  # Havola orqali kelgan xabarni tekshiramiz
         data = text.replace("/start=", "")  # "/start=" ni olib tashlaymiz
         parts = data.split("@")  # ["24", "52123", "202502"]
+        
+        print(f"Parsed parts: {parts}")  # Qabul qilingan ma'lumotni ekranga chiqaramiz
 
         if len(parts) == 3:
             user_id, test_key, month_date = parts
 
             # Foydalanuvchi mavjudligini tekshiramiz
             user_check = check_user(message.chat.id)
-            
+            print(f"User check result: {user_check}")  # Foydalanuvchi tekshiruvini ko‘rish
+
             markup = InlineKeyboardMarkup()  # InlineKeyboardMarkup obyektini yaratamiz
 
             if user_check["mes"] == True:
