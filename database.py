@@ -36,10 +36,10 @@ uri = F"mongodb+srv://dilmurodamonov006:C2VJzXPDsvwn33Ef@iqromindtestbot.1kspd.m
 
 # client = AsyncIOMotorClient(uri)
 # Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+# client = MongoClient(uri, server_api=ServerApi('1'))
 
-database = client["IqroMindTestBot"]
-db1_collection = database["abuturent"]
+#database = client["IqroMindTestBot"]
+# db1_collection = database["abuturent"]
 
 
 
