@@ -465,6 +465,6 @@ async def check_mobile_api(data: CheckPcSerializer,session: AsyncSession = Depen
 
 # integratsiya flutter
 @kundalik_router.post("/login_kundalikcom")
-async def register_logins(data: RegisterLoginsSerializer):
+async def login_kundalikcom(data: RegisterLoginsSerializer):
     how, data_login = await login_user_check(data)
     return data_login
