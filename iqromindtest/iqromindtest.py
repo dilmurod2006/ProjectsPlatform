@@ -700,7 +700,8 @@ async def get_natija(data: GetNatijaSerializer, session: AsyncSession = Depends(
             "b2": natija.split("|")[0].split(".")[2],
             "ser1": int(natija.split("|")[4].split(".")[0]),
             "ser2": int(natija.split("|")[4].split(".")[1]),
-            "file_url": file_url
+            "file_url": file_url,
+            "file_id": natija.split("|")[1]
         }
     except:
         raise HTTPException(status_code=408, detail="Natijalar topilmadi")
