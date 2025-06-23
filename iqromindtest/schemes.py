@@ -59,7 +59,11 @@ class GetTestTekshirishlarSerializer(BaseModel):
     month_date: str
     test_key: str
     page: int
-
+# Barcha tekshirishlarni olish
+class GetTestAllTekshirishlarSerializer(BaseModel):
+    token: str
+    month_date: str
+    test_key: str
 # Testni kalilarini olish uchun
 class GetTestKalitlarSerializer(BaseModel):
     token: str

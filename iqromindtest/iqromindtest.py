@@ -447,7 +447,7 @@ async def get_test_tekshirishlar(data: GetTestTekshirishlarSerializer, session: 
     except:
         raise HTTPException(status_code=403, detail="Test mavjud emas ekan 😕")
 @iqromind_router.post("/get_test_all_tekshirishlar")
-async def get_test_all_tekshirishlar(data: GetTestTekshirishlarSerializer, session: AsyncSession = Depends(get_async_session)):
+async def get_test_all_tekshirishlar(data: GetTestAllTekshirishlarSerializer, session: AsyncSession = Depends(get_async_session)):
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
     if user is None:
