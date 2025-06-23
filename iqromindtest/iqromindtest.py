@@ -446,6 +446,26 @@ async def get_test_tekshirishlar(data: GetTestTekshirishlarSerializer, session: 
         return {"natijalar": result, "length": len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"])}
     except:
         raise HTTPException(status_code=403, detail="Test mavjud emas ekan 😕")
+@iqromind_router.post("/get_test_all_tekshirishlar")
+async def get_test_all_tekshirishlar(data: GetTestTekshirishlarSerializer, session: AsyncSession = Depends(get_async_session)):
+    res = await session.execute(select(users).where(users.c.token == data.token))
+    user = res.fetchone()
+    if user is None:
+        raise HTTPException(status_code=400, detail="User mavjud emas!")
+    res = await session.execute(select(iqromindtest).filter_by(user_id=user.id))
+    qmtest_user = res.fetchone()
+    if qmtest_user is None:
+        raise HTTPException(status_code=401, detail="User mavjud emas!")
+    try:
+        if data.test_key not in qmtest_user.testlar[data.month_date]:
+            raise HTTPException(status_code=402, detail="Test mavjud emas ekan 😕")
+        result = []
+        # Mavjud bo'lsa
+        result = qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"]
+
+        return {"natijalar": result, "length": len(qmtest_user.testlar[data.month_date][data.test_key]["tekshirishlar"])}
+    except:
+        raise HTTPException(status_code=403, detail="Test mavjud emas ekan 😕")
 
 # Testni kalitlarini edit token bilan olish
 @iqromind_router.post("/get_test_edit_token")
