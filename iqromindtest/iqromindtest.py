@@ -27,6 +27,7 @@ from .schemes import (
     GetTestEditTokenSerializer,
     SetTestEditTokenSerializer,
     GetTestTekshirishlarSerializer,
+    GetTestAllTekshirishlarSerializer,
     SetEduNameSerializer,
     SetEduBotTokenSerializer,
     SetEduLogoSerializer,
