@@ -164,7 +164,7 @@ async def price_months_api(data: PriceSerializer, session: AsyncSession = Depend
 
 # Qurilmani va premiumni tekshirib natija qaytarish
 @iqromind_router.post("/check_pc")
-async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(get_async_session)):
+async def check_pc_api(data: CheckPcSerializer, session: AsyncSession = Depends(get_async_session)):
     # token orqali userni qidirish
     res = await session.execute(select(users).where(users.c.token == data.token))
     user = res.fetchone()
@@ -196,7 +196,7 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
             "size": timedelta(days=0),
         }
 
-    elif qmtest_user.device_id == data.device_id:
+    elif True: # qmtest_user.device_id == data.device_id: # izohga olingan qism 2 ta qurilmadan ishlatishni cheklash uchun edi
         await session.execute(update(iqromindtest).filter_by(id = qmtest_user.id).values(end_use_date = now))
         await session.commit()
         return {
@@ -205,6 +205,7 @@ async def check_pc_api(data: CheckPcSerializer,session: AsyncSession = Depends(g
             "size": qmtest_user.end_premium_date-now
         }
     elif (now - qmtest_user.end_use_date).days >= 2 or qmtest_user.device_id == None:
+        # bu qism 2 ta qurilmadan ishlatishni cheklash uchun edi
         await session.execute(update(iqromindtest).filter_by(id = qmtest_user.id).values(end_use_date = now, device_id=data.device_id))
         await session.commit()
         return {
