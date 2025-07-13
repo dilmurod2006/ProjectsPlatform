@@ -15,7 +15,8 @@ from sqlalchemy import (
     insert,
     select,
     update,
-    delete
+    delete,
+    func
 )
 
 
@@ -31,7 +32,8 @@ from models.models import (
     school_data,
     products,
     payment_admin,
-    kirishballari
+    kirishballari,
+    iqromindtest
 )
 
 from sqlalchemy.sql import or_
@@ -46,7 +48,7 @@ from .schemes import (
     DeleteAdmin,
     UpdateAdmin,
     AddProducts,
-    UpdateProducts,
+    UpdateProduct,
     DeleteProducts,
     GetData,
     GetDataUser,
@@ -333,7 +335,7 @@ async def update_admin(token: str, data: UpdateAdmin, session: AsyncSession = De
         tg_id=data.tg_id,
         premessions=data.premessions,
         active=data.active,
-        updated_at=datetime.utcnow()
+        updated_at=datetime.now()
     )
     result = await session.execute(query)
     await session.commit()
@@ -403,7 +405,7 @@ async def add_products(token: str, data: AddProducts, session: AsyncSession = De
 
 # update products
 @admin_router.put("/update-products")
-async def update_products(token: str, data: UpdateProducts, session: AsyncSession = Depends(get_async_session)):
+async def update_products(token: str, data: UpdateProduct, session: AsyncSession = Depends(get_async_session)):
     query = select(admins).where(admins.c.token == token)
     result = await session.execute(query)
     admin = result.fetchone()
@@ -508,7 +510,7 @@ async def add_payment(
         tulov_summasi=tulov_summasi,
         payment_chek_img=image_data,  # Tasvir ma'lumotlarini bazaga yozish
         bio=bio,
-        created_at=datetime.utcnow()
+        created_at=datetime.now()
     )
 
     # Foydalanuvchi balansini yangilash
@@ -1032,3 +1034,87 @@ async def set_kirish_ballari(token: str, data: KirishBallari, session: AsyncSess
         )
     )
     return True
+@admin_router.get("/hisobotlar")
+async def hisobot(
+        token: str,
+        session: AsyncSession = Depends(get_async_session)
+    ):
+    
+    query = select(admins).where(admins.c.token == token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+    # reportsbalance.tulov_summasi * summ
+    umumiy_chiqib_ketgan_summa = await session.execute(
+        select(func.sum(reportsbalance.c.tulov_summasi * reportsbalance.c.summ)).scalar()
+    )
+    umumiy_chiqib_ketgan_summa = umumiy_chiqib_ketgan_summa if umumiy_chiqib_ketgan_summa else 0
+    # payment_admin.tulov_summasi * summ
+    umumiy_kirim_summa = await session.execute(
+        select(func.sum(payment_admin.c.tulov_summasi * payment_admin.c.summ)).scalar()
+    )
+    umumiy_kirim_summa = umumiy_kirim_summa if umumiy_kirim_summa else 0
+    return {
+        "umumiy_chiqib_ketgan_summa": umumiy_chiqib_ketgan_summa,
+        "umumiy_kirim_summa": umumiy_kirim_summa,
+        "umumiy_qoldiq_ishlatilmagan_summa": umumiy_kirim_summa - umumiy_chiqib_ketgan_summa
+    }
+
+# Statistika
+@admin_router.get("/statistika")
+async def statistika(
+        token: str,
+        session: AsyncSession = Depends(get_async_session)
+    ):
+    
+    query = select(admins).where(admins.c.token == token)
+    result = await session.execute(query)
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="admin not found or token expired")
+
+    # Foydalanuvchilar soni
+    user_count = await session.execute(select(func.count(users.c.id))).scalar()
+    
+    # Adminlar soni
+    admin_count = await session.execute(select(func.count(admins.c.id))).scalar()
+
+    # Mahsulotlar soni
+    product_count = await session.execute(select(func.count(products.c.id))).scalar()
+
+    # oxirgi 1 yil ichida yaratilgan foydalanuvchilar soni
+    last_year_user_count = await session.execute(
+        select(func.count(users.c.id)).where(users.c.created_at >= datetime.now() - timedelta(days=365))
+    ).scalar()
+
+    # oxirgi 1 oy ichida yaratilgan foydalanuvchilar soni
+    last_month_user_count = await session.execute(
+        select(func.count(users.c.id)).where(users.c.created_at >= datetime.now() - timedelta(days=30))
+    ).scalar()
+    # Product Kundalikcom foydalanuvchilar soni
+    product_kundalikcom_count = await session.execute(
+        select(func.count(pckundalikcom.c.id)).where(pckundalikcom.c.created_at >= datetime.now() - timedelta(days=30))
+    ).scalar()
+    # Product Mobile Kundalikcom foydalanuvchilar soni
+    product_mobile_kundalikcom_count = await session.execute(
+        select(func.count(mobilekundalikcom.c.id)).where(mobilekundalikcom.c.created_at >= datetime.now() - timedelta(days=30))
+    ).scalar()
+    # Product Iqro Mind Test foydalanuvchilar soni
+    product_iqro_mind_test_count = await session.execute(
+        select(func.count(iqromindtest.c.id)).where(iqromindtest.c.created_at >= datetime.now() - timedelta(days=30))
+    ).scalar()
+    return {
+        "user_count": user_count,
+        "last_year_user_count": last_year_user_count,
+        "last_month_user_count": last_month_user_count,
+        "admin_count": admin_count,
+        "product_count": product_count,
+        "products": {
+            1: f"PC: {product_kundalikcom_count} ta, M: {product_mobile_kundalikcom_count} ta",
+            2: f"{product_iqro_mind_test_count} ta"
+        }
+    }
+

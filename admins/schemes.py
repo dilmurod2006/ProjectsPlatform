@@ -61,8 +61,8 @@ class AddProducts(BaseModel):
     settings: Dict[str, Any]
 
 # Update products class
-class UpdateProducts(BaseModel):
-    admin_token: str
+class UpdateProduct(BaseModel):
+    id: int
     name: str
     bio: str
     settings: Dict[str, Any]
