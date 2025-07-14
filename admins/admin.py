@@ -40,7 +40,6 @@ from models.models import (
 
 from sqlalchemy.sql import or_
 
-
 from .schemes import (
     LoginAdmin,
     CheckLoginAdmin,
@@ -80,6 +79,15 @@ from .utils import (
     serialize_get_all_phone_numbers
 )
 from datetime import datetime, timedelta
+
+
+
+from fastapi.responses import StreamingResponse
+from io import BytesIO
+from openpyxl import Workbook
+
+
+
 
 admin_router = APIRouter()
 
@@ -1143,3 +1151,91 @@ async def statistika(
     }
 
 
+# remove payment
+@admin_router.delete("/remove-payment/{payment_id}")
+async def remove_payment(payment_id: int, token: str = Query(..., description="Admin JWT tokeni"), session: AsyncSession = Depends(get_async_session)):
+    # Token orqali adminni tekshirish
+    result = await session.execute(select(admins).where(admins.c.token == token))
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="Admin topilmadi yoki token eskirgan")
+
+    # Paymentni o'chirish
+    await session.execute(delete(payment_admin).where(payment_admin.c.id == payment_id))
+    await session.commit()
+
+    return True
+
+# remove reportsbalance
+@admin_router.delete("/remove-reportsbalance/{reportsbalance_id}")
+async def remove_reportsbalance(reportsbalance_id: int, token: str = Query(..., description="Admin JWT tokeni"), session: AsyncSession = Depends(get_async_session)):
+    # Token orqali adminni tekshirish
+    result = await session.execute(select(admins).where(admins.c.token == token))
+    admin = result.fetchone()
+
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="Admin topilmadi yoki token eskirgan")
+
+    # Paymentni o'chirish
+    await session.execute(delete(reportsbalance).where(reportsbalance.c.id == reportsbalance_id))
+    await session.commit()
+
+    return True
+
+# Download all reportbalances and payments to xlsx file
+@admin_router.get("/download-reports")
+async def download_reports(
+    token: str = Query(..., description="Admin JWT tokeni"),
+    session: AsyncSession = Depends(get_async_session)
+):
+    # Admin tokenni tekshirish
+    result = await session.execute(select(admins).where(admins.c.token == token))
+    admin = result.fetchone()
+    if admin is None or not verify_jwt_token(token):
+        raise HTTPException(status_code=401, detail="Admin topilmadi yoki token eskirgan")
+
+    # Barcha ma'lumotlarni olish
+    all_payments = await session.execute(select(payment_admin))
+    all_payments = all_payments.scalars().all()
+
+    all_reports = await session.execute(select(reportsbalance))
+    all_reports = all_reports.scalars().all()
+
+    # Excel fayl yaratish
+    wb = Workbook()
+    ws1 = wb.active
+    ws1.title = "To'lovlar"
+
+    # Payment ustunlarini chiqaramiz — payment_chek_img ni tashlab ketamiz
+    exclude_cols = ["payment_chek_img"]
+    if all_payments:
+        all_payment_keys = [col for col in all_payments[0].__table__.columns.keys() if col not in exclude_cols]
+        ws1.append(all_payment_keys)  # sarlavhalar
+        for row in all_payments:
+            ws1.append([getattr(row, col) for col in all_payment_keys])
+    else:
+        ws1.append(["Hech qanday to‘lov ma’lumotlari topilmadi"])
+
+    # Chiqimlar (reportbalance) — hamma ustunlar
+    ws2 = wb.create_sheet(title="Chiqimlar")
+    if all_reports:
+        all_report_keys = all_reports[0].__table__.columns.keys()
+        ws2.append(all_report_keys)
+        for row in all_reports:
+            ws2.append([getattr(row, col) for col in all_report_keys])
+    else:
+        ws2.append(["Hech qanday chiqimlar topilmadi"])
+
+    # Faylni tayyorlash
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+
+    return StreamingResponse(
+        file_stream,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": "attachment; filename=hisobotlar.xlsx"
+        }
+    )
