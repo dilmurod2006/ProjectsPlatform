@@ -502,13 +502,21 @@ async def add_payment(
     
     # Tasvir ma'lumotlarini o'qish
     image_data = await payment_chek_img.read()  # Faylni `bytes` ga o'qish
-
+    result = send_payment_data(
+        tg_id=tg_id,
+        username=user.username,
+        tulov_summasi=tulov_summasi,
+        payment_chek_img=image_data,
+        bio=bio
+    )
+    if result["status"] != "success":
+        raise HTTPException(status_code=500, detail="Failed to send payment data to Telegram")
     # Payment qo'shish
     payment_query = insert(payment_admin).values(
         admin_id=admin.id,
         user_id=user.id,
         tulov_summasi=tulov_summasi,
-        payment_chek_img=image_data,  # Tasvir ma'lumotlarini bazaga yozish
+        payment_chek_img=result["file_id"],  # Tasvir ma'lumotlarini bazaga yozish
         bio=bio,
         created_at=datetime.now()
     )
