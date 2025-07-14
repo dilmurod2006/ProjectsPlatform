@@ -520,6 +520,7 @@ async def add_payment(
         bio=bio,
         created_at=datetime.now()
     )
+    
 
     # Foydalanuvchi balansini yangilash
     update_balance_query = update(users).where(users.c.id == user.id).values(balance=user.balance + tulov_summasi)
