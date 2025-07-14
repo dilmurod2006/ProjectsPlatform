@@ -312,3 +312,5 @@ def serialize_get_projectsdata(row):
 
     }
 # get data serializer functions end
+
+

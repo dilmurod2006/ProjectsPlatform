@@ -8,8 +8,10 @@ from fastapi import (
     HTTPException,
     UploadFile,
     File,
-    Form
+    Form,
+    Query
 )
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (
     insert,
@@ -80,6 +82,18 @@ from .utils import (
 from datetime import datetime, timedelta
 
 admin_router = APIRouter()
+
+
+
+# Yordamchi funksiya: scalar qiymat qaytaradi
+async def get_scalar(session: AsyncSession, query):
+    """Yordamchi funksiya: scalar qiymat qaytaradi."""
+    result = await session.execute(query)
+    return result.scalar()
+
+
+
+
 
 # login admin
 @admin_router.post("/login")
@@ -1035,87 +1049,97 @@ async def set_kirish_ballari(token: str, data: KirishBallari, session: AsyncSess
         )
     )
     return True
+
+
+# Hisobot
 @admin_router.get("/hisobotlar")
 async def hisobot(
-        token: str,
-        session: AsyncSession = Depends(get_async_session)
-    ):
-    
-    query = select(admins).where(admins.c.token == token)
-    result = await session.execute(query)
+    token: str = Query(..., description="Admin JWT tokeni"),
+    session: AsyncSession = Depends(get_async_session)
+):
+    # Token asosida adminni tekshirish
+    result = await session.execute(select(admins).where(admins.c.token == token))
     admin = result.fetchone()
 
     if admin is None or not verify_jwt_token(token):
-        raise HTTPException(status_code=401, detail="admin not found or token expired")
-    # reportsbalance.tulov_summasi * summ
-    umumiy_chiqib_ketgan_summa = await session.execute(
-        select(func.sum(reportsbalance.c.tulov_summasi * reportsbalance.c.summ)).scalar()
+        raise HTTPException(status_code=401, detail="Admin topilmadi yoki token eskirgan")
+
+    # Chiqimlar bo‘yicha umumiy summa (reportsbalance)
+    umumiy_chiqib_ketgan_summa = await get_scalar(
+        session,
+        select(func.sum(reportsbalance.c.tulov_summasi))
     )
-    umumiy_chiqib_ketgan_summa = umumiy_chiqib_ketgan_summa if umumiy_chiqib_ketgan_summa else 0
-    # payment_admin.tulov_summasi * summ
-    umumiy_kirim_summa = await session.execute(
-        select(func.sum(payment_admin.c.tulov_summasi * payment_admin.c.summ)).scalar()
+
+    # Kirimlar bo‘yicha umumiy summa (payment_admin)
+    umumiy_kirim_summa = await get_scalar(
+        session,
+        select(func.sum(payment_admin.c.tulov_summasi))
     )
-    umumiy_kirim_summa = umumiy_kirim_summa if umumiy_kirim_summa else 0
+
     return {
         "umumiy_chiqib_ketgan_summa": umumiy_chiqib_ketgan_summa,
         "umumiy_kirim_summa": umumiy_kirim_summa,
         "umumiy_qoldiq_ishlatilmagan_summa": umumiy_kirim_summa - umumiy_chiqib_ketgan_summa
     }
 
-# Statistika
+
+# Statistika olish
 @admin_router.get("/statistika")
 async def statistika(
-        token: str,
-        session: AsyncSession = Depends(get_async_session)
-    ):
-    
-    query = select(admins).where(admins.c.token == token)
-    result = await session.execute(query)
+    token: str = Query(..., description="Admin JWT tokeni"),
+    session: AsyncSession = Depends(get_async_session)
+):
+    # Token orqali adminni tekshirish
+    result = await session.execute(select(admins).where(admins.c.token == token))
     admin = result.fetchone()
 
     if admin is None or not verify_jwt_token(token):
-        raise HTTPException(status_code=401, detail="admin not found or token expired")
+        raise HTTPException(status_code=401, detail="Admin topilmadi yoki token eskirgan")
 
-    # Foydalanuvchilar soni
-    user_count = await session.execute(select(func.count(users.c.id))).scalar()
-    
-    # Adminlar soni
-    admin_count = await session.execute(select(func.count(admins.c.id))).scalar()
+    # Statistika so‘rovlari
+    user_count = await get_scalar(session, select(func.count(users.c.id)))
+    admin_count = await get_scalar(session, select(func.count(admins.c.id)))
+    product_count = await get_scalar(session, select(func.count(products.c.id)))
 
-    # Mahsulotlar soni
-    product_count = await session.execute(select(func.count(products.c.id))).scalar()
-
-    # oxirgi 1 yil ichida yaratilgan foydalanuvchilar soni
-    last_year_user_count = await session.execute(
+    last_year_user_count = await get_scalar(
+        session,
         select(func.count(users.c.id)).where(users.c.created_at >= datetime.now() - timedelta(days=365))
-    ).scalar()
+    )
 
-    # oxirgi 1 oy ichida yaratilgan foydalanuvchilar soni
-    last_month_user_count = await session.execute(
+    last_month_user_count = await get_scalar(
+        session,
         select(func.count(users.c.id)).where(users.c.created_at >= datetime.now() - timedelta(days=30))
-    ).scalar()
-    # Product Kundalikcom foydalanuvchilar soni
-    product_kundalikcom_count = await session.execute(
+    )
+
+    product_kundalikcom_count = await get_scalar(
+        session,
         select(func.count(pckundalikcom.c.id)).where(pckundalikcom.c.created_at >= datetime.now() - timedelta(days=30))
-    ).scalar()
-    # Product Mobile Kundalikcom foydalanuvchilar soni
-    product_mobile_kundalikcom_count = await session.execute(
+    )
+
+    product_mobile_kundalikcom_count = await get_scalar(
+        session,
         select(func.count(mobilekundalikcom.c.id)).where(mobilekundalikcom.c.created_at >= datetime.now() - timedelta(days=30))
-    ).scalar()
-    # Product Iqro Mind Test foydalanuvchilar soni
-    product_iqro_mind_test_count = await session.execute(
+    )
+
+    product_iqro_mind_test_count = await get_scalar(
+        session,
         select(func.count(iqromindtest.c.id)).where(iqromindtest.c.created_at >= datetime.now() - timedelta(days=30))
-    ).scalar()
+    )
+
+    # JSON natija
     return {
         "user_count": user_count,
-        "last_year_user_count": last_year_user_count,
-        "last_month_user_count": last_month_user_count,
         "admin_count": admin_count,
         "product_count": product_count,
+        "last_year_user_count": last_year_user_count,
+        "last_month_user_count": last_month_user_count,
         "products": {
-            1: f"PC: {product_kundalikcom_count} ta, M: {product_mobile_kundalikcom_count} ta",
-            2: f"{product_iqro_mind_test_count} ta"
+            "kundalikcom": {
+                "desktop": product_kundalikcom_count,
+                "mobile": product_mobile_kundalikcom_count
+            },
+            "iqro_mind_test": product_iqro_mind_test_count
         }
     }
+
 
