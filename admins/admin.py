@@ -1077,9 +1077,9 @@ async def hisobot(
     )
 
     return {
-        "umumiy_chiqib_ketgan_summa": umumiy_chiqib_ketgan_summa,
+        "umumiy_chiqib_ketgan_summa": -umumiy_chiqib_ketgan_summa,
         "umumiy_kirim_summa": umumiy_kirim_summa,
-        "umumiy_qoldiq_ishlatilmagan_summa": umumiy_kirim_summa - umumiy_chiqib_ketgan_summa
+        "umumiy_qoldiq_ishlatilmagan_summa": umumiy_kirim_summa + umumiy_chiqib_ketgan_summa
     }
 
 
