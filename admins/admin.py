@@ -527,16 +527,8 @@ async def add_payment(
     await session.execute(update_balance_query)
     await session.execute(payment_query)
 
-    send_about_payment_data = send_payment_data(
-        tg_id=tg_id,
-        username=user.username,
-        tulov_summasi=tulov_summasi,
-        payment_chek_img=image_data,
-        bio=bio
-    )
-
     await session.commit()
-    return {"message": f"{user.username} foydalanuvchiga {tulov_summasi} so'm to'lov o'tkazildi. {send_about_payment_data}"}
+    return {"message": f"{user.username} foydalanuvchiga {tulov_summasi} so'm to'lov o'tkazildi."}
 
 # ADD PAYMENT FUNCTIONS END
 
