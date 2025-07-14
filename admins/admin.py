@@ -1121,17 +1121,17 @@ async def statistika(
 
     product_kundalikcom_count = await get_scalar(
         session,
-        select(func.count(pckundalikcom.c.id)).where(pckundalikcom.c.created_at >= datetime.now() - timedelta(days=30))
+        select(func.count(pckundalikcom.c.id))
     )
 
     product_mobile_kundalikcom_count = await get_scalar(
         session,
-        select(func.count(mobilekundalikcom.c.id)).where(mobilekundalikcom.c.created_at >= datetime.now() - timedelta(days=30))
+        select(func.count(mobilekundalikcom.c.id))
     )
 
     product_iqro_mind_test_count = await get_scalar(
         session,
-        select(func.count(iqromindtest.c.id)).where(iqromindtest.c.created_at >= datetime.now() - timedelta(days=30))
+        select(func.count(iqromindtest.c.id))
     )
 
     # JSON natija
@@ -1189,45 +1189,42 @@ async def download_reports(
     token: str = Query(..., description="Admin JWT tokeni"),
     session: AsyncSession = Depends(get_async_session)
 ):
-    # Admin tokenni tekshirish
     result = await session.execute(select(admins).where(admins.c.token == token))
     admin = result.fetchone()
     if admin is None or not verify_jwt_token(token):
         raise HTTPException(status_code=401, detail="Admin topilmadi yoki token eskirgan")
 
-    # Barcha ma'lumotlarni olish
-    all_payments = await session.execute(select(payment_admin))
-    all_payments = all_payments.scalars().all()
+    # Ma'lumotlarni olish
+    result_payments = await session.execute(select(payment_admin))
+    all_payments = result_payments.fetchall()
 
-    all_reports = await session.execute(select(reportsbalance))
-    all_reports = all_reports.scalars().all()
+    result_reports = await session.execute(select(reportsbalance))
+    all_reports = result_reports.fetchall()
 
-    # Excel fayl yaratish
+    # Excel fayl
     wb = Workbook()
     ws1 = wb.active
     ws1.title = "To'lovlar"
 
-    # Payment ustunlarini chiqaramiz — payment_chek_img ni tashlab ketamiz
     exclude_cols = ["payment_chek_img"]
     if all_payments:
-        all_payment_keys = [col for col in all_payments[0].__table__.columns.keys() if col not in exclude_cols]
-        ws1.append(all_payment_keys)  # sarlavhalar
+        all_payment_keys = [k for k in all_payments[0]._mapping.keys() if k not in exclude_cols]
+        ws1.append(all_payment_keys)
         for row in all_payments:
-            ws1.append([getattr(row, col) for col in all_payment_keys])
+            ws1.append([row._mapping[col] for col in all_payment_keys])
     else:
         ws1.append(["Hech qanday to‘lov ma’lumotlari topilmadi"])
 
-    # Chiqimlar (reportbalance) — hamma ustunlar
+    # Chiqimlar
     ws2 = wb.create_sheet(title="Chiqimlar")
     if all_reports:
-        all_report_keys = all_reports[0].__table__.columns.keys()
+        all_report_keys = list(all_reports[0]._mapping.keys())
         ws2.append(all_report_keys)
         for row in all_reports:
-            ws2.append([getattr(row, col) for col in all_report_keys])
+            ws2.append([row._mapping[col] for col in all_report_keys])
     else:
         ws2.append(["Hech qanday chiqimlar topilmadi"])
 
-    # Faylni tayyorlash
     file_stream = BytesIO()
     wb.save(file_stream)
     file_stream.seek(0)
@@ -1235,7 +1232,5 @@ async def download_reports(
     return StreamingResponse(
         file_stream,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={
-            "Content-Disposition": "attachment; filename=hisobotlar.xlsx"
-        }
+        headers={"Content-Disposition": "attachment; filename=hisobotlar.xlsx"}
     )
