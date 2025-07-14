@@ -129,9 +129,11 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
         await session.execute(insert(reportsbalance).values(
             user_id=user.id,
             balance=user.balance-all_months_price,
+            payment_number=IQROMINDTEST_ID,
             tulov_summasi=-all_months_price,
-            bio="For product: Kundalikcom"
+            bio="For product: Iqro Mind Test"
         ))
+
         await session.commit()
         return {
             "how": True,

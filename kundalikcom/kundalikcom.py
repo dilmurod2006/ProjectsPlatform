@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
-from settings import PRODUCT_ID
+from settings import KUNDALIKCOM_ID
 from sqlalchemy import(
     select,
     update,
@@ -51,7 +51,7 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
         raise HTTPException(status_code=400, detail="User mavjud emas!")
     
     # Product narxalarini olish
-    res = await session.execute(select(products).filter_by(id = int(PRODUCT_ID)))
+    res = await session.execute(select(products).filter_by(id = int(KUNDALIKCOM_ID)))
     prices = res.fetchone().settings
     
     # Barcha narxlar olindi
@@ -105,6 +105,7 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
         await session.execute(update(users).where(users.c.token == data.token).values(balance = user.balance-all_months_price))
         await session.execute(insert(reportsbalance).values(
             user_id=user.id,
+            product_id=KUNDALIKCOM_ID,
             balance=user.balance-all_months_price,
             tulov_summasi=-all_months_price,
             bio="For product: Kundalikcom"
@@ -131,7 +132,7 @@ async def price_months_api(data: PriceSerializer, session: AsyncSession = Depend
     masalan: 1 oy -> 250 000 `so'm`"""
 
     # narxlarni databasedan olish
-    res = await session.execute(select(products).filter_by(id = int(PRODUCT_ID)))
+    res = await session.execute(select(products).filter_by(id = int(KUNDALIKCOM_ID)))
     prices = res.fetchone().settings
 
     # jami summani hisoblab qaytarish
@@ -318,7 +319,7 @@ async def buy_api_mobile_api(data: BuySerializer,session: AsyncSession = Depends
         raise HTTPException(status_code=400, detail="User mavjud emas")
     
     # Product narxalarini olish
-    res = await session.execute(select(products).filter_by(id = int(PRODUCT_ID)))
+    res = await session.execute(select(products).filter_by(id = int(KUNDALIKCOM_ID)))
     prices = res.fetchone().settings
     
     # Barcha narxlar olindi
@@ -398,7 +399,7 @@ async def price_months_mobile_api(data: PriceSerializer, session: AsyncSession =
     masalan: 1 oy -> 250 000 `so'm`"""
 
     # narxlarni databasedan olish
-    res = await session.execute(select(products).filter_by(id = int(PRODUCT_ID)))
+    res = await session.execute(select(products).filter_by(id = int(KUNDALIKCOM_ID)))
     prices = res.fetchone().settings
 
     # jami summani hisoblab qaytarish

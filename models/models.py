@@ -85,6 +85,7 @@ reportsbalance = Table(
     Column('user_id', Integer, ForeignKey('users.id'), index=True),
     Column('balance', BigInteger),
     Column('tulov_summasi', BigInteger),
+    Column('product_id', Integer, ForeignKey('products.id', ondelete="SET NULL"), index=True, nullable=True),
     Column('bio', String, nullable=True),
     Column('created_at', TIMESTAMP, default=datetime.utcnow)
 )
