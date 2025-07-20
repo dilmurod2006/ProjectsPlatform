@@ -1142,11 +1142,8 @@ async def statistika(
         "last_year_user_count": last_year_user_count,
         "last_month_user_count": last_month_user_count,
         "products": {
-            "kundalikcom": {
-                "desktop": product_kundalikcom_count,
-                "mobile": product_mobile_kundalikcom_count
-            },
-            "iqro_mind_test": product_iqro_mind_test_count
+            1: f"users: {product_kundalikcom_count} pc {product_mobile_kundalikcom_count} mobile",
+            2: f"users: {product_iqro_mind_test_count}"
         }
     }
 
