@@ -105,7 +105,7 @@ async def buy_api(data: BuySerializer,session: AsyncSession = Depends(get_async_
         await session.execute(update(users).where(users.c.token == data.token).values(balance = user.balance-all_months_price))
         await session.execute(insert(reportsbalance).values(
             user_id=user.id,
-            product_id=KUNDALIKCOM_ID,
+            product_id=int(KUNDALIKCOM_ID),
             balance=user.balance-all_months_price,
             tulov_summasi=-all_months_price,
             bio="For product: Kundalikcom"
